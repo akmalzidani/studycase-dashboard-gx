@@ -1,0 +1,117 @@
+import { useState, useMemo, useEffect } from "react";
+import { useDebounce } from "./useDebounce";
+
+export interface UseDataTableOptions<T> {
+  data: T[];
+  initialSortKey?: keyof T;
+  initialSortDirection?: "asc" | "desc";
+  initialPageSize?: number;
+  searchPredicate?: (item: T, keyword: string) => boolean;
+}
+
+export interface UseDataTableReturn<T> {
+  data: T[];
+  search: string;
+  setSearch: (val: string) => void;
+  isSearching: boolean;
+  sortConfig: { key: keyof T | null; direction: "asc" | "desc" };
+  handleSort: (key: keyof T) => void;
+  page: number;
+  setPage: (page: number) => void;
+  pageSize: number;
+  setPageSize: (size: number) => void;
+  totalPages: number;
+  totalItems: number;
+}
+
+export function useDataTable<T extends object>({
+  data,
+  initialSortKey,
+  initialSortDirection = "asc",
+  initialPageSize = 10,
+  searchPredicate,
+}: UseDataTableOptions<T>): UseDataTableReturn<T> {
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+  const isSearching = search !== debouncedSearch;
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof T | null;
+    direction: "asc" | "desc";
+  }>({
+    key: initialSortKey || null,
+    direction: initialSortDirection,
+  });
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(initialPageSize);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, pageSize]);
+
+  const filteredData = useMemo(() => {
+    if (!debouncedSearch) return data;
+    const keyword = debouncedSearch.toLowerCase();
+
+    if (searchPredicate)
+      return data.filter((item) => searchPredicate(item, keyword));
+
+    return data.filter((item) =>
+      Object.values(item as Record<string, unknown>).some(
+        (value) =>
+          value != null && String(value).toLowerCase().includes(keyword),
+      ),
+    );
+  }, [data, debouncedSearch, searchPredicate]);
+
+  const sortedData = useMemo(() => {
+    const sortableItems = [...filteredData];
+    if (sortConfig.key !== null) {
+      sortableItems.sort((a, b) => {
+        const aVal = a[sortConfig.key!] as string | number;
+        const bVal = b[sortConfig.key!] as string | number;
+
+        if (aVal == null) return sortConfig.direction === "asc" ? 1 : -1;
+        if (bVal == null) return sortConfig.direction === "asc" ? -1 : 1;
+
+        if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredData, sortConfig]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * pageSize;
+    return sortedData.slice(startIndex, startIndex + pageSize);
+  }, [sortedData, page, pageSize]);
+
+  const handleSort = (key: keyof T) => {
+    let direction: "asc" | "desc" = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const totalPages = Math.max(1, Math.ceil(sortedData.length / pageSize));
+
+  useEffect(() => {
+    setPage((currentPage) => Math.min(currentPage, totalPages));
+  }, [totalPages]);
+
+  return {
+    data: paginatedData,
+    search,
+    setSearch,
+    isSearching,
+    sortConfig,
+    handleSort,
+    page,
+    setPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems: sortedData.length,
+  };
+}
