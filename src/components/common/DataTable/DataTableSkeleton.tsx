@@ -1,5 +1,3 @@
-import { Skeleton } from "@/components/common/Skeleton";
-
 interface DataTableSkeletonProps {
   columnCount: number;
   rowCount?: number;
@@ -11,7 +9,7 @@ export function DataTableSkeleton({
 }: DataTableSkeletonProps) {
   return (
     <div
-      className="table-responsive border rounded mb-3 table-skeleton"
+      className="table-responsive border rounded mb-3 table-skeleton placeholder-glow"
       aria-busy="true"
       aria-label="Memuat data tabel"
     >
@@ -29,12 +27,12 @@ export function DataTableSkeleton({
                     isActionColumn ? "table-skeleton__action-column" : undefined
                   }
                 >
-                  <Skeleton
-                    className={
+                  <span
+                    className={`placeholder bg-yellow-800 ${
                       isActionColumn
                         ? "table-skeleton__action-header"
                         : "table-skeleton__header"
-                    }
+                    }`}
                   />
                 </th>
               );
@@ -56,12 +54,12 @@ export function DataTableSkeleton({
                         : undefined
                     }
                   >
-                    <Skeleton
-                      className={
+                    <span
+                      className={`placeholder bg-yellow-600 ${
                         isActionColumn
                           ? "table-skeleton__action"
                           : "table-skeleton__cell"
-                      }
+                      }`}
                     />
                   </td>
                 );
