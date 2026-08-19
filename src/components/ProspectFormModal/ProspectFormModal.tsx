@@ -2,6 +2,7 @@ import { useEffect, useState, type SyntheticEvent } from "react";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { Modal, type FormModalProps } from "@/components/common/Modal";
 import type { Prospect, ProspectStatus, Subscription } from "@/types";
+import { formatSpeed } from "@/helpers/formatters.helpers";
 
 export interface ProspectFormValues {
   name: string;
@@ -166,7 +167,7 @@ export function ProspectFormModal({
           >
             {subscriptions.map((subscription) => (
               <option key={subscription.id} value={subscription.id}>
-                {subscription.packageName} — {subscription.speed}
+                {subscription.packageName} — {formatSpeed(subscription.speed)}
               </option>
             ))}
           </select>

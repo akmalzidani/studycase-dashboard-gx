@@ -1,6 +1,7 @@
 import { Badge, type BadgeVariant } from "@/components/common/Badge";
 import type { Column } from "@/components/common/DataTable";
 import type { BaseClient } from "@/types";
+import { formatSpeed } from "@/helpers/formatters.helpers";
 
 export interface ClientTableItem extends BaseClient {
   status: string;
@@ -24,7 +25,9 @@ export function createClientTableColumns<T extends ClientTableItem>({
       render: (client) => (
         <div>
           <div className="fw-medium">{client.subscription.packageName}</div>
-          <small className="text-muted">{client.subscription.speed}</small>
+          <small className="text-muted">
+            {formatSpeed(client.subscription.speed)}
+          </small>
         </div>
       ),
     },

@@ -1,4 +1,5 @@
 import { matchesSearchKeyword } from "@/components/common/DataTable";
+import { formatSpeed } from "@/helpers/formatters.helpers";
 import type { ClientTableItem } from "./ClientTableColumns";
 
 export const searchClientTableItem = (
@@ -13,7 +14,7 @@ export const searchClientTableItem = (
       client.phoneNumber,
       client.status,
       client.subscription.packageName,
-      client.subscription.speed,
+      formatSpeed(client.subscription.speed),
     ],
     keyword,
   );

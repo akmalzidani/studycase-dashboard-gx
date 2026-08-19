@@ -5,7 +5,7 @@ import type { Subscription } from "@/types";
 
 export interface SubscriptionFormValues {
   packageName: string;
-  speed: string;
+  speed: number;
   monthlyFee: number;
 }
 
@@ -17,7 +17,7 @@ type SubscriptionFormModalProps = FormModalProps<
 const FORM_ID = "subscription-form";
 const EMPTY_VALUES: SubscriptionFormValues = {
   packageName: "",
-  speed: "",
+  speed: 0,
   monthlyFee: 0,
 };
 
@@ -119,11 +119,13 @@ export function SubscriptionFormModal({
               type="number"
               min={1}
               className="form-control"
-              value={values.speed}
+              value={values.speed || ""}
               placeholder="Contoh: 100"
               required
               disabled={isSubmitting}
-              onChange={(event) => updateValue("speed", event.target.value)}
+              onChange={(event) =>
+                updateValue("speed", Number(event.target.value))
+              }
             />
             <span className="input-group-text">Mbps</span>
           </div>

@@ -13,9 +13,10 @@ export const subscriptionService = createLocalStorageCrudService<Subscription>({
   normalizePayload: (payload) => ({
     ...payload,
     packageName: payload.packageName.trim(),
-    speed: payload.speed.trim(),
+    speed: Number(payload.speed),
     monthlyFee: Number(payload.monthlyFee),
   }),
+
   getConflictMessage: (subscriptions, payload, excludedId) =>
     subscriptions.some(
       (subscription) =>

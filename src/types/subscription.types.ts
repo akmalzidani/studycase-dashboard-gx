@@ -1,6 +1,6 @@
 export interface Subscription {
   id?: string;
   packageName: string;
-  speed: string;
+  speed: number;
   monthlyFee: number;
 }
