@@ -13,32 +13,41 @@ const SUPERADMIN_PERMISSIONS: Permissions = {
 };
 
 const USER_PERMISSIONS: Permissions = {
-  dashboard: true,
-  prospect: true,
-  customers: true,
+  ...SUPERADMIN_PERMISSIONS,
   analytics: false,
   settings: {
+    ...(SUPERADMIN_PERMISSIONS.settings as Permissions),
     users: false,
-    profile: true,
     subscription: false,
   },
 };
 
-export const MOCK_USERS: User[] = [
-  {
-    id: "USR-001",
-    name: "Super Administrator",
-    email: "admin@gmail.com",
-    password: "admin",
-    role: "superadmin",
-    permission: SUPERADMIN_PERMISSIONS,
-  },
-  {
-    id: "USR-002",
-    name: "Standard User",
-    email: "user@gmail.com",
-    password: "user",
-    role: "user",
-    permission: USER_PERMISSIONS,
-  },
-];
+const USER_SEEDS = [
+  [
+    "USR-001",
+    "Super Administrator",
+    "admin@gmail.com",
+    "admin",
+    "superadmin",
+    SUPERADMIN_PERMISSIONS,
+  ],
+  [
+    "USR-002",
+    "Standard User",
+    "user@gmail.com",
+    "user",
+    "user",
+    USER_PERMISSIONS,
+  ],
+] as const;
+
+export const MOCK_USERS: User[] = USER_SEEDS.map(
+  ([id, name, email, password, role, permission]) => ({
+    id,
+    name,
+    email,
+    password,
+    role,
+    permission,
+  }),
+);
