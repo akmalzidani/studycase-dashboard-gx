@@ -1,9 +1,13 @@
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { Modal } from "@/components/common/Modal";
 import { useConfirmStore } from "@/stores/useConfirmStore";
+import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function ConfirmationDialog() {
   const { options, hide } = useConfirmStore();
+  const theme = useThemeStore((state) => state.theme);
+
+  const textMessageColor = theme === "dark" ? "light" : "dark";
 
   if (!options) return null;
 
@@ -48,7 +52,7 @@ export default function ConfirmationDialog() {
         </>
       }
     >
-      <p className="mb-0 text-secondary">{message}</p>
+      <p className={`mb-0 text-${textMessageColor}`}>{message}</p>
     </Modal>
   );
 }
