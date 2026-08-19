@@ -1,37 +1,48 @@
+import { DashboardContent } from "@/components/Dashboard/DashboardContent";
+import { PageHeader } from "@/components/common/PageHeader";
+import { hasPermission } from "@/config/permission.helpers";
+import { PERMISSION_KEYS } from "@/config/permission.config";
+import { useCustomers } from "@/hooks/useCustomers";
+import { useProspects } from "@/hooks/useProspects";
+import { calculateDashboardMetrics } from "@/helpers/dashboard.helpers";
+import { useAuthStore } from "@/stores/useAuthStore";
+
 function DashboardPage() {
+  const permissions = useAuthStore((state) => state.permissions);
+  const canReadCustomers = hasPermission(
+    permissions,
+    PERMISSION_KEYS.CUSTOMERS.READ,
+  );
+  const canReadProspects = hasPermission(
+    permissions,
+    PERMISSION_KEYS.PROSPECT.READ,
+  );
+  const { customers, isLoading: isLoadingCustomers } = useCustomers();
+  const { prospects, isLoading: isLoadingProspects } = useProspects();
+
+  const metrics = calculateDashboardMetrics(customers, prospects);
+  const isLoading = isLoadingCustomers || isLoadingProspects;
+
   return (
     <div>
-      <h1 className="h3 mb-3 fw-bold">Ini Dashboard Page</h1>
-      <p className="text-muted">Selamat datang di Overview Dashboard.</p>
-      <p className="d-inline-flex gap-1">
-        <a
-          className="btn btn-primary"
-          data-bs-toggle="collapse"
-          href="#collapseExample"
-          role="button"
-          aria-expanded="false"
-          aria-controls="collapseExample"
-        >
-          Link with href
-        </a>
-        <button
-          className="btn btn-primary"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseExample"
-          aria-expanded="false"
-          aria-controls="collapseExample"
-        >
-          Button with data-bs-target
-        </button>
-      </p>
-      <div className="collapse" id="collapseExample">
-        <div className="card card-body">
-          Some placeholder content for the collapse component. This panel is
-          hidden by default but revealed when the user activates the relevant
-          trigger.
+      <PageHeader
+        title="Dashboard"
+        description="Ringkasan operasional pelanggan dan prospect Anda."
+      />
+
+      {isLoading ? (
+        <div className="d-flex justify-content-center py-5">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Memuat ringkasan...</span>
+          </div>
         </div>
-      </div>
+      ) : (
+        <DashboardContent
+          canReadCustomers={canReadCustomers}
+          canReadProspects={canReadProspects}
+          {...metrics}
+        />
+      )}
     </div>
   );
 }
