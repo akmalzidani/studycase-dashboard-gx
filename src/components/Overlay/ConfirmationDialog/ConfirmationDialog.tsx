@@ -3,7 +3,7 @@ import { Modal } from "@/components/common/Modal";
 import { useConfirmStore } from "@/stores/useConfirmStore";
 
 export default function ConfirmationDialog() {
-  const { show, options, hide } = useConfirmStore();
+  const { options, hide } = useConfirmStore();
 
   if (!options) return null;
 
@@ -14,25 +14,21 @@ export default function ConfirmationDialog() {
     cancelText = "Batal",
     variant = "primary",
     onConfirm,
-    onCancel,
   } = options;
 
   const handleConfirm = () => {
-    onConfirm();
     hide();
+    onConfirm();
   };
 
-  const handleCancel = () => {
-    if (onCancel) onCancel();
-    hide();
-  };
+  const handleCancel = () => hide();
 
   return (
     <Modal
       target={MODAL_TARGETS.CONFIRMATION}
       title={title}
-      isOpen={show}
-      onClose={handleCancel}
+      isOpen={Boolean(options)}
+      onClose={hide}
       footer={
         <>
           <button

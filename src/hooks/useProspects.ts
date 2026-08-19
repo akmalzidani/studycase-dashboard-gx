@@ -4,7 +4,7 @@ import {
   type ProspectPayload,
 } from "@/services/prospect.service";
 import { useProspectStore } from "@/stores/useProspectStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { toast } from "@/components/Overlay";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -17,23 +17,22 @@ export function useProspects() {
   const setIsLoading = useProspectStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasFetched = useRef(false);
-  const addToast = useToastStore((state) => state.addToast);
 
   const fetchProspects = useCallback(async () => {
     setIsLoading(true);
     try {
       setProspects(await prospectService.getAll());
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal memuat data prospect."), "danger");
+      toast.error(getErrorMessage(error, "Gagal memuat data prospect."));
     } finally {
       setIsLoading(false);
     }
-  }, [addToast, setIsLoading, setProspects]);
+  }, [setIsLoading, setProspects]);
 
   useEffect(() => {
     if (!hasLoaded && !hasFetched.current) {
       hasFetched.current = true;
-      void fetchProspects();
+      fetchProspects();
     }
   }, [fetchProspects, hasLoaded]);
 
@@ -42,10 +41,10 @@ export function useProspects() {
     try {
       const prospect = await prospectService.create(payload);
       setProspects([...useProspectStore.getState().prospects, prospect]);
-      addToast("Prospect berhasil ditambahkan.", "success");
+      toast.success("Prospect berhasil ditambahkan.");
       return true;
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal menambahkan prospect."), "danger");
+      toast.error(getErrorMessage(error, "Gagal menambahkan prospect."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -61,10 +60,10 @@ export function useProspects() {
           .getState()
           .prospects.map((item) => (item.id === id ? prospect : item)),
       );
-      addToast("Prospect berhasil diperbarui.", "success");
+      toast.success("Prospect berhasil diperbarui.");
       return true;
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal memperbarui prospect."), "danger");
+      toast.error(getErrorMessage(error, "Gagal memperbarui prospect."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -78,9 +77,9 @@ export function useProspects() {
       setProspects(
         useProspectStore.getState().prospects.filter((item) => item.id !== id),
       );
-      addToast("Prospect berhasil dihapus.", "success");
+      toast.success("Prospect berhasil dihapus.");
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal menghapus prospect."), "danger");
+      toast.error(getErrorMessage(error, "Gagal menghapus prospect."));
     } finally {
       setIsSubmitting(false);
     }
@@ -90,12 +89,9 @@ export function useProspects() {
     setIsSubmitting(true);
     try {
       setProspects(await prospectService.reset());
-      addToast("Data prospect telah dikembalikan ke data awal.", "info");
+      toast.info("Data prospect telah dikembalikan ke data awal.");
     } catch (error) {
-      addToast(
-        getErrorMessage(error, "Gagal mereset data prospect."),
-        "danger",
-      );
+      toast.error(getErrorMessage(error, "Gagal mereset data prospect."));
     } finally {
       setIsSubmitting(false);
     }

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "@/components/Overlay";
 import {
   customerService,
   type CustomerPayload,
 } from "@/services/customer.service";
 import { useCustomerStore } from "@/stores/useCustomerStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -17,18 +17,17 @@ export function useCustomers() {
   const setIsLoading = useCustomerStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasFetched = useRef(false);
-  const addToast = useToastStore((state) => state.addToast);
 
   const fetchCustomers = useCallback(async () => {
     setIsLoading(true);
     try {
       setCustomers(await customerService.getAll());
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal memuat data customer."), "danger");
+      toast.error(getErrorMessage(error, "Gagal memuat data customer."));
     } finally {
       setIsLoading(false);
     }
-  }, [addToast, setCustomers, setIsLoading]);
+  }, [setCustomers, setIsLoading]);
 
   useEffect(() => {
     if (!hasLoaded && !hasFetched.current) {
@@ -42,10 +41,10 @@ export function useCustomers() {
     try {
       const customer = await customerService.create(payload);
       setCustomers([...useCustomerStore.getState().customers, customer]);
-      addToast("Customer berhasil ditambahkan.", "success");
+      toast.success("Customer berhasil ditambahkan.");
       return true;
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal menambahkan customer."), "danger");
+      toast.error(getErrorMessage(error, "Gagal menambahkan customer."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -61,10 +60,10 @@ export function useCustomers() {
           .getState()
           .customers.map((item) => (item.id === id ? customer : item)),
       );
-      addToast("Customer berhasil diperbarui.", "success");
+      toast.success("Customer berhasil diperbarui.");
       return true;
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal memperbarui customer."), "danger");
+      toast.error(getErrorMessage(error, "Gagal memperbarui customer."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -78,9 +77,9 @@ export function useCustomers() {
       setCustomers(
         useCustomerStore.getState().customers.filter((item) => item.id !== id),
       );
-      addToast("Customer berhasil dihapus.", "success");
+      toast.success("Customer berhasil dihapus.");
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal menghapus customer."), "danger");
+      toast.error(getErrorMessage(error, "Gagal menghapus customer."));
     } finally {
       setIsSubmitting(false);
     }
@@ -90,12 +89,9 @@ export function useCustomers() {
     setIsSubmitting(true);
     try {
       setCustomers(await customerService.reset());
-      addToast("Data customer telah dikembalikan ke data awal.", "info");
+      toast.info("Data customer telah dikembalikan ke data awal.");
     } catch (error) {
-      addToast(
-        getErrorMessage(error, "Gagal mereset data customer."),
-        "danger",
-      );
+      toast.error(getErrorMessage(error, "Gagal mereset data customer."));
     } finally {
       setIsSubmitting(false);
     }

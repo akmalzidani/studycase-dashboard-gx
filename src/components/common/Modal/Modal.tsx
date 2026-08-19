@@ -1,5 +1,6 @@
 import type { ModalTarget } from "@/config/modal.config";
 import { Modal as BootstrapModal } from "bootstrap";
+import { createPortal } from "react-dom";
 import { useEffect, useRef, type ReactNode } from "react";
 
 interface ModalProps {
@@ -12,7 +13,6 @@ interface ModalProps {
   size?: "sm" | "lg" | "xl";
   closeDisabled?: boolean;
   closeOnBackdrop?: boolean;
-  zIndex?: number;
 }
 
 export function Modal({
@@ -25,7 +25,6 @@ export function Modal({
   size,
   closeDisabled = false,
   closeOnBackdrop = true,
-  zIndex = 1060,
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const instanceRef = useRef<BootstrapModal | null>(null);
@@ -73,41 +72,45 @@ export function Modal({
     if (!closeDisabled) instanceRef.current?.hide();
   };
 
-  return (
-    <>
+  const portalTarget = document.getElementById("portal");
+
+  if (!portalTarget) {
+    throw new Error("Portal target '#portal' was not found.");
+  }
+
+  return createPortal(
+    <div
+      ref={modalRef}
+      id={target}
+      className="modal fade"
+      tabIndex={-1}
+      aria-labelledby={titleId}
+      aria-hidden={!isOpen}
+    >
       <div
-        ref={modalRef}
-        id={target}
-        className="modal fade"
-        tabIndex={-1}
-        aria-labelledby={titleId}
-        aria-hidden={!isOpen}
-        style={{ zIndex }}
+        className={`modal-dialog modal-dialog-centered ${size ? `modal-${size}` : ""}`}
+        onClick={(event) => event.stopPropagation()}
       >
-        <div
-          className={`modal-dialog modal-dialog-centered ${size ? `modal-${size}` : ""}`}
-          onClick={(event) => event.stopPropagation()}
-        >
-          <div className="modal-content shadow-lg border-0">
-            <div className="modal-header border-bottom-0 pb-0">
-              <h1 className="modal-title fs-5 fw-bold" id={titleId}>
-                {title}
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                aria-label="Close"
-                disabled={closeDisabled}
-                onClick={handleClose}
-              />
-            </div>
-            <div className="modal-body py-4">{children}</div>
-            {footer && (
-              <div className="modal-footer border-top-0 pt-0">{footer}</div>
-            )}
+        <div className="modal-content shadow-lg border-0">
+          <div className="modal-header border-bottom-0 pb-0">
+            <h1 className="modal-title fs-5 fw-bold" id={titleId}>
+              {title}
+            </h1>
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              disabled={closeDisabled}
+              onClick={handleClose}
+            />
           </div>
+          <div className="modal-body py-4">{children}</div>
+          {footer && (
+            <div className="modal-footer border-top-0 pt-0">{footer}</div>
+          )}
         </div>
       </div>
-    </>
+    </div>,
+    portalTarget,
   );
 }

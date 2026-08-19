@@ -1,17 +1,16 @@
-import {
-  customerTableColumns,
-  searchClientTableItem,
-} from "@/components/TableColumns";
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
 import {
   CustomerFormModal,
   type CustomerFormValues,
 } from "@/components/CustomerFormModal";
+import {
+  customerTableColumns,
+  searchClientTableItem,
+} from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
 
-import { useConfirm } from "@/hooks/useConfirm";
-import { useCustomers } from "@/hooks/useCustomers";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
+import { useCustomers } from "@/hooks/useCustomers";
 import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
@@ -31,7 +30,7 @@ export default function CustomersPage() {
   } = useCustomers();
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
-  const confirm = useConfirm();
+
   const customerFormModal = useModal(MODAL_TARGETS.CUSTOMER_FORM);
   const {
     selectedItem: selectedCustomer,
@@ -39,7 +38,6 @@ export default function CustomersPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Customer>({
-    confirm,
     deleteTitle: "Hapus customer",
     deleteMessage: (customer) =>
       `Apakah Anda yakin ingin menghapus ${customer.name}?`,
@@ -49,7 +47,6 @@ export default function CustomersPage() {
 
   const table = useDataTable({
     data: customers,
-    initialSortKey: "name",
     searchPredicate: searchClientTableItem,
   });
 

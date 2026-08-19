@@ -10,27 +10,26 @@ export interface ToastMessage {
 
 interface ToastState {
   toasts: ToastMessage[];
-  addToast: (message: string, type?: ToastType) => void;
-  removeToast: (id: string) => void;
+  add: (message: string, type: ToastType) => void;
+  remove: (id: string) => void;
 }
 
 export const useToastStore = create<ToastState>((set) => ({
   toasts: [],
-  addToast: (message, type = "success") => {
-    const id = Math.random().toString(36).substring(2, 9);
+  add: (message, type) => {
+    const id = crypto.randomUUID();
     set((state) => ({
       toasts: [...state.toasts, { id, message, type }],
     }));
 
-    // Auto remove after 3 seconds
     setTimeout(() => {
       set((state) => ({
-        toasts: state.toasts.filter((t) => t.id !== id),
+        toasts: state.toasts.filter((toast) => toast.id !== id),
       }));
     }, 3000);
   },
-  removeToast: (id) =>
+  remove: (id) =>
     set((state) => ({
-      toasts: state.toasts.filter((t) => t.id !== id),
+      toasts: state.toasts.filter((toast) => toast.id !== id),
     })),
 }));

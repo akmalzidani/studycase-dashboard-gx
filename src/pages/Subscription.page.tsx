@@ -9,7 +9,7 @@ import {
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 import { MODAL_TARGETS } from "@/config/modal.config";
-import { useConfirm } from "@/hooks/useConfirm";
+
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
@@ -28,7 +28,7 @@ export default function SubscriptionPage() {
     deleteSubscription,
     resetSubscriptions,
   } = useSubscriptions();
-  const confirm = useConfirm();
+
   const subscriptionFormModal = useModal(MODAL_TARGETS.SUBSCRIPTION_FORM);
   const {
     selectedItem: selectedSubscription,
@@ -36,7 +36,6 @@ export default function SubscriptionPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Subscription>({
-    confirm,
     deleteTitle: "Hapus paket subscription",
     deleteMessage: (subscription) =>
       `Apakah Anda yakin ingin menghapus paket ${subscription.packageName}?`,
@@ -46,7 +45,6 @@ export default function SubscriptionPage() {
 
   const table = useDataTable({
     data: subscriptions,
-    initialSortKey: "packageName",
     searchPredicate: (subscription, keyword) =>
       matchesSearchKeyword(
         [
@@ -63,7 +61,7 @@ export default function SubscriptionPage() {
     (values: SubscriptionFormValues) => {
       const payload = {
         packageName: values.packageName.trim(),
-        speed: values.speed.trim(),
+        speed: values.speed,
         monthlyFee: values.monthlyFee,
       };
 

@@ -1,7 +1,7 @@
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { authService } from "@/services/auth.service";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { toast } from "@/components/Overlay";
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const demoAccounts = authService.getDemoAccounts();
   const { login, isAuthenticated } = useAuthStore();
-  const { addToast } = useToastStore();
+
   const navigate = useNavigate();
   usePageTitle();
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
     try {
       const session = await authService.login(email, password);
       login(session);
-      addToast(`Welcome back, ${session.user.name}!`, "success");
+      toast.success(`Welcome back, ${session.user.name}!`);
       navigate("/", { replace: true });
     } catch (err: any) {
       setError(err.message || "An error occurred during login.");

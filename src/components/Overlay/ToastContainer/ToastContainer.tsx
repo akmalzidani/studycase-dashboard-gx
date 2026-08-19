@@ -15,12 +15,12 @@ const ALERT_ICONS: Record<ToastType, IconType> = {
 };
 
 export default function ToastContainer() {
-  const { toasts, removeToast } = useToastStore();
+  const { toasts, remove } = useToastStore();
 
   if (toasts.length === 0) return null;
 
   return (
-    <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1090 }}>
+    <div className="overlay-toast-container position-fixed top-0 end-0 p-3">
       {toasts.map((toast) => {
         const IconComponent = ALERT_ICONS[toast.type];
 
@@ -38,7 +38,7 @@ export default function ToastContainer() {
             <button
               type="button"
               className="btn-close"
-              onClick={() => removeToast(toast.id)}
+              onClick={() => remove(toast.id)}
               aria-label="Close"
             ></button>
           </div>

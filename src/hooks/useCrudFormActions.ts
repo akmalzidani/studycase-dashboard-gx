@@ -1,16 +1,7 @@
+import { confirm } from "@/components/Overlay";
 import { useCallback, useState } from "react";
 
-type Confirm = (options: {
-  title?: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: "danger" | "primary" | "warning" | "success";
-  onConfirm: () => void;
-}) => void;
-
 interface UseCrudFormActionsOptions<T extends { id?: string }> {
-  confirm: Confirm;
   deleteTitle: string;
   deleteMessage: (item: T) => string;
   modal: {
@@ -20,7 +11,6 @@ interface UseCrudFormActionsOptions<T extends { id?: string }> {
 }
 
 export function useCrudFormActions<T extends { id?: string }>({
-  confirm,
   deleteTitle,
   deleteMessage,
   modal,
@@ -54,7 +44,7 @@ export function useCrudFormActions<T extends { id?: string }>({
         onConfirm: () => onDelete(item.id!),
       });
     },
-    [confirm, deleteMessage, deleteTitle, onDelete],
+    [deleteMessage, deleteTitle, onDelete],
   );
 
   return {

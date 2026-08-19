@@ -12,7 +12,7 @@ import { useModal } from "@/hooks/useModal";
 import { authService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { toast } from "@/components/Overlay";
 import type { Role } from "@/types";
 import { useCallback, useState } from "react";
 import {
@@ -29,7 +29,7 @@ const roleLabel: Record<Role, string> = {
 
 export default function ProfilePage() {
   const { user, checkSession } = useAuthStore();
-  const { addToast } = useToastStore();
+
   const profileFormModal = useModal(MODAL_TARGETS.PROFILE_FORM);
   const changePasswordModal = useModal(MODAL_TARGETS.CHANGE_PASSWORD);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,19 +46,18 @@ export default function ProfilePage() {
         });
         authService.updateSessionUser(updatedUser);
         checkSession();
-        addToast("Profile berhasil diperbarui.", "success");
+        toast.success("Profile berhasil diperbarui.");
         return true;
       } catch (error) {
-        addToast(
+        toast.error(
           error instanceof Error ? error.message : "Gagal memperbarui profile.",
-          "danger",
         );
         return false;
       } finally {
         setIsSubmitting(false);
       }
     },
-    [addToast, checkSession, user?.id],
+    [checkSession, user?.id],
   );
 
   const handleChangePassword = useCallback(
@@ -66,7 +65,7 @@ export default function ProfilePage() {
       if (!user?.id) return false;
 
       if (values.newPassword !== values.confirmNewPassword) {
-        addToast("Konfirmasi password baru tidak sesuai.", "danger");
+        toast.error("Konfirmasi password baru tidak sesuai.");
         return false;
       }
 
@@ -78,19 +77,18 @@ export default function ProfilePage() {
         });
         authService.updateSessionUser(updatedUser);
         checkSession();
-        addToast("Password berhasil diubah.", "success");
+        toast.success("Password berhasil diubah.");
         return true;
       } catch (error) {
-        addToast(
+        toast.error(
           error instanceof Error ? error.message : "Gagal mengubah password.",
-          "danger",
         );
         return false;
       } finally {
         setIsSubmitting(false);
       }
     },
-    [addToast, checkSession, user?.id],
+    [checkSession, user?.id],
   );
 
   if (!user) return null;

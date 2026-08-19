@@ -9,7 +9,6 @@ import {
 } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
 
-import { useConfirm } from "@/hooks/useConfirm";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
@@ -31,7 +30,7 @@ export default function ProspectPage() {
   } = useProspects();
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
-  const confirm = useConfirm();
+
   const prospectFormModal = useModal(MODAL_TARGETS.PROSPECT_FORM);
   const {
     selectedItem: selectedProspect,
@@ -39,7 +38,6 @@ export default function ProspectPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Prospect>({
-    confirm,
     deleteTitle: "Hapus prospect",
     deleteMessage: (prospect) =>
       `Apakah Anda yakin ingin menghapus ${prospect.name}?`,
@@ -49,7 +47,6 @@ export default function ProspectPage() {
 
   const table = useDataTable({
     data: prospects,
-    initialSortKey: "name",
     searchPredicate: searchClientTableItem,
   });
 

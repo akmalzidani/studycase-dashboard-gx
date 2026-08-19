@@ -4,7 +4,7 @@ import {
   type SubscriptionPayload,
 } from "@/services/subscription.service";
 import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { toast } from "@/components/Overlay";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -19,18 +19,17 @@ export function useSubscriptions() {
   const setIsLoading = useSubscriptionStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasFetched = useRef(false);
-  const addToast = useToastStore((state) => state.addToast);
 
   const fetchSubscriptions = useCallback(async () => {
     setIsLoading(true);
     try {
       setSubscriptions(await subscriptionService.getAll());
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal memuat subscription."), "danger");
+      toast.error(getErrorMessage(error, "Gagal memuat subscription."));
     } finally {
       setIsLoading(false);
     }
-  }, [addToast, setIsLoading, setSubscriptions]);
+  }, [setIsLoading, setSubscriptions]);
 
   useEffect(() => {
     if (!hasLoaded && !hasFetched.current) {
@@ -47,12 +46,11 @@ export function useSubscriptions() {
         ...useSubscriptionStore.getState().subscriptions,
         subscription,
       ]);
-      addToast("Paket subscription berhasil ditambahkan.", "success");
+      toast.success("Paket subscription berhasil ditambahkan.");
       return true;
     } catch (error) {
-      addToast(
+      toast.error(
         getErrorMessage(error, "Gagal menambahkan paket subscription."),
-        "danger",
       );
       return false;
     } finally {
@@ -72,12 +70,11 @@ export function useSubscriptions() {
           .getState()
           .subscriptions.map((item) => (item.id === id ? subscription : item)),
       );
-      addToast("Paket subscription berhasil diperbarui.", "success");
+      toast.success("Paket subscription berhasil diperbarui.");
       return true;
     } catch (error) {
-      addToast(
+      toast.error(
         getErrorMessage(error, "Gagal memperbarui paket subscription."),
-        "danger",
       );
       return false;
     } finally {
@@ -94,11 +91,10 @@ export function useSubscriptions() {
           .getState()
           .subscriptions.filter((item) => item.id !== id),
       );
-      addToast("Paket subscription berhasil dihapus.", "success");
+      toast.success("Paket subscription berhasil dihapus.");
     } catch (error) {
-      addToast(
+      toast.error(
         getErrorMessage(error, "Gagal menghapus paket subscription."),
-        "danger",
       );
     } finally {
       setIsSubmitting(false);
@@ -109,9 +105,9 @@ export function useSubscriptions() {
     setIsSubmitting(true);
     try {
       setSubscriptions(await subscriptionService.reset());
-      addToast("Data subscription berhasil direset.", "success");
+      toast.success("Data subscription berhasil direset.");
     } catch (error) {
-      addToast(getErrorMessage(error, "Gagal mereset subscription."), "danger");
+      toast.error(getErrorMessage(error, "Gagal mereset subscription."));
     } finally {
       setIsSubmitting(false);
     }

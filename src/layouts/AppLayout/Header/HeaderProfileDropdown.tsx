@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useToastStore } from "@/stores/useToastStore";
+import { toast, confirm } from "@/components/Overlay";
 import { APP_PATHS } from "@/config/paths.config";
-import { useConfirm } from "@/hooks/useConfirm";
+
 import { authService } from "@/services/auth.service";
 import { BsPersonCircle, BsPerson, BsBoxArrowRight } from "react-icons/bs";
 
 export function HeaderProfileDropdown() {
   const { user, checkSession } = useAuthStore();
-  const { addToast } = useToastStore();
-  const confirm = useConfirm();
+
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const logout = async () => {
@@ -19,7 +18,7 @@ export function HeaderProfileDropdown() {
     try {
       await authService.logout();
       checkSession();
-      addToast("Successfully logged out", "info");
+      toast.info("Successfully logged out");
     } finally {
       setIsLoggingOut(false);
     }
@@ -32,7 +31,7 @@ export function HeaderProfileDropdown() {
       confirmText: "Logout",
       cancelText: "Batal",
       variant: "danger",
-      onConfirm: () => void logout(),
+      onConfirm: () => logout(),
     });
   };
 
