@@ -2,6 +2,7 @@ import { useEffect, useState, type SyntheticEvent } from "react";
 import { Modal, type FormModalProps } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import { MODAL_TARGETS } from "@/config/modal.config";
+import { formatCurrencyInput } from "@/helpers/formatters.helpers";
 import type { Subscription } from "@/types";
 
 export interface SubscriptionFormValues {
@@ -21,9 +22,6 @@ const EMPTY_VALUES: SubscriptionFormValues = {
   speed: 0,
   monthlyFee: 0,
 };
-
-const formatCurrencyInput = (value: number) =>
-  new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(value);
 
 export function SubscriptionFormModal({
   isOpen,

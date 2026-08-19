@@ -1,13 +1,6 @@
 import type { Column } from "@/components/common/DataTable";
 import type { Subscription } from "@/types";
-import { formatSpeed } from "@/helpers/formatters.helpers";
-
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
+import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
 
 export const subscriptionTableColumns: Column<Subscription>[] = [
   {
