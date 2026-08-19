@@ -1,15 +1,19 @@
-import { Outlet } from "react-router-dom";
+import { LoaderPage } from "@/components/common/LoaderPage";
 import { Header } from "@/layouts/AppLayout/Header";
+import { Suspense } from "react";
+import { Outlet } from "react-router-dom";
 import Sidebar from "@/layouts/AppLayout/Sidebar";
 
 function AppLayout() {
   return (
-    <div className="d-flex min-vh-100 bg-body-tertiary">
+    <div className="d-flex vh-100 overflow-hidden bg-body-tertiary">
       <Sidebar />
-      <div className="flex-grow-1 d-flex flex-column">
+      <div className="d-flex min-w-0 flex-grow-1 flex-column">
         <Header />
-        <main className="p-4 flex-grow-1">
-          <Outlet />
+        <main className="flex-grow-1 overflow-y-auto p-4">
+          <Suspense fallback={<LoaderPage />}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
     </div>

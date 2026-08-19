@@ -10,7 +10,7 @@ function Header() {
   const theme = useThemeStore((state) => state.theme);
 
   return (
-    <header className="px-4 py-3 bg-body border-bottom d-flex align-items-center justify-content-between">
+    <header className="sticky-top z-1 px-4 py-3 bg-body border-bottom d-flex align-items-center justify-content-between">
       <div className="d-flex align-items-center gap-3">
         <button
           type="button"
