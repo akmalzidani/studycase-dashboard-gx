@@ -1,6 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import type { Customer, CustomerStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
 
@@ -105,52 +106,41 @@ export function CustomerFormModal({
       }
     >
       <form id={FORM_ID} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="customer-name">
-            Nama
-          </label>
-          <input
-            id="customer-name"
-            className="form-control"
-            placeholder="Masukkan nama"
-            value={values.name}
-            minLength={3}
-            required
-            disabled={isSubmitting}
-            onChange={(event) => updateValue("name", event.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="customer-email">
-            Email
-          </label>
-          <input
-            id="customer-email"
-            placeholder="Masukkan email"
-            type="email"
-            className="form-control"
-            value={values.email}
-            required
-            disabled={isSubmitting}
-            onChange={(event) => updateValue("email", event.target.value)}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="customer-phone">
-            Nomor telepon
-          </label>
-          <input
-            id="customer-phone"
-            placeholder="Masukkan nomor telepon"
-            type="tel"
-            className="form-control"
-            value={values.phoneNumber}
-            pattern="[0-9+() -]{8,}"
-            required
-            disabled={isSubmitting}
-            onChange={(event) => updateValue("phoneNumber", event.target.value)}
-          />
-        </div>
+        <FormTextInput
+          id="customer-name"
+          label="Nama"
+          className="form-control"
+          placeholder="Masukkan nama"
+          value={values.name}
+          minLength={3}
+          required
+          disabled={isSubmitting}
+          onChange={(event) => updateValue("name", event.target.value)}
+        />
+        <FormTextInput
+          id="customer-email"
+          label="Email"
+          placeholder="Masukkan email"
+          type="email"
+          className="form-control"
+          value={values.email}
+          required
+          disabled={isSubmitting}
+          onChange={(event) => updateValue("email", event.target.value)}
+        />
+        <FormTextInput
+          id="customer-phone"
+          label="Nomor telepon"
+          placeholder="Masukkan nomor telepon"
+          type="tel"
+          className="form-control"
+          value={values.phoneNumber}
+          pattern="(?=.*\S)[0-9+() -]{8,}"
+          title="Masukkan nomor telepon yang valid, bukan hanya spasi."
+          required
+          disabled={isSubmitting}
+          onChange={(event) => updateValue("phoneNumber", event.target.value)}
+        />
         <div className="mb-3">
           <label className="form-label" htmlFor="customer-subscription">
             Subscription

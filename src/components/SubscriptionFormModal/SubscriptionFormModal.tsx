@@ -1,5 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import type { Subscription } from "@/types";
 
@@ -94,21 +95,17 @@ export function SubscriptionFormModal({
       }
     >
       <form id={FORM_ID} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="subscription-package-name">
-            Nama paket
-          </label>
-          <input
-            id="subscription-package-name"
-            placeholder="Masukkan nama paket"
-            className="form-control"
-            value={values.packageName}
-            minLength={2}
-            required
-            disabled={isSubmitting}
-            onChange={(event) => updateValue("packageName", event.target.value)}
-          />
-        </div>
+        <FormTextInput
+          id="subscription-package-name"
+          label="Nama paket"
+          placeholder="Masukkan nama paket"
+          className="form-control"
+          value={values.packageName}
+          minLength={2}
+          required
+          disabled={isSubmitting}
+          onChange={(event) => updateValue("packageName", event.target.value)}
+        />
         <div className="mb-3">
           <label className="form-label" htmlFor="subscription-speed">
             Kecepatan

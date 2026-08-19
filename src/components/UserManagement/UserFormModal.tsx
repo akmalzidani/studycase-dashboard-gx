@@ -1,4 +1,5 @@
 import { Modal } from "@/components/common/Modal";
+import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import type { ModalTarget } from "@/config/modal.config";
 import type { Role } from "@/types";
 import { useEffect, useState, type SyntheticEvent } from "react";
@@ -97,49 +98,37 @@ export function UserFormModal({
       }
     >
       <form id={FORM_ID} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="user-name">
-            Nama
-          </label>
-          <input
-            id="user-name"
-            className="form-control"
-            value={values.name}
-            onChange={(event) => updateValue("name", event.target.value)}
-            required
-            minLength={3}
-            disabled={isSubmitting}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="user-email">
-            Email
-          </label>
-          <input
-            id="user-email"
-            className="form-control"
-            type="email"
-            value={values.email}
-            onChange={(event) => updateValue("email", event.target.value)}
-            required
-            disabled={isSubmitting}
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="user-password">
-            Password
-          </label>
-          <input
-            id="user-password"
-            className="form-control"
-            type="password"
-            value={values.password}
-            onChange={(event) => updateValue("password", event.target.value)}
-            required
-            minLength={4}
-            disabled={isSubmitting}
-          />
-        </div>
+        <FormTextInput
+          id="user-name"
+          label="Nama"
+          className="form-control"
+          value={values.name}
+          onChange={(event) => updateValue("name", event.target.value)}
+          required
+          minLength={3}
+          disabled={isSubmitting}
+        />
+        <FormTextInput
+          id="user-email"
+          label="Email"
+          className="form-control"
+          type="email"
+          value={values.email}
+          onChange={(event) => updateValue("email", event.target.value)}
+          required
+          disabled={isSubmitting}
+        />
+        <FormTextInput
+          id="user-password"
+          label="Password"
+          className="form-control"
+          type="password"
+          value={values.password}
+          onChange={(event) => updateValue("password", event.target.value)}
+          required
+          minLength={4}
+          disabled={isSubmitting}
+        />
         <div className="mb-3">
           <label className="form-label" htmlFor="user-role">
             Role

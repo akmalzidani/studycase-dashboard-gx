@@ -1,4 +1,8 @@
 import { Modal } from "@/components/common/Modal";
+import {
+  FormTextarea,
+  FormTextInput,
+} from "@/components/common/FormInput/FormInput";
 import type { ModalTarget } from "@/config/modal.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
 import type { Permissions, Role } from "@/types";
@@ -133,42 +137,36 @@ export function RoleFormModal({
       }
     >
       <form id={FORM_ID} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="role-name">
-            Nama role
-          </label>
-          <input
-            id="role-name"
-            className="form-control"
-            value={values.name}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, name: event.target.value }))
-            }
-            placeholder="Contoh: Administrator"
-            minLength={3}
-            required
-            autoFocus
-          />
-        </div>
-        <div className="mb-4">
-          <label className="form-label" htmlFor="role-description">
-            Deskripsi
-          </label>
-          <textarea
-            id="role-description"
-            className="form-control"
-            value={values.description}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                description: event.target.value,
-              }))
-            }
-            placeholder="Jelaskan cakupan akses role ini"
-            rows={3}
-            required
-          />
-        </div>
+        <FormTextInput
+          id="role-name"
+          label="Nama role"
+          className="form-control"
+          value={values.name}
+          onChange={(event) =>
+            setValues((current) => ({ ...current, name: event.target.value }))
+          }
+          placeholder="Contoh: Administrator"
+          minLength={3}
+          required
+          disabled={isSubmitting}
+          autoFocus
+        />
+        <FormTextarea
+          id="role-description"
+          label="Deskripsi"
+          className="form-control"
+          value={values.description}
+          onChange={(event) =>
+            setValues((current) => ({
+              ...current,
+              description: event.target.value,
+            }))
+          }
+          placeholder="Jelaskan cakupan akses role ini"
+          rows={3}
+          required
+          disabled={isSubmitting}
+        />
         <fieldset>
           <legend className="fs-6 fw-semibold mb-3">Permissions</legend>
           <div className="table-responsive border rounded">

@@ -1,5 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import type { User } from "@/types";
 
@@ -64,41 +65,33 @@ export function ProfileFormModal({
       }
     >
       <form id={FORM_ID} onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="profile-name">
-            Nama
-          </label>
-          <input
-            id="profile-name"
-            className="form-control"
-            value={values.name}
-            minLength={3}
-            required
-            disabled={isSubmitting}
-            onChange={(event) =>
-              setValues((current) => ({ ...current, name: event.target.value }))
-            }
-          />
-        </div>
-        <div>
-          <label className="form-label" htmlFor="profile-email">
-            Email
-          </label>
-          <input
-            id="profile-email"
-            type="email"
-            className="form-control"
-            value={values.email}
-            required
-            disabled={isSubmitting}
-            onChange={(event) =>
-              setValues((current) => ({
-                ...current,
-                email: event.target.value,
-              }))
-            }
-          />
-        </div>
+        <FormTextInput
+          id="profile-name"
+          label="Nama"
+          className="form-control"
+          value={values.name}
+          minLength={3}
+          required
+          disabled={isSubmitting}
+          onChange={(event) =>
+            setValues((current) => ({ ...current, name: event.target.value }))
+          }
+        />
+        <FormTextInput
+          id="profile-email"
+          label="Email"
+          type="email"
+          className="form-control"
+          value={values.email}
+          required
+          disabled={isSubmitting}
+          onChange={(event) =>
+            setValues((current) => ({
+              ...current,
+              email: event.target.value,
+            }))
+          }
+        />
       </form>
     </Modal>
   );
