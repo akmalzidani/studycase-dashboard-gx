@@ -6,4 +6,5 @@ export const STORAGE_KEYS = {
   PROSPECTS: `${STORAGE_NAMESPACE}:prospects`,
   SUBSCRIPTIONS: `${STORAGE_NAMESPACE}:subscriptions`,
   USERS: `${STORAGE_NAMESPACE}:users`,
+  ROLES: `${STORAGE_NAMESPACE}:roles`,
 } as const;

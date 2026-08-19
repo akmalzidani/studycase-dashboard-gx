@@ -26,11 +26,16 @@ type MenuSchema = Record<
     icon?: IconType;
     children?: MenuSchema;
     hideInSidebar?: boolean;
+    requiresPermission?: boolean;
   }
 >;
 
 export const MENU_SCHEMA = {
-  dashboard: { path: APP_PATHS.DASHBOARD.INDEX, icon: BsGrid },
+  dashboard: {
+    path: APP_PATHS.DASHBOARD.INDEX,
+    icon: BsGrid,
+    requiresPermission: false,
+  },
   prospect: { path: APP_PATHS.PROSPECT.INDEX, icon: BsPeople },
   customers: { path: APP_PATHS.CUSTOMERS.INDEX, icon: BsBuilding },
   analytics: { path: APP_PATHS.ANALYTICS.INDEX, icon: BsBarChart },
@@ -53,7 +58,10 @@ const generateMenu = (
 
     return {
       id: permission,
-      permission: value.children ? undefined : permission,
+      permission:
+        value.children || value.requiresPermission === false
+          ? undefined
+          : `${permission}.read`,
       label: formatMenuLabel(key),
       path: value.path,
       icon: value.icon,

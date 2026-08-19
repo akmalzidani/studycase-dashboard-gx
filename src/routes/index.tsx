@@ -7,8 +7,8 @@ import { prospectRoutes } from "@/paths/prospect.routes";
 import { subscriptionRoutes } from "@/paths/subscription.routes";
 import { usersRoutes } from "@/paths/users.routes";
 import { ProtectedRoute } from "@/routes/guards/ProtectedRoute";
-import { authService } from "@/services/auth.service";
 import { mapLazy } from "@/routes/route.helpers";
+import { authService } from "@/services/auth.service";
 import type { AppPermission } from "@/types/permission.types";
 
 import {
@@ -18,10 +18,10 @@ import {
 } from "react-router-dom";
 
 const protectedRouteConfigs: {
-  permission: AppPermission;
+  permission?: AppPermission;
   routes: RouteObject[];
 }[] = [
-  { permission: "dashboard", routes: dashboardRoutes },
+  { routes: dashboardRoutes },
   { permission: "prospect", routes: prospectRoutes },
   { permission: "customers", routes: customersRoutes },
   { permission: "analytics", routes: analyticsRoutes },

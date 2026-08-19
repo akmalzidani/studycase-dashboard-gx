@@ -1,14 +1,14 @@
 import { hasPermission } from "@/config/permission.helpers";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type { AppPermission } from "@/types/permission.types";
+
 import { Navigate, Outlet } from "react-router-dom";
 
 interface ProtectedRouteProps {
-  requiredPermission?: AppPermission;
+  requiredPermission?: string;
 }
 
 export function ProtectedRoute({ requiredPermission }: ProtectedRouteProps) {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, permissions } = useAuthStore();
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
@@ -16,7 +16,7 @@ export function ProtectedRoute({ requiredPermission }: ProtectedRouteProps) {
 
   if (
     requiredPermission &&
-    !hasPermission(user.permission, requiredPermission)
+    !hasPermission(permissions, `${requiredPermission}.read`)
   ) {
     return <Navigate to="/" replace />;
   }

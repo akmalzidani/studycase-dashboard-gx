@@ -1,5 +1,6 @@
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { authService } from "@/services/auth.service";
+import { getRoles } from "@/services/role.service";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { toast } from "@/components/Overlay";
 import { useEffect, useState, type SyntheticEvent } from "react";
@@ -122,7 +123,8 @@ export default function LoginPage() {
                   className="btn btn-sm btn-danger"
                   onClick={() => setDemoAccount(account)}
                 >
-                  {account.role}
+                  {getRoles().find((role) => role.id === account.roleId)
+                    ?.name ?? "User"}
                 </button>
               ))}
             </div>

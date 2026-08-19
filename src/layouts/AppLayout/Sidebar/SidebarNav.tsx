@@ -4,12 +4,9 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarNavItem } from "./SidebarNavItem";
 
 export function SidebarNav({ isOpen }: { isOpen: boolean }) {
-  const { user } = useAuthStore();
-  const permissions = user?.permission;
+  const { permissions } = useAuthStore();
 
-  const visibleMenuItems = permissions
-    ? getVisibleMenuItems(menuConfig, permissions)
-    : [];
+  const visibleMenuItems = getVisibleMenuItems(menuConfig, permissions);
 
   return (
     <nav className="nav nav-pills flex-column gap-1 flex-grow-1">

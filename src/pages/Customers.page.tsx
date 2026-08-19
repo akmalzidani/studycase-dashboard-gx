@@ -1,4 +1,5 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
+import { PageHeader } from "@/components/common/PageHeader";
 import {
   CustomerFormModal,
   type CustomerFormValues,
@@ -8,17 +9,21 @@ import {
   searchClientTableItem,
 } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
+import { hasPermission } from "@/config/permission.helpers";
+import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useCustomers } from "@/hooks/useCustomers";
 import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { Customer } from "@/types";
 import { useCallback, useMemo } from "react";
 import { BsArrowClockwise, BsPlusLg } from "react-icons/bs";
 
 export default function CustomersPage() {
+  const permissions = useAuthStore((state) => state.permissions);
   const {
     customers,
     isLoading,
@@ -76,45 +81,57 @@ export default function CustomersPage() {
     () =>
       createCrudRowActions({
         disabled: isSubmitting,
+        canEdit: hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.UPDATE),
+        canDelete: hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.DELETE),
         getLabel: (customer: Customer) => customer.name,
         onEdit: openEditForm,
         onDelete: confirmDelete,
       }),
-    [confirmDelete, isSubmitting, openEditForm],
+    [confirmDelete, isSubmitting, openEditForm, permissions],
   );
 
   return (
     <div>
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <div>
-          <h1 className="h3 mb-1 fw-bold">Customers</h1>
-          <p className="text-muted mb-0">Manajemen data pelanggan aktif.</p>
-        </div>
-        <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
-            disabled={isSubmitting}
-            onClick={() => resetCustomers()}
-          >
-            <BsArrowClockwise className="me-2" />
-            Reset Data
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={
-              isSubmitting ||
-              isLoadingSubscriptions ||
-              subscriptions.length === 0
-            }
-            onClick={openCreateForm}
-          >
-            <BsPlusLg className="me-2" />
-            Tambah Customer
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Customers"
+        description="Manajemen data pelanggan aktif."
+        actions={[
+          {
+            id: "reset",
+            permission: PERMISSION_KEYS.CUSTOMERS.UPDATE,
+            content: (
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                disabled={isSubmitting}
+                onClick={() => resetCustomers()}
+              >
+                <BsArrowClockwise className="me-2" />
+                Reset Data
+              </button>
+            ),
+          },
+          {
+            id: "create",
+            permission: PERMISSION_KEYS.CUSTOMERS.CREATE,
+            content: (
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={
+                  isSubmitting ||
+                  isLoadingSubscriptions ||
+                  subscriptions.length === 0
+                }
+                onClick={openCreateForm}
+              >
+                <BsPlusLg className="me-2" />
+                Tambah Customer
+              </button>
+            ),
+          },
+        ]}
+      />
 
       <DataTable<Customer>
         {...table}

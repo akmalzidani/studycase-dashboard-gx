@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { getRoles } from "@/services/role.service";
 import { toast, confirm } from "@/components/Overlay";
 import { APP_PATHS } from "@/config/paths.config";
 
@@ -9,6 +10,8 @@ import { BsPersonCircle, BsPerson, BsBoxArrowRight } from "react-icons/bs";
 
 export function HeaderProfileDropdown() {
   const { user, checkSession } = useAuthStore();
+  const roleName =
+    getRoles().find((role) => role.id === user?.roleId)?.name ?? "User";
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -49,7 +52,7 @@ export function HeaderProfileDropdown() {
             {user?.name || "User"}
           </span>
           <span className="d-block small text-muted text-capitalize">
-            {user?.role || "user"}
+            {roleName}
           </span>
         </span>
         <BsPersonCircle className="fs-4" />

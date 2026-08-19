@@ -30,7 +30,7 @@ export const getVisibleMenuItems = (
 
     // Leaf menu hanya ditampilkan apabila user memiliki permission terkait.
     if (!item.children) {
-      return item.permission && hasPermission(permissions, item.permission)
+      return !item.permission || hasPermission(permissions, item.permission)
         ? [item]
         : [];
     }

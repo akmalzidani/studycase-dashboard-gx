@@ -1,14 +1,12 @@
-import type { Permissions } from "./permission.types";
-
-export type Role = "superadmin" | "user";
+export type UserStatus = "Active" | "Inactive";
 
 export interface User {
   id?: string;
   email: string;
   password?: string;
   name: string;
-  role: Role;
-  permission: Permissions;
+  roleId: string;
+  status: UserStatus;
 }
 
 export interface AuthSession {

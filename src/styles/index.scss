@@ -47,6 +47,32 @@ $theme-colors: map-merge($theme-colors, $custom-theme-colors);
   --bs-pagination-active-border-color: var(--bs-primary);
 }
 
+.user-management-tabs {
+  --bs-nav-tabs-link-hover-border-color: transparent transparent
+    var(--bs-primary);
+  --bs-nav-tabs-link-active-color: var(--bs-primary);
+  --bs-nav-tabs-link-active-border-color: transparent transparent
+    var(--bs-primary);
+
+  .nav-link {
+    color: var(--bs-body-color);
+    border-width: 0 0 0.1875rem;
+
+    &:hover,
+    &:focus {
+      color: var(--bs-primary);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+
+    &.active {
+      font-weight: 600;
+    }
+  }
+}
+
 .overlay-toast-container {
   z-index: var(--z-index-overlay-toast);
 }

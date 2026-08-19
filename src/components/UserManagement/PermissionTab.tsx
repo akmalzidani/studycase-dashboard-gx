@@ -1,0 +1,68 @@
+import { PageHeader } from "@/components/common/PageHeader";
+import { PERMISSION_CATALOG } from "@/config/permission.config";
+import { useMemo } from "react";
+
+type CatalogPermission = (typeof PERMISSION_CATALOG)[number];
+
+function groupPermissionsByFeature() {
+  return PERMISSION_CATALOG.reduce<Record<string, CatalogPermission[]>>(
+    (groups, permission) => {
+      (groups[permission.feature] ??= []).push(permission);
+      return groups;
+    },
+    {},
+  );
+}
+
+export function PermissionTab() {
+  const permissionsByFeature = useMemo(
+    () => Object.entries(groupPermissionsByFeature()),
+    [],
+  );
+
+  return (
+    <>
+      <PageHeader
+        title="Permission"
+        description="Daftar hak akses yang tersedia di aplikasi."
+      />
+      <div className="card">
+        <div className="card-body">
+          <div className="table-responsive border rounded">
+            <table className="table table-hover align-middle mb-0">
+              <thead>
+                <tr>
+                  <th>Fitur</th>
+                  <th>Aksi</th>
+                  <th>Label</th>
+                  <th>Permission key</th>
+                </tr>
+              </thead>
+              <tbody>
+                {permissionsByFeature.flatMap(([feature, permissions]) =>
+                  permissions.map((permission, index) => (
+                    <tr key={permission.key}>
+                      {index === 0 && (
+                        <td
+                          rowSpan={permissions.length}
+                          className="fw-semibold align-middle"
+                        >
+                          {feature}
+                        </td>
+                      )}
+                      <td className="text-capitalize">{permission.action}</td>
+                      <td>{permission.label}</td>
+                      <td>
+                        <code>{permission.key}</code>
+                      </td>
+                    </tr>
+                  )),
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

@@ -8,17 +8,22 @@ import {
   DataTable,
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
+import { PageHeader } from "@/components/common/PageHeader";
 import { MODAL_TARGETS } from "@/config/modal.config";
+import { hasPermission } from "@/config/permission.helpers";
+import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
+import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
 import { useCallback, useMemo } from "react";
 import { BsArrowClockwise, BsPlusLg } from "react-icons/bs";
 
 export default function SubscriptionPage() {
+  const permissions = useAuthStore((state) => state.permissions);
   const {
     subscriptions,
     isLoading,
@@ -76,41 +81,59 @@ export default function SubscriptionPage() {
     () =>
       createCrudRowActions({
         disabled: isSubmitting,
+        canEdit: hasPermission(
+          permissions,
+          PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
+        ),
+        canDelete: hasPermission(
+          permissions,
+          PERMISSION_KEYS.SUBSCRIPTION.DELETE,
+        ),
         getLabel: (subscription: Subscription) => subscription.packageName,
         onEdit: openEditForm,
         onDelete: confirmDelete,
       }),
-    [confirmDelete, isSubmitting, openEditForm],
+    [confirmDelete, isSubmitting, openEditForm, permissions],
   );
 
   return (
     <div>
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <div>
-          <h1 className="h3 mb-1 fw-bold">Subscription</h1>
-          <p className="text-muted mb-0">Kelola paket dan langganan.</p>
-        </div>
-        <div className="d-flex gap-2">
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
-            disabled={isSubmitting}
-            onClick={() => resetSubscriptions()}
-          >
-            <BsArrowClockwise className="me-2" />
-            Reset Data
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={isSubmitting}
-            onClick={openCreateForm}
-          >
-            <BsPlusLg className="me-2" />
-            Tambah Paket
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Subscription"
+        description="Kelola paket dan langganan."
+        actions={[
+          {
+            id: "reset",
+            permission: PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
+            content: (
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                disabled={isSubmitting}
+                onClick={() => resetSubscriptions()}
+              >
+                <BsArrowClockwise className="me-2" />
+                Reset Data
+              </button>
+            ),
+          },
+          {
+            id: "create",
+            permission: PERMISSION_KEYS.SUBSCRIPTION.CREATE,
+            content: (
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                onClick={openCreateForm}
+              >
+                <BsPlusLg className="me-2" />
+                Tambah Paket
+              </button>
+            ),
+          },
+        ]}
+      />
 
       <DataTable<Subscription>
         {...table}
