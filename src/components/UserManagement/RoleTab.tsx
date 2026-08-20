@@ -1,8 +1,9 @@
 import {
   createCrudRowActions,
   DataTable,
-  type Column,
+  matchesSearchKeyword,
 } from "@/components/common/DataTable";
+import { roleTableColumns } from "@/components/TableColumns";
 import { PageHeader } from "@/components/common/PageHeader";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -11,7 +12,7 @@ import { useDataTable } from "@/hooks/useDataTable";
 import { useModal } from "@/hooks/useModal";
 import { useRoles } from "@/hooks/useRoles";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type { Permissions, Role } from "@/types";
+import type { Role } from "@/types";
 import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import {
@@ -19,36 +20,6 @@ import {
   type RoleFormValues,
   ROLE_FORM_MODAL_TARGET,
 } from "./RoleFormModal";
-
-const roleColumns: Column<Role>[] = [
-  {
-    key: "name",
-    header: "Nama role",
-    sortKey: "name",
-    render: (role) => <span className="fw-semibold">{role.name}</span>,
-  },
-  { key: "description", header: "Deskripsi", sortKey: "description" },
-  {
-    key: "permissions",
-    header: "Jumlah akses",
-    render: (role) => `${countPermissions(role.permissions)} permission`,
-  },
-];
-
-function countPermissions(permissions: Permissions): number {
-  return Object.values(permissions).reduce<number>(
-    (total, value) =>
-      total +
-      (typeof value === "object" ? countPermissions(value) : Number(value)),
-    0,
-  );
-}
-
-function searchRoles(role: Role, keyword: string) {
-  return [role.name, role.description].some((value) =>
-    value.toLowerCase().includes(keyword),
-  );
-}
 
 export function RoleTab() {
   const permissions = useAuthStore((state) => state.permissions);
@@ -62,7 +33,11 @@ export function RoleTab() {
     modal: formModal,
     onDelete: deleteRole,
   });
-  const table = useDataTable({ data: roles, searchPredicate: searchRoles });
+  const table = useDataTable({
+    data: roles,
+    searchPredicate: (role, keyword) =>
+      matchesSearchKeyword([role.name, role.description], keyword),
+  });
 
   const submitRole = useCallback(
     async (values: RoleFormValues) => {
@@ -123,7 +98,7 @@ export function RoleTab() {
       />
       <DataTable
         {...table}
-        columns={roleColumns}
+        columns={roleTableColumns}
         rowActions={rowActions}
         keyExtractor={(role) => role.id ?? role.name}
         isLoading={isLoading}
