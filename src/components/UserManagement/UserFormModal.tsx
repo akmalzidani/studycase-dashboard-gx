@@ -103,6 +103,7 @@ export function UserFormModal({
           label="Nama"
           className="form-control"
           value={values.name}
+          placeholder="Masukkan Nama lengkap"
           onChange={(event) => updateValue("name", event.target.value)}
           required
           minLength={3}
@@ -113,6 +114,7 @@ export function UserFormModal({
           label="Email"
           className="form-control"
           type="email"
+          placeholder="Masukkan Email"
           value={values.email}
           onChange={(event) => updateValue("email", event.target.value)}
           required
@@ -123,6 +125,7 @@ export function UserFormModal({
           label="Password"
           className="form-control"
           type="password"
+          placeholder="Masukkan Password"
           value={values.password}
           onChange={(event) => updateValue("password", event.target.value)}
           required
