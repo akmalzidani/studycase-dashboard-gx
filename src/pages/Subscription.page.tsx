@@ -102,21 +102,21 @@ export default function SubscriptionPage() {
         title="Subscription"
         description="Kelola paket dan langganan."
         actions={[
-          {
-            id: "reset",
-            permission: PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                disabled={isSubmitting}
-                onClick={() => resetSubscriptions()}
-              >
-                <BsArrowClockwise className="me-2" />
-                Reset Data
-              </button>
-            ),
-          },
+          // {
+          //   id: "reset",
+          //   permission: PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
+          //   content: (
+          //     <button
+          //       type="button"
+          //       className="btn btn-outline-secondary"
+          //       disabled={isSubmitting}
+          //       onClick={() => resetSubscriptions()}
+          //     >
+          //       <BsArrowClockwise className="me-2" />
+          //       Reset Data
+          //     </button>
+          //   ),
+          // },
           {
             id: "create",
             permission: PERMISSION_KEYS.SUBSCRIPTION.CREATE,

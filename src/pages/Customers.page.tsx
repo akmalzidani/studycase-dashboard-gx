@@ -96,21 +96,21 @@ export default function CustomersPage() {
         title="Customers"
         description="Manajemen data pelanggan aktif."
         actions={[
-          {
-            id: "reset",
-            permission: PERMISSION_KEYS.CUSTOMERS.UPDATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                disabled={isSubmitting}
-                onClick={() => resetCustomers()}
-              >
-                <BsArrowClockwise className="me-2" />
-                Reset Data
-              </button>
-            ),
-          },
+          // {
+          //   id: "reset",
+          //   permission: PERMISSION_KEYS.CUSTOMERS.UPDATE,
+          //   content: (
+          //     <button
+          //       type="button"
+          //       className="btn btn-outline-secondary"
+          //       disabled={isSubmitting}
+          //       onClick={() => resetCustomers()}
+          //     >
+          //       <BsArrowClockwise className="me-2" />
+          //       Reset Data
+          //     </button>
+          //   ),
+          // },
           {
             id: "create",
             permission: PERMISSION_KEYS.CUSTOMERS.CREATE,

@@ -96,21 +96,21 @@ export default function ProspectPage() {
         title="Prospect"
         description="Manajemen data calon pelanggan (prospek)."
         actions={[
-          {
-            id: "reset",
-            permission: PERMISSION_KEYS.PROSPECT.UPDATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                disabled={isSubmitting}
-                onClick={() => resetProspects()}
-              >
-                <BsArrowClockwise className="me-2" />
-                Reset Data
-              </button>
-            ),
-          },
+          // {
+          //   id: "reset",
+          //   permission: PERMISSION_KEYS.PROSPECT.UPDATE,
+          //   content: (
+          //     <button
+          //       type="button"
+          //       className="btn btn-outline-secondary"
+          //       disabled={isSubmitting}
+          //       onClick={() => resetProspects()}
+          //     >
+          //       <BsArrowClockwise className="me-2" />
+          //       Reset Data
+          //     </button>
+          //   ),
+          // },
           {
             id: "create",
             permission: PERMISSION_KEYS.PROSPECT.CREATE,

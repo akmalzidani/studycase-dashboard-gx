@@ -3,8 +3,11 @@ import { Header } from "@/layouts/AppLayout/Header";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "@/layouts/AppLayout/Sidebar";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 function AppLayout() {
+  usePageTitle();
+
   return (
     <div className="d-flex vh-100 overflow-hidden bg-body-tertiary">
       <Sidebar />
