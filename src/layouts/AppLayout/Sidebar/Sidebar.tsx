@@ -2,7 +2,7 @@ import { useSidebarStore } from "@/stores/useSidebarStore";
 import { useThemeStore } from "@/stores/useThemeStore";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNav } from "./SidebarNav";
-import { SidebarThemeSwitch } from "./SidebarThemeSwitch";
+
 
 export default function Sidebar() {
   const isOpen = useSidebarStore((state) => state.isOpen);
@@ -16,7 +16,7 @@ export default function Sidebar() {
     >
       <SidebarLogo isOpen={isOpen} />
       <SidebarNav isOpen={isOpen} />
-      <SidebarThemeSwitch isOpen={isOpen} />
+
     </aside>
   );
 }

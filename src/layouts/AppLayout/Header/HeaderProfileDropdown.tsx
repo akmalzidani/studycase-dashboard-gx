@@ -30,9 +30,9 @@ export function HeaderProfileDropdown() {
   const handleLogout = () => {
     confirm({
       title: "Logout",
-      message: "Apakah Anda yakin ingin keluar dari akun ini?",
-      confirmText: "Logout",
-      cancelText: "Batal",
+      message: "Are you sure you want to log out of this account?",
+      confirmText: "Log out",
+      cancelText: "Cancel",
       variant: "danger",
       onConfirm: () => logout(),
     });
