@@ -1,84 +1,86 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
-import type { Customer, CustomerStatus, Subscription } from "@/types";
+import type { Prospect, ProspectStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 
-export interface CustomerFormValues {
+export interface ProspectFormValues {
   name: string;
   email: string;
   phoneNumber: string;
   subscriptionId: string;
-  status: CustomerStatus;
+  status: ProspectStatus;
 }
 
-interface CustomerFormModalProps {
+interface ProspectFormProps {
   isSubmitting: boolean;
-  item: Customer | null;
+  item: Prospect | null;
   subscriptions: Subscription[];
-  onSubmit: (values: CustomerFormValues) => Promise<boolean>;
+  onSubmit: (values: ProspectFormValues) => Promise<boolean>;
 }
 
-const STATUS_OPTIONS: CustomerStatus[] = ["Active", "Blocked"];
+const STATUS_OPTIONS: ProspectStatus[] = ["Pending", "Completed"];
+const PHONE_NUMBER_PATTERN = "[0-9]{8,15}";
+const PHONE_NUMBER_TITLE = "Enter a phone number containing 8 to 15 digits.";
 
-export function CustomerFormModal({
+export function ProspectForm({
   isSubmitting,
-  item: customer,
+  item: prospect,
   subscriptions,
   onSubmit,
-}: CustomerFormModalProps) {
-  const [values, setValues] = useState<CustomerFormValues>({
+}: ProspectFormProps) {
+  const [values, setValues] = useState<ProspectFormValues>({
     name: "",
     email: "",
     phoneNumber: "",
     subscriptionId: "",
-    status: "Active",
+    status: "Pending",
   });
 
   useEffect(() => {
     const initializeValues = () => {
       setValues(
-        customer
+        prospect
           ? {
-              name: customer.name,
-              email: customer.email,
-              phoneNumber: customer.phoneNumber,
-              subscriptionId: customer.subscription.id ?? "",
-              status: customer.status,
+              name: prospect.name,
+              email: prospect.email,
+              phoneNumber: prospect.phoneNumber,
+              subscriptionId: prospect.subscription.id ?? "",
+              status: prospect.status,
             }
           : {
               name: "",
               email: "",
               phoneNumber: "",
               subscriptionId: subscriptions[0]?.id ?? "",
-              status: "Active",
+              status: "Pending",
             },
       );
     };
 
-    return onModalShown(MODAL_TARGETS.CUSTOMER_FORM, initializeValues);
-  }, [customer, subscriptions]);
+    return onOffcanvasShown(MODAL_TARGETS.PROSPECT_FORM, initializeValues);
+  }, [prospect, subscriptions]);
 
-  const handleValueChange = <K extends keyof CustomerFormValues>(
+  const handleValueChange = <K extends keyof ProspectFormValues>(
     field: K,
-    value: CustomerFormValues[K],
+    value: ProspectFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.CUSTOMER_FORM);
+      hideOffcanvas(MODAL_TARGETS.PROSPECT_FORM);
     }
   };
 
-  const isEditing = Boolean(customer);
+  const isEditing = Boolean(prospect);
 
   return (
-    <Modal
-      target={MODAL_TARGETS.CUSTOMER_FORM}
-      title={isEditing ? "Edit Customer" : "Add Customer"}
+    <Offcanvas
+      target={MODAL_TARGETS.PROSPECT_FORM}
+      title={isEditing ? "Edit Prospect" : "Add Prospect"}
 
       footer={
         <>
@@ -86,13 +88,13 @@ export function CustomerFormModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_IDS.CUSTOMER}
+            form={FORM_IDS.PROSPECT}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -100,25 +102,28 @@ export function CustomerFormModal({
               ? "Saving..."
               : isEditing
                 ? "Save Changes"
-                : "Add Customer"}
+                : "Add Prospect"}
           </button>
         </>
       }
     >
-      <form id={FORM_IDS.CUSTOMER} onSubmit={handleSubmit}>
-        <FormTextInput
-          id="customer-name"
+      <form id={FORM_IDS.PROSPECT} onSubmit={handleSubmit} className="row g-3">
+        <div className="col-12">
+          <FormTextInput
+            id="prospect-name"
           label="Name"
-          className="form-control"
           placeholder="Enter name"
+          className="form-control"
           value={values.name}
           minLength={3}
           required
           disabled={isSubmitting}
           onChange={(event) => handleValueChange("name", event.target.value)}
-        />
-        <FormTextInput
-          id="customer-email"
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="prospect-email"
           label="Email"
           placeholder="Enter email"
           type="email"
@@ -127,26 +132,35 @@ export function CustomerFormModal({
           required
           disabled={isSubmitting}
           onChange={(event) => handleValueChange("email", event.target.value)}
-        />
-        <FormTextInput
-          id="customer-phone"
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="prospect-phone"
           label="Phone number"
           placeholder="Enter phone number"
           type="tel"
+          inputMode="numeric"
+          autoComplete="tel"
           className="form-control"
           value={values.phoneNumber}
-          pattern="(?=.*\S)[0-9+() -]{8,}"
-          title="Enter a valid phone number, not just spaces."
+          pattern={PHONE_NUMBER_PATTERN}
+          title={PHONE_NUMBER_TITLE}
+          minLength={8}
+          maxLength={15}
           required
           disabled={isSubmitting}
-          onChange={(event) => handleValueChange("phoneNumber", event.target.value)}
-        />
-        <div className="mb-3">
-          <label className="form-label" htmlFor="customer-subscription">
+          onChange={(event) =>
+            handleValueChange("phoneNumber", event.target.value.replace(/\D/g, ""))
+          }
+          />
+        </div>
+        <div className="col-12 col-md-8">
+          <label className="form-label" htmlFor="prospect-subscription">
             Subscription
           </label>
           <select
-            id="customer-subscription"
+            id="prospect-subscription"
             className="form-select"
             value={values.subscriptionId}
             required
@@ -162,17 +176,17 @@ export function CustomerFormModal({
             ))}
           </select>
         </div>
-        <div>
-          <label className="form-label" htmlFor="customer-status">
+        <div className="col-12 col-md-4">
+          <label className="form-label" htmlFor="prospect-status">
             Status
           </label>
           <select
-            id="customer-status"
+            id="prospect-status"
             className="form-select"
             value={values.status}
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange("status", event.target.value as CustomerStatus)
+              handleValueChange("status", event.target.value as ProspectStatus)
             }
           >
             {STATUS_OPTIONS.map((status) => (
@@ -181,6 +195,6 @@ export function CustomerFormModal({
           </select>
         </div>
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }

@@ -1,12 +1,12 @@
 import { FormTextInput } from "@/components/common/FormInput";
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Role } from "@/types";
 import { useEffect, useState, type SyntheticEvent } from "react";
-import type { ManagedUser, UserFormValues } from "./types";
+import type { ManagedUser, UserFormValues } from "@/components/UserManagement/types";
 
-interface UserFormModalProps {
+interface UserFormProps {
   item: ManagedUser | null;
   roles: Role[];
   isSubmitting: boolean;
@@ -14,12 +14,12 @@ interface UserFormModalProps {
 }
 
 
-export function UserFormModal({
+export function UserForm({
   item: user,
   roles,
   isSubmitting,
   onSubmit,
-}: UserFormModalProps) {
+}: UserFormProps) {
   const [values, setValues] = useState<UserFormValues>({
     name: "",
     email: "",
@@ -29,7 +29,7 @@ export function UserFormModal({
   });
 
   useEffect(() => {
-    return onModalShown(MODAL_TARGETS.USER_FORM, () => {
+    return onOffcanvasShown(MODAL_TARGETS.USER_FORM, () => {
       setValues(
         user
           ? {
@@ -58,13 +58,13 @@ export function UserFormModal({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.USER_FORM);
+      hideOffcanvas(MODAL_TARGETS.USER_FORM);
     }
   };
 
   const isEditing = Boolean(user);
   return (
-    <Modal
+    <Offcanvas
       target={MODAL_TARGETS.USER_FORM}
       title={isEditing ? "Edit User" : "Add User"}
       footer={
@@ -73,7 +73,7 @@ export function UserFormModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
@@ -92,9 +92,10 @@ export function UserFormModal({
         </>
       }
     >
-      <form id={FORM_IDS.USER} onSubmit={handleSubmit}>
-        <FormTextInput
-          id="user-name"
+      <form id={FORM_IDS.USER} onSubmit={handleSubmit} className="row g-3">
+        <div className="col-12">
+          <FormTextInput
+            id="user-name"
           label="Name"
           className="form-control"
           value={values.name}
@@ -103,9 +104,11 @@ export function UserFormModal({
           required
           minLength={3}
           disabled={isSubmitting}
-        />
-        <FormTextInput
-          id="user-email"
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="user-email"
           label="Email"
           className="form-control"
           type="email"
@@ -114,9 +117,11 @@ export function UserFormModal({
           onChange={(event) => handleValueChange("email", event.target.value)}
           required
           disabled={isSubmitting}
-        />
-        <FormTextInput
-          id="user-password"
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="user-password"
           label="Password"
           className="form-control"
           type="password"
@@ -126,8 +131,9 @@ export function UserFormModal({
           required
           minLength={4}
           disabled={isSubmitting}
-        />
-        <div className="mb-3">
+          />
+        </div>
+        <div className="col-12 col-md-8">
           <label className="form-label" htmlFor="user-role">
             Role
           </label>
@@ -151,7 +157,7 @@ export function UserFormModal({
             ))}
           </select>
         </div>
-        <div>
+        <div className="col-12 col-md-4">
           <label className="form-label" htmlFor="user-status">
             Status
           </label>
@@ -172,6 +178,6 @@ export function UserFormModal({
           </select>
         </div>
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }

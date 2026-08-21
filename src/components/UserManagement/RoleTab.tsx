@@ -5,7 +5,7 @@ import {
 } from "@/components/common/DataTable";
 import { roleTableColumns } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
-import { showModal } from "@/helpers/modal.helpers";
+import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 import { PageHeader } from "@/components/common/PageHeader";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -16,14 +16,14 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import type { Role } from "@/types";
 import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import { RoleFormModal, type RoleFormValues } from "./RoleFormModal";
+import { RoleForm, type RoleFormValues } from "../Forms/RoleForm";
 
 export function RoleTab() {
   const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
   const handleFormOpen = useCallback(
-    () => showModal(MODAL_TARGETS.ROLE_FORM),
+    () => showOffcanvas(MODAL_TARGETS.ROLE_FORM),
     [],
   );
   const roleActions = useCrudFormActions<Role>({
@@ -100,7 +100,7 @@ export function RoleTab() {
           )
         }
       />
-      <RoleFormModal
+      <RoleForm
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}
         onSubmit={handleRoleSubmit}

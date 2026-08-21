@@ -1,11 +1,11 @@
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import {
   FormTextarea,
   FormTextInput,
 } from "@/components/common/FormInput";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Permissions, Role } from "@/types";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 
@@ -15,7 +15,7 @@ export interface RoleFormValues {
   permissions: Permissions;
 }
 
-interface RoleFormModalProps {
+interface RoleFormProps {
   isSubmitting: boolean;
   item: Role | null;
   onSubmit: (values: RoleFormValues) => Promise<boolean>;
@@ -62,11 +62,11 @@ const setPermissionValue = (
   return next;
 };
 
-export function RoleFormModal({
+export function RoleForm({
   isSubmitting,
   item: role,
   onSubmit,
-}: RoleFormModalProps) {
+}: RoleFormProps) {
   const [values, setValues] = useState<RoleFormValues>({
     name: "",
     description: "",
@@ -79,7 +79,7 @@ export function RoleFormModal({
   );
 
   useEffect(() => {
-    return onModalShown(MODAL_TARGETS.ROLE_FORM, () => {
+    return onOffcanvasShown(MODAL_TARGETS.ROLE_FORM, () => {
       setValues(
         role
           ? {
@@ -95,24 +95,24 @@ export function RoleFormModal({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.ROLE_FORM);
+      hideOffcanvas(MODAL_TARGETS.ROLE_FORM);
     }
   };
 
   const isEditing = Boolean(role);
 
   return (
-    <Modal
+    <Offcanvas
       target={MODAL_TARGETS.ROLE_FORM}
       title={isEditing ? "Edit Role" : "Add Role"}
-      size="lg"
+
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
@@ -131,9 +131,10 @@ export function RoleFormModal({
         </>
       }
     >
-      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit}>
-        <FormTextInput
-          id="role-name"
+      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit} className="row g-3">
+        <div className="col-12 col-md-4">
+          <FormTextInput
+            id="role-name"
           label="Role name"
           className="form-control"
           value={values.name}
@@ -145,9 +146,11 @@ export function RoleFormModal({
           required
           disabled={isSubmitting}
           autoFocus
-        />
-        <FormTextarea
-          id="role-description"
+          />
+        </div>
+        <div className="col-12 col-md-8">
+          <FormTextarea
+            id="role-description"
           label="Description"
           className="form-control"
           value={values.description}
@@ -161,8 +164,9 @@ export function RoleFormModal({
           rows={3}
           required
           disabled={isSubmitting}
-        />
-        <fieldset>
+          />
+        </div>
+        <fieldset className="col-12">
           <legend className="fs-6 fw-semibold mb-3">Permissions</legend>
           <div className="table-responsive border rounded">
             <table className="table table-sm align-middle mb-0">
@@ -216,6 +220,6 @@ export function RoleFormModal({
           </div>
         </fieldset>
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }

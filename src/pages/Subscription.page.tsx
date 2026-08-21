@@ -1,10 +1,10 @@
 import {
-  SubscriptionFormModal,
+  SubscriptionForm,
   type SubscriptionFormValues,
-} from "@/components/SubscriptionFormModal";
+} from "@/components/Forms/SubscriptionForm";
 import { subscriptionTableColumns } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
-import { showModal } from "@/helpers/modal.helpers";
+import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 import {
   createCrudRowActions,
   DataTable,
@@ -37,7 +37,7 @@ export default function SubscriptionPage() {
 
 
   const handleFormOpen = useCallback(
-    () => showModal(MODAL_TARGETS.SUBSCRIPTION_FORM),
+    () => showOffcanvas(MODAL_TARGETS.SUBSCRIPTION_FORM),
     [],
   );
   const {
@@ -128,7 +128,7 @@ export default function SubscriptionPage() {
         }
       />
 
-      <SubscriptionFormModal
+      <SubscriptionForm
         isSubmitting={isSubmitting}
         item={selectedSubscription}
         onSubmit={handleSubmit}

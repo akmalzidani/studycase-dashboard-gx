@@ -1,9 +1,9 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { formatCurrencyInput } from "@/helpers/formatters.helpers";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Subscription } from "@/types";
 
 export interface SubscriptionFormValues {
@@ -12,7 +12,7 @@ export interface SubscriptionFormValues {
   monthlyFee: number;
 }
 
-interface SubscriptionFormModalProps {
+interface SubscriptionFormProps {
   isSubmitting: boolean;
   item: Subscription | null;
   onSubmit: (values: SubscriptionFormValues) => Promise<boolean>;
@@ -25,11 +25,11 @@ const EMPTY_VALUES: SubscriptionFormValues = {
   monthlyFee: 0,
 };
 
-export function SubscriptionFormModal({
+export function SubscriptionForm({
   isSubmitting,
   item: subscription,
   onSubmit,
-}: SubscriptionFormModalProps) {
+}: SubscriptionFormProps) {
   const [values, setValues] = useState<SubscriptionFormValues>(EMPTY_VALUES);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export function SubscriptionFormModal({
       );
     };
 
-    return onModalShown(MODAL_TARGETS.SUBSCRIPTION_FORM, initializeValues);
+    return onOffcanvasShown(MODAL_TARGETS.SUBSCRIPTION_FORM, initializeValues);
   }, [subscription]);
 
   const handleValueChange = <K extends keyof SubscriptionFormValues>(
@@ -56,14 +56,14 @@ export function SubscriptionFormModal({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.SUBSCRIPTION_FORM);
+      hideOffcanvas(MODAL_TARGETS.SUBSCRIPTION_FORM);
     }
   };
 
   const isEditing = Boolean(subscription);
 
   return (
-    <Modal
+    <Offcanvas
       target={MODAL_TARGETS.SUBSCRIPTION_FORM}
       title={
         isEditing ? "Edit Subscription Package" : "Add Subscription Package"
@@ -75,7 +75,7 @@ export function SubscriptionFormModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
@@ -94,9 +94,10 @@ export function SubscriptionFormModal({
         </>
       }
     >
-      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit}>
-        <FormTextInput
-          id="subscription-package-name"
+      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit} className="row g-3">
+        <div className="col-12">
+          <FormTextInput
+            id="subscription-package-name"
           label="Package name"
           placeholder="Enter package name"
           className="form-control"
@@ -105,8 +106,9 @@ export function SubscriptionFormModal({
           required
           disabled={isSubmitting}
           onChange={(event) => handleValueChange("packageName", event.target.value)}
-        />
-        <div className="mb-3">
+          />
+        </div>
+        <div className="col-12 col-md-5">
           <label className="form-label" htmlFor="subscription-speed">
             Speed
           </label>
@@ -127,7 +129,7 @@ export function SubscriptionFormModal({
             <span className="input-group-text">Mbps</span>
           </div>
         </div>
-        <div>
+        <div className="col-12 col-md-7">
           <label className="form-label" htmlFor="subscription-monthly-fee">
             Monthly fee
           </label>
@@ -152,6 +154,6 @@ export function SubscriptionFormModal({
           </div>
         </div>
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }

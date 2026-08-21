@@ -1,12 +1,12 @@
 export const MODAL_TARGETS = {
   CONFIRMATION: "confirmation-dialog",
-  CUSTOMER_FORM: "customer-form-modal",
-  PROSPECT_FORM: "prospect-form-modal",
-  SUBSCRIPTION_FORM: "subscription-form-modal",
-  PROFILE_FORM: "profile-form-modal",
-  CHANGE_PASSWORD: "change-password-modal",
-  USER_FORM: "user-form-modal",
-  ROLE_FORM: "role-form-modal",
+  CUSTOMER_FORM: "customer-form-overlay",
+  PROSPECT_FORM: "prospect-form-overlay",
+  SUBSCRIPTION_FORM: "subscription-form-overlay",
+  PROFILE_FORM: "profile-form-overlay",
+  CHANGE_PASSWORD: "change-password-overlay",
+  USER_FORM: "user-form-overlay",
+  ROLE_FORM: "role-form-overlay",
 } as const;
 
 export const FORM_IDS = {
@@ -20,3 +20,8 @@ export const FORM_IDS = {
 } as const;
 
 export type ModalTarget = (typeof MODAL_TARGETS)[keyof typeof MODAL_TARGETS];
+
+export type OffcanvasTarget = Exclude<
+  ModalTarget,
+  (typeof MODAL_TARGETS)["CONFIRMATION"]
+>;

@@ -1,13 +1,13 @@
 import {
-  ChangePasswordModal,
+  ChangePasswordForm,
   type ChangePasswordFormValues,
-} from "@/components/ChangePasswordModal";
+} from "@/components/Forms/ChangePasswordForm";
 import { Badge } from "@/components/common/Badge";
 import { PageHeader } from "@/components/common/PageHeader";
 import {
-  ProfileFormModal,
+  ProfileForm,
   type ProfileFormValues,
-} from "@/components/ProfileFormModal";
+} from "@/components/Forms/ProfileForm";
 
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -107,7 +107,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 className="btn btn-info"
-                data-bs-toggle="modal"
+                data-bs-toggle="offcanvas"
                 data-bs-target={`#${MODAL_TARGETS.CHANGE_PASSWORD}`}
               >
                 <BsKey className="me-2" />
@@ -122,7 +122,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 className="btn btn-primary"
-                data-bs-toggle="modal"
+                data-bs-toggle="offcanvas"
                 data-bs-target={`#${MODAL_TARGETS.PROFILE_FORM}`}
               >
                 <BsPencilSquare className="me-2" />
@@ -154,13 +154,13 @@ export default function ProfilePage() {
         </div>
       </section>
 
-      <ProfileFormModal
+      <ProfileForm
         isSubmitting={isSubmitting}
         item={user}
         onSubmit={handleSubmit}
       />
 
-      <ChangePasswordModal
+      <ChangePasswordForm
         isSubmitting={isSubmitting}
         item={user}
         onSubmit={handleChangePassword}

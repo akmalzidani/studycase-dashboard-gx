@@ -5,7 +5,7 @@ import {
 } from "@/components/common/DataTable";
 import { userTableColumns } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
-import { showModal } from "@/helpers/modal.helpers";
+import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 import { PageHeader } from "@/components/common/PageHeader";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -16,7 +16,7 @@ import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import { UserFormModal } from "./UserFormModal";
+import { UserForm } from "../Forms/UserForm";
 import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
@@ -25,7 +25,7 @@ export function UserTab() {
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
   const handleFormOpen = useCallback(
-    () => showModal(MODAL_TARGETS.USER_FORM),
+    () => showOffcanvas(MODAL_TARGETS.USER_FORM),
     [],
   );
   const {
@@ -112,7 +112,7 @@ export function UserTab() {
           )
         }
       />
-      <UserFormModal
+      <UserForm
         item={selectedUser}
         roles={roles}
         isSubmitting={isSubmitting}

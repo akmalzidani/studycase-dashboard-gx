@@ -1,7 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { User } from "@/types";
 
 export interface ChangePasswordFormValues {
@@ -10,7 +10,7 @@ export interface ChangePasswordFormValues {
   confirmNewPassword: string;
 }
 
-interface ChangePasswordModalProps {
+interface ChangePasswordFormProps {
   isSubmitting: boolean;
   item: User | null;
   onSubmit: (values: ChangePasswordFormValues) => Promise<boolean>;
@@ -23,26 +23,26 @@ const EMPTY_VALUES: ChangePasswordFormValues = {
   confirmNewPassword: "",
 };
 
-export function ChangePasswordModal({
+export function ChangePasswordForm({
   isSubmitting,
   onSubmit,
-}: ChangePasswordModalProps) {
+}: ChangePasswordFormProps) {
   const [values, setValues] = useState(EMPTY_VALUES);
 
   useEffect(() => {
     const resetValues = () => setValues(EMPTY_VALUES);
-    return onModalShown(MODAL_TARGETS.CHANGE_PASSWORD, resetValues);
+    return onOffcanvasShown(MODAL_TARGETS.CHANGE_PASSWORD, resetValues);
   }, []);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.CHANGE_PASSWORD);
+      hideOffcanvas(MODAL_TARGETS.CHANGE_PASSWORD);
     }
   };
 
   return (
-    <Modal
+    <Offcanvas
       target={MODAL_TARGETS.CHANGE_PASSWORD}
       title="Change Password"
 
@@ -52,7 +52,7 @@ export function ChangePasswordModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
@@ -67,7 +67,7 @@ export function ChangePasswordModal({
         </>
       }
     >
-      <form id={FORM_IDS.CHANGE_PASSWORD} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.CHANGE_PASSWORD} onSubmit={handleSubmit} className="row g-3">
         {(
           [
             [
@@ -82,8 +82,13 @@ export function ChangePasswordModal({
               "profile-confirm-new-password",
             ],
           ] as const
-        ).map(([field, label, id], index) => (
-          <div className={index < 2 ? "mb-3" : ""} key={field}>
+        ).map(([field, label, id]) => (
+          <div
+            className={
+              field === "currentPassword" ? "col-12" : "col-12 col-md-6"
+            }
+            key={field}
+          >
             <label className="form-label" htmlFor={id}>
               {label}
             </label>
@@ -105,6 +110,6 @@ export function ChangePasswordModal({
           </div>
         ))}
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }

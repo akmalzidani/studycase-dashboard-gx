@@ -1,11 +1,11 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
 import { MODAL_TARGETS } from "@/config/modal.config";
-import { showModal } from "@/helpers/modal.helpers";
+import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
 import {
-  ProspectFormModal,
+  ProspectForm,
   type ProspectFormValues,
-} from "@/components/ProspectFormModal";
+} from "@/components/Forms/ProspectForm";
 import {
   prospectTableColumns,
   searchClientTableItem,
@@ -39,7 +39,7 @@ export default function ProspectPage() {
 
 
   const handleFormOpen = useCallback(
-    () => showModal(MODAL_TARGETS.PROSPECT_FORM),
+    () => showOffcanvas(MODAL_TARGETS.PROSPECT_FORM),
     [],
   );
   const {
@@ -124,7 +124,7 @@ export default function ProspectPage() {
         }
       />
 
-      <ProspectFormModal
+      <ProspectForm
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedProspect}
         subscriptions={subscriptions}

@@ -1,8 +1,8 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal } from "@/components/common/Modal";
+import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
-import { hideModal, onModalShown } from "@/helpers/modal.helpers";
+import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { User } from "@/types";
 
 export interface ProfileFormValues {
@@ -10,17 +10,17 @@ export interface ProfileFormValues {
   email: string;
 }
 
-interface ProfileFormModalProps {
+interface ProfileFormProps {
   isSubmitting: boolean;
   item: User | null;
   onSubmit: (values: ProfileFormValues) => Promise<boolean>;
 }
 
-export function ProfileFormModal({
+export function ProfileForm({
   isSubmitting,
   item: user,
   onSubmit,
-}: ProfileFormModalProps) {
+}: ProfileFormProps) {
   const [values, setValues] = useState<ProfileFormValues>({
     name: "",
     email: "",
@@ -31,18 +31,18 @@ export function ProfileFormModal({
       setValues(user ? { name: user.name, email: user.email } : { name: "", email: "" });
     };
 
-    return onModalShown(MODAL_TARGETS.PROFILE_FORM, initializeValues);
+    return onOffcanvasShown(MODAL_TARGETS.PROFILE_FORM, initializeValues);
   }, [user]);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideModal(MODAL_TARGETS.PROFILE_FORM);
+      hideOffcanvas(MODAL_TARGETS.PROFILE_FORM);
     }
   };
 
   return (
-    <Modal
+    <Offcanvas
       target={MODAL_TARGETS.PROFILE_FORM}
       title="Edit Profile"
       footer={
@@ -51,7 +51,7 @@ export function ProfileFormModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            data-bs-dismiss="modal"
+            data-bs-dismiss="offcanvas"
           >
             Cancel
           </button>
@@ -66,9 +66,10 @@ export function ProfileFormModal({
         </>
       }
     >
-      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit}>
-        <FormTextInput
-          id="profile-name"
+      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit} className="row g-3">
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="profile-name"
           label="Name"
           className="form-control"
           value={values.name}
@@ -78,9 +79,11 @@ export function ProfileFormModal({
           onChange={(event) =>
             setValues((current) => ({ ...current, name: event.target.value }))
           }
-        />
-        <FormTextInput
-          id="profile-email"
+          />
+        </div>
+        <div className="col-12 col-md-6">
+          <FormTextInput
+            id="profile-email"
           label="Email"
           type="email"
           className="form-control"
@@ -93,8 +96,9 @@ export function ProfileFormModal({
               email: event.target.value,
             }))
           }
-        />
+          />
+        </div>
       </form>
-    </Modal>
+    </Offcanvas>
   );
 }
