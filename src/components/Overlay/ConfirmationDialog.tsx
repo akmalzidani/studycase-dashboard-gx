@@ -23,7 +23,6 @@ export default function ConfirmationDialog() {
     modalRef.current = modal;
 
     const handleHidden = () => {
-      modalRef.current = null;
       setDisplayedOptions(null);
       hide();
     };
