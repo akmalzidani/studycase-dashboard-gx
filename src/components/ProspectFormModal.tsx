@@ -61,7 +61,7 @@ export function ProspectFormModal({
     return onModalShown(MODAL_TARGETS.PROSPECT_FORM, initializeValues);
   }, [prospect, subscriptions]);
 
-  const updateValue = <K extends keyof ProspectFormValues>(
+  const handleValueChange = <K extends keyof ProspectFormValues>(
     field: K,
     value: ProspectFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
@@ -115,7 +115,7 @@ export function ProspectFormModal({
           minLength={3}
           required
           disabled={isSubmitting}
-          onChange={(event) => updateValue("name", event.target.value)}
+          onChange={(event) => handleValueChange("name", event.target.value)}
         />
         <FormTextInput
           id="prospect-email"
@@ -126,7 +126,7 @@ export function ProspectFormModal({
           value={values.email}
           required
           disabled={isSubmitting}
-          onChange={(event) => updateValue("email", event.target.value)}
+          onChange={(event) => handleValueChange("email", event.target.value)}
         />
         <FormTextInput
           id="prospect-phone"
@@ -139,7 +139,7 @@ export function ProspectFormModal({
           title="Enter a valid phone number, not just spaces."
           required
           disabled={isSubmitting}
-          onChange={(event) => updateValue("phoneNumber", event.target.value)}
+          onChange={(event) => handleValueChange("phoneNumber", event.target.value)}
         />
         <div className="mb-3">
           <label className="form-label" htmlFor="prospect-subscription">
@@ -152,7 +152,7 @@ export function ProspectFormModal({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              updateValue("subscriptionId", event.target.value)
+              handleValueChange("subscriptionId", event.target.value)
             }
           >
             {subscriptions.map((subscription) => (
@@ -172,7 +172,7 @@ export function ProspectFormModal({
             value={values.status}
             disabled={isSubmitting}
             onChange={(event) =>
-              updateValue("status", event.target.value as ProspectStatus)
+              handleValueChange("status", event.target.value as ProspectStatus)
             }
           >
             {STATUS_OPTIONS.map((status) => (

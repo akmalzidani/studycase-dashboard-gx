@@ -58,12 +58,12 @@ export default function ConfirmationDialog() {
   const variant = displayedOptions?.variant ?? "primary";
   const textMessageColor = theme === "dark" ? "light" : "dark";
 
-  const dismiss = () => {
+  const handleDismiss = () => {
     modalRef.current?.hide();
   };
 
   const handleConfirm = () => {
-    dismiss();
+    handleDismiss();
     displayedOptions?.onConfirm();
   };
 
@@ -76,7 +76,7 @@ export default function ConfirmationDialog() {
           <button
             type="button"
             className="btn btn-light fw-medium"
-            onClick={dismiss}
+            onClick={handleDismiss}
           >
             {cancelText}
           </button>

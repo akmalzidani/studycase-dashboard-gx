@@ -50,7 +50,7 @@ export function UserFormModal({
     });
   }, [roles, user]);
 
-  const updateValue = <K extends keyof UserFormValues>(
+  const handleValueChange = <K extends keyof UserFormValues>(
     field: K,
     value: UserFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
@@ -99,7 +99,7 @@ export function UserFormModal({
           className="form-control"
           value={values.name}
           placeholder="Enter full name"
-          onChange={(event) => updateValue("name", event.target.value)}
+          onChange={(event) => handleValueChange("name", event.target.value)}
           required
           minLength={3}
           disabled={isSubmitting}
@@ -111,7 +111,7 @@ export function UserFormModal({
           type="email"
           placeholder="Enter email"
           value={values.email}
-          onChange={(event) => updateValue("email", event.target.value)}
+          onChange={(event) => handleValueChange("email", event.target.value)}
           required
           disabled={isSubmitting}
         />
@@ -122,7 +122,7 @@ export function UserFormModal({
           type="password"
           placeholder="Enter password"
           value={values.password}
-          onChange={(event) => updateValue("password", event.target.value)}
+          onChange={(event) => handleValueChange("password", event.target.value)}
           required
           minLength={4}
           disabled={isSubmitting}
@@ -135,7 +135,9 @@ export function UserFormModal({
             id="user-role"
             className="form-select"
             value={values.roleId}
-            onChange={(event) => updateValue("roleId", event.target.value)}
+            onChange={(event) =>
+              handleValueChange("roleId", event.target.value)
+            }
             required
             disabled={isSubmitting}
           >
@@ -158,7 +160,7 @@ export function UserFormModal({
             className="form-select"
             value={values.status}
             onChange={(event) =>
-              updateValue(
+              handleValueChange(
                 "status",
                 event.target.value as UserFormValues["status"],
               )

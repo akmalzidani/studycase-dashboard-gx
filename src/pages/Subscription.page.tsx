@@ -36,6 +36,10 @@ export default function SubscriptionPage() {
   } = useSubscriptions();
 
 
+  const handleFormOpen = useCallback(
+    () => showModal(MODAL_TARGETS.SUBSCRIPTION_FORM),
+    [],
+  );
   const {
     selectedItem: selectedSubscription,
     openCreateForm,
@@ -45,7 +49,7 @@ export default function SubscriptionPage() {
     deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
       `Are you sure you want to delete the ${subscription.packageName} package?`,
-    onOpenForm: () => showModal(MODAL_TARGETS.SUBSCRIPTION_FORM),
+    onOpenForm: handleFormOpen,
     onDelete: deleteSubscription,
   });
 

@@ -22,7 +22,7 @@ export function RoleTab() {
   const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
-  const onOpenForm = useCallback(
+  const handleFormOpen = useCallback(
     () => showModal(MODAL_TARGETS.ROLE_FORM),
     [],
   );
@@ -30,7 +30,7 @@ export function RoleTab() {
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
       `Are you sure you want to delete the ${role.name} role?`,
-    onOpenForm,
+    onOpenForm: handleFormOpen,
     onDelete: deleteRole,
   });
   const table = useDataTable({
@@ -39,7 +39,7 @@ export function RoleTab() {
       matchesSearchKeyword([role.name, role.description], keyword),
   });
 
-  const submitRole = useCallback(
+  const handleRoleSubmit = useCallback(
     async (values: RoleFormValues) => {
       const payload = {
         name: values.name.trim(),
@@ -103,7 +103,7 @@ export function RoleTab() {
       <RoleFormModal
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}
-        onSubmit={submitRole}
+        onSubmit={handleRoleSubmit}
       />
     </>
   );

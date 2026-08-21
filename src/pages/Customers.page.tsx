@@ -38,6 +38,10 @@ export default function CustomersPage() {
     useSubscriptions();
 
 
+  const handleFormOpen = useCallback(
+    () => showModal(MODAL_TARGETS.CUSTOMER_FORM),
+    [],
+  );
   const {
     selectedItem: selectedCustomer,
     openCreateForm,
@@ -47,7 +51,7 @@ export default function CustomersPage() {
     deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
       `Are you sure you want to delete ${customer.name}?`,
-    onOpenForm: () => showModal(MODAL_TARGETS.CUSTOMER_FORM),
+    onOpenForm: handleFormOpen,
     onDelete: deleteCustomer,
   });
 

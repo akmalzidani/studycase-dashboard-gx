@@ -48,7 +48,7 @@ export function SubscriptionFormModal({
     return onModalShown(MODAL_TARGETS.SUBSCRIPTION_FORM, initializeValues);
   }, [subscription]);
 
-  const updateValue = <K extends keyof SubscriptionFormValues>(
+  const handleValueChange = <K extends keyof SubscriptionFormValues>(
     field: K,
     value: SubscriptionFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
@@ -104,7 +104,7 @@ export function SubscriptionFormModal({
           minLength={2}
           required
           disabled={isSubmitting}
-          onChange={(event) => updateValue("packageName", event.target.value)}
+          onChange={(event) => handleValueChange("packageName", event.target.value)}
         />
         <div className="mb-3">
           <label className="form-label" htmlFor="subscription-speed">
@@ -121,7 +121,7 @@ export function SubscriptionFormModal({
               required
               disabled={isSubmitting}
               onChange={(event) =>
-                updateValue("speed", Number(event.target.value))
+                handleValueChange("speed", Number(event.target.value))
               }
             />
             <span className="input-group-text">Mbps</span>
@@ -146,7 +146,7 @@ export function SubscriptionFormModal({
               disabled={isSubmitting}
               onChange={(event) => {
                 const digits = event.target.value.replace(/\D/g, "");
-                updateValue("monthlyFee", digits ? Number(digits) : 0);
+                handleValueChange("monthlyFee", digits ? Number(digits) : 0);
               }}
             />
           </div>

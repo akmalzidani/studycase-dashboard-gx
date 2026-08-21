@@ -45,7 +45,10 @@ export default function LoginPage() {
     }
   };
 
-  const setDemoAccount = (account: { email: string; password?: string }) => {
+  const handleDemoAccountSelection = (account: {
+    email: string;
+    password?: string;
+  }) => {
     setEmail(account.email);
     setPassword(account.password ?? "");
   };
@@ -124,7 +127,7 @@ export default function LoginPage() {
                   key={account.id ?? account.email}
                   type="button"
                   className="btn btn-sm btn-danger"
-                  onClick={() => setDemoAccount(account)}
+                  onClick={() => handleDemoAccountSelection(account)}
                 >
                   {getRoles().find((role) => role.id === account.roleId)
                     ?.name ?? "User"}

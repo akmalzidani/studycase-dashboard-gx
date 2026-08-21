@@ -38,6 +38,10 @@ export default function ProspectPage() {
     useSubscriptions();
 
 
+  const handleFormOpen = useCallback(
+    () => showModal(MODAL_TARGETS.PROSPECT_FORM),
+    [],
+  );
   const {
     selectedItem: selectedProspect,
     openCreateForm,
@@ -47,7 +51,7 @@ export default function ProspectPage() {
     deleteTitle: "Delete prospect",
     deleteMessage: (prospect) =>
       `Are you sure you want to delete ${prospect.name}?`,
-    onOpenForm: () => showModal(MODAL_TARGETS.PROSPECT_FORM),
+    onOpenForm: handleFormOpen,
     onDelete: deleteProspect,
   });
 

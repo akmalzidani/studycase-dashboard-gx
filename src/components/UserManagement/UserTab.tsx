@@ -24,7 +24,7 @@ export function UserTab() {
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
-  const onOpenForm = useCallback(
+  const handleFormOpen = useCallback(
     () => showModal(MODAL_TARGETS.USER_FORM),
     [],
   );
@@ -36,7 +36,7 @@ export function UserTab() {
   } = useCrudFormActions<ManagedUser>({
     deleteTitle: "Delete user",
     deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
-    onOpenForm,
+    onOpenForm: handleFormOpen,
     onDelete: deleteUser,
   });
 
@@ -57,7 +57,7 @@ export function UserTab() {
       ),
   });
 
-  const submitUser = useCallback(
+  const handleUserSubmit = useCallback(
     (values: UserFormValues) => {
       const payload = {
         ...values,
@@ -116,7 +116,7 @@ export function UserTab() {
         item={selectedUser}
         roles={roles}
         isSubmitting={isSubmitting}
-        onSubmit={submitUser}
+        onSubmit={handleUserSubmit}
       />
     </>
   );
