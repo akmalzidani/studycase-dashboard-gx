@@ -1,4 +1,4 @@
-import { FormTextInput } from "@/components/common/FormInput/FormInput";
+import { FormTextInput } from "@/components/common/FormInput";
 import { Modal } from "@/components/common/Modal";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { hideModal, onModalShown } from "@/helpers/modal.helpers";

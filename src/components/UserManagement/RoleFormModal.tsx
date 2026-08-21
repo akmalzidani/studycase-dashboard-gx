@@ -2,7 +2,7 @@ import { Modal } from "@/components/common/Modal";
 import {
   FormTextarea,
   FormTextInput,
-} from "@/components/common/FormInput/FormInput";
+} from "@/components/common/FormInput";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
 import { hideModal, onModalShown } from "@/helpers/modal.helpers";

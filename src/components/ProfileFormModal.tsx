@@ -1,6 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Modal } from "@/components/common/Modal";
-import { FormTextInput } from "@/components/common/FormInput/FormInput";
+import { FormTextInput } from "@/components/common/FormInput";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { User } from "@/types";

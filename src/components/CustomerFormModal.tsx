@@ -1,7 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { Modal } from "@/components/common/Modal";
-import { FormTextInput } from "@/components/common/FormInput/FormInput";
+import { FormTextInput } from "@/components/common/FormInput";
 import type { Customer, CustomerStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
 import { hideModal, onModalShown } from "@/helpers/modal.helpers";
