@@ -11,9 +11,11 @@ interface DefaultActionDefinition<T> {
   id: string;
   label: string;
   icon: ReactNode;
-  className: string;
+  colorClassName: string;
   config?: DefaultRowAction<T>;
 }
+
+const ACTION_BUTTON_CLASS_NAME = "btn btn-sm border-0 bg-transparent p-0";
 
 export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
   const defaultActions: DefaultActionDefinition<T>[] = [
@@ -21,21 +23,21 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
       id: "detail",
       label: "Details",
       icon: <BsEye />,
-      className: "btn btn-sm btn-secondary",
+      colorClassName: "text-secondary",
       config: actions.detail,
     },
     {
       id: "edit",
       label: "Edit",
       icon: <BsPencilSquare />,
-      className: "btn btn-sm btn-primary",
+      colorClassName: "text-primary",
       config: actions.edit,
     },
     {
       id: "delete",
       label: "Delete",
       icon: <BsTrash />,
-      className: "btn btn-sm btn-danger",
+      colorClassName: "text-danger",
       config: actions.delete,
     },
   ];
@@ -46,12 +48,12 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
 
   return (
     <div className="d-flex justify-content-end gap-2">
-      {defaultActions.map(({ id, label, icon, className, config }) =>
+      {defaultActions.map(({ id, label, icon, colorClassName, config }) =>
         config ? (
           <button
             key={id}
             type="button"
-            className={className}
+            className={`${ACTION_BUTTON_CLASS_NAME} ${colorClassName}`}
             aria-label={config.ariaLabel?.(item) ?? label}
             disabled={config.disabled}
             onClick={() => config.onClick(item)}
