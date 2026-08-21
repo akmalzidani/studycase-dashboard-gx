@@ -22,7 +22,7 @@ export function CoreTable<T extends object>({
   emptyMessage = "Tidak ada data",
 }: CoreTableProps<T>) {
   return (
-    <div className="table-responsive border rounded mb-3">
+    <div className="table-responsive-lg border rounded mb-3">
       <table className={tableClassName}>
         <thead>
           <tr>
@@ -34,12 +34,13 @@ export function CoreTable<T extends object>({
               return (
                 <th
                   key={col.key}
-                  className={`${col.headerClassName || ""} border-end ${isSortable ? "user-select-none" : ""}`}
+                  className={`position-sticky py-3 ${col.headerClassName || ""} border-end ${isSortable ? "user-select-none" : ""}`}
                   onClick={() =>
                     isSortable && col.sortKey && handleSort(col.sortKey)
                   }
                   style={{
                     cursor: isSortable ? "pointer" : "default",
+                    top: "var(--app-header-height)",
                     whiteSpace: "nowrap",
                   }}
                 >

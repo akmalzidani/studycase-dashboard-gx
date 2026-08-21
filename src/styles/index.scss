@@ -27,6 +27,7 @@ $theme-colors: map-merge($theme-colors, $custom-theme-colors);
 :root {
   --bs-body-font-family: "Inter", sans-serif;
   --z-index-overlay-toast: 1090;
+  --app-header-height: -24px;
 }
 
 [data-bs-theme="dark"] {
