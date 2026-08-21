@@ -55,7 +55,7 @@ export function SidebarNavItem({
   const Icon = item.icon;
 
   return (
-    <div>
+    <>
       {/* Parent Menu */}
       <div
         role="button"
@@ -114,6 +114,6 @@ export function SidebarNavItem({
           })}
         </div>
       )}
-    </div>
+    </>
   );
 }
