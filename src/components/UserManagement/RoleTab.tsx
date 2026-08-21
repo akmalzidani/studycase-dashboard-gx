@@ -78,23 +78,6 @@ export function RoleTab() {
       <PageHeader
         title="Role"
         description="Manage roles and user access rights."
-        actions={[
-          {
-            id: "create",
-            permission: PERMISSION_KEYS.ROLES.CREATE,
-            content: (
-              <button
-                className="btn btn-primary"
-                type="button"
-                disabled={isSubmitting}
-                onClick={roleActions.openCreateForm}
-              >
-                <BsPlusLg className="me-2" />
-                Add Role
-              </button>
-            ),
-          },
-        ]}
       />
       <DataTable
         {...table}
@@ -103,6 +86,19 @@ export function RoleTab() {
         keyExtractor={(role) => role.id ?? role.name}
         isLoading={isLoading}
         emptyMessage="No roles yet."
+        actions={
+          hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) && (
+            <button
+              className="btn btn-primary"
+              type="button"
+              disabled={isSubmitting}
+              onClick={roleActions.openCreateForm}
+            >
+              <BsPlusLg className="me-2" />
+              Add Role
+            </button>
+          )
+        }
       />
       <RoleFormModal
         isOpen={formModal.isOpen}

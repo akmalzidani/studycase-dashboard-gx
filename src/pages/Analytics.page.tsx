@@ -1,5 +1,5 @@
 import { AnalyticsContent } from "@/components/Analytics/AnalyticsContent";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCustomers } from "@/hooks/useCustomers";
@@ -25,10 +25,6 @@ function AnalyticsPage() {
 
   return (
     <>
-      <PageHeader
-        title="Analytics"
-        description="Analysis of customers, prospects, and service package performance."
-      />
 
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">

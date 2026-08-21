@@ -1,5 +1,5 @@
 import { DashboardContent } from "@/components/Dashboard/DashboardContent";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCustomers } from "@/hooks/useCustomers";
@@ -25,10 +25,6 @@ function DashboardPage() {
 
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        description="An operational overview of your customers and prospects."
-      />
 
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">

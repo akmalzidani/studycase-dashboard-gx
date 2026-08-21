@@ -86,23 +86,6 @@ export function UserTab() {
       <PageHeader
         title="User"
         description="Manage user accounts and their access status."
-        actions={[
-          {
-            id: "create",
-            permission: PERMISSION_KEYS.USERS.CREATE,
-            content: (
-              <button
-                className="btn btn-primary"
-                type="button"
-                disabled={isSubmitting || isLoading || isLoadingRoles}
-                onClick={openCreateForm}
-              >
-                <BsPlusLg className="me-2" />
-                Add User
-              </button>
-            ),
-          },
-        ]}
       />
       <DataTable
         {...table}
@@ -111,6 +94,19 @@ export function UserTab() {
         keyExtractor={(user) => user.id ?? user.email}
         isLoading={isLoading}
         emptyMessage="No users yet. Add a user to start managing access."
+        actions={
+          hasPermission(permissions, PERMISSION_KEYS.USERS.CREATE) && (
+            <button
+              className="btn btn-primary"
+              type="button"
+              disabled={isSubmitting || isLoading || isLoadingRoles}
+              onClick={openCreateForm}
+            >
+              <BsPlusLg className="me-2" />
+              Add User
+            </button>
+          )
+        }
       />
       <UserFormModal
         isOpen={formModal.isOpen}

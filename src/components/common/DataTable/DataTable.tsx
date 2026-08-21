@@ -18,6 +18,7 @@ export interface DataTableProps<T> extends UseDataTableReturn<T> {
   showPagination?: boolean;
   emptyMessage?: ReactNode;
   isLoading?: boolean;
+  actions?: ReactNode;
 }
 
 export function DataTable<T extends object>({
@@ -43,6 +44,7 @@ export function DataTable<T extends object>({
   showPagination = true,
   emptyMessage,
   isLoading = false,
+  actions,
 }: DataTableProps<T>) {
   const hasRowActions = Boolean(
     rowActions &&
@@ -68,13 +70,10 @@ export function DataTable<T extends object>({
     <div className={containerClassName}>
       <div className="card-body">
         <TableControls
-          showPagination={showPagination}
           showSearch={showSearch}
-          pageSize={pageSize}
-          setPageSize={setPageSize}
-          pageSizeOptions={pageSizeOptions}
           search={search}
           setSearch={setSearch}
+          actions={actions}
         />
 
         {isLoading || isSearching ? (
@@ -101,6 +100,8 @@ export function DataTable<T extends object>({
             setPage={setPage}
             totalItems={totalItems}
             pageSize={pageSize}
+            setPageSize={setPageSize}
+            pageSizeOptions={pageSizeOptions}
           />
         )}
       </div>

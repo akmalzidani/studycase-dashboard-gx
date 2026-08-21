@@ -1,5 +1,5 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import {
   ProspectFormModal,
   type ProspectFormValues,
@@ -20,7 +20,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Prospect } from "@/types";
 import { useCallback, useMemo } from "react";
-import { BsArrowClockwise, BsPlusLg } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
 
 export default function ProspectPage() {
   const permissions = useAuthStore((state) => state.permissions);
@@ -31,7 +31,6 @@ export default function ProspectPage() {
     createProspect,
     updateProspect,
     deleteProspect,
-    resetProspects,
   } = useProspects();
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
@@ -92,46 +91,6 @@ export default function ProspectPage() {
 
   return (
     <>
-      <PageHeader
-        title="Prospect"
-        description="Manage potential customer data (prospects)."
-        actions={[
-          // {
-          //   id: "reset",
-          //   permission: PERMISSION_KEYS.PROSPECT.UPDATE,
-          //   content: (
-          //     <button
-          //       type="button"
-          //       className="btn btn-outline-secondary"
-          //       disabled={isSubmitting}
-          //       onClick={() => resetProspects()}
-          //     >
-          //       <BsArrowClockwise className="me-2" />
-          //       Reset Data
-          //     </button>
-          //   ),
-          // },
-          {
-            id: "create",
-            permission: PERMISSION_KEYS.PROSPECT.CREATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={
-                  isSubmitting ||
-                  isLoadingSubscriptions ||
-                  subscriptions.length === 0
-                }
-                onClick={openCreateForm}
-              >
-                <BsPlusLg className="me-2" />
-                Add Prospect
-              </button>
-            ),
-          },
-        ]}
-      />
 
       <DataTable<Prospect>
         {...table}
@@ -140,6 +99,23 @@ export default function ProspectPage() {
         keyExtractor={(prospect) => prospect.id ?? prospect.email}
         emptyMessage="There are no prospects yet. Add your first prospect."
         isLoading={isLoading}
+        actions={
+          hasPermission(permissions, PERMISSION_KEYS.PROSPECT.CREATE) && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={
+                isSubmitting ||
+                isLoadingSubscriptions ||
+                subscriptions.length === 0
+              }
+              onClick={openCreateForm}
+            >
+              <BsPlusLg className="me-2" />
+              Add Prospect
+            </button>
+          )
+        }
       />
 
       <ProspectFormModal

@@ -8,7 +8,7 @@ import {
   DataTable,
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -20,7 +20,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
 import { useCallback, useMemo } from "react";
-import { BsArrowClockwise, BsPlusLg } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
 
 export default function SubscriptionPage() {
   const permissions = useAuthStore((state) => state.permissions);
@@ -31,7 +31,6 @@ export default function SubscriptionPage() {
     createSubscription,
     updateSubscription,
     deleteSubscription,
-    resetSubscriptions,
   } = useSubscriptions();
 
   const subscriptionFormModal = useModal(MODAL_TARGETS.SUBSCRIPTION_FORM);
@@ -98,42 +97,6 @@ export default function SubscriptionPage() {
 
   return (
     <>
-      <PageHeader
-        title="Subscription"
-        description="Manage packages and subscriptions."
-        actions={[
-          // {
-          //   id: "reset",
-          //   permission: PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
-          //   content: (
-          //     <button
-          //       type="button"
-          //       className="btn btn-outline-secondary"
-          //       disabled={isSubmitting}
-          //       onClick={() => resetSubscriptions()}
-          //     >
-          //       <BsArrowClockwise className="me-2" />
-          //       Reset Data
-          //     </button>
-          //   ),
-          // },
-          {
-            id: "create",
-            permission: PERMISSION_KEYS.SUBSCRIPTION.CREATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={isSubmitting}
-                onClick={openCreateForm}
-              >
-                <BsPlusLg className="me-2" />
-                Add Package
-              </button>
-            ),
-          },
-        ]}
-      />
 
       <DataTable<Subscription>
         {...table}
@@ -144,6 +107,19 @@ export default function SubscriptionPage() {
         }
         emptyMessage="There are no subscription packages yet. Add your first package."
         isLoading={isLoading}
+        actions={
+          hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={isSubmitting}
+              onClick={openCreateForm}
+            >
+              <BsPlusLg className="me-2" />
+              Add Package
+            </button>
+          )
+        }
       />
 
       <SubscriptionFormModal

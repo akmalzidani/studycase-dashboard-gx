@@ -1,5 +1,5 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import {
   CustomerFormModal,
   type CustomerFormValues,
@@ -20,7 +20,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Customer } from "@/types";
 import { useCallback, useMemo } from "react";
-import { BsArrowClockwise, BsPlusLg } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
 
 export default function CustomersPage() {
   const permissions = useAuthStore((state) => state.permissions);
@@ -31,7 +31,6 @@ export default function CustomersPage() {
     createCustomer,
     updateCustomer,
     deleteCustomer,
-    resetCustomers,
   } = useCustomers();
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
@@ -92,46 +91,6 @@ export default function CustomersPage() {
 
   return (
     <>
-      <PageHeader
-        title="Customers"
-        description="Manage active customer data."
-        actions={[
-          // {
-          //   id: "reset",
-          //   permission: PERMISSION_KEYS.CUSTOMERS.UPDATE,
-          //   content: (
-          //     <button
-          //       type="button"
-          //       className="btn btn-outline-secondary"
-          //       disabled={isSubmitting}
-          //       onClick={() => resetCustomers()}
-          //     >
-          //       <BsArrowClockwise className="me-2" />
-          //       Reset Data
-          //     </button>
-          //   ),
-          // },
-          {
-            id: "create",
-            permission: PERMISSION_KEYS.CUSTOMERS.CREATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-primary"
-                disabled={
-                  isSubmitting ||
-                  isLoadingSubscriptions ||
-                  subscriptions.length === 0
-                }
-                onClick={openCreateForm}
-              >
-                <BsPlusLg className="me-2" />
-                Add Customer
-              </button>
-            ),
-          },
-        ]}
-      />
 
       <DataTable<Customer>
         {...table}
@@ -140,6 +99,23 @@ export default function CustomersPage() {
         keyExtractor={(customer) => customer.id ?? customer.email}
         emptyMessage="There are no customers yet. Add your first customer."
         isLoading={isLoading}
+        actions={
+          hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.CREATE) && (
+            <button
+              type="button"
+              className="btn btn-primary"
+              disabled={
+                isSubmitting ||
+                isLoadingSubscriptions ||
+                subscriptions.length === 0
+              }
+              onClick={openCreateForm}
+            >
+              <BsPlusLg className="me-2" />
+              Add Customer
+            </button>
+          )
+        }
       />
 
       <CustomerFormModal

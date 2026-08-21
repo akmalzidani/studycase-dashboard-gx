@@ -4,6 +4,8 @@ export interface PaginationProps {
   setPage: (page: number) => void;
   totalItems: number;
   pageSize: number;
+  setPageSize: (size: number) => void;
+  pageSizeOptions: number[];
 }
 
 export function Pagination({
@@ -12,6 +14,8 @@ export function Pagination({
   setPage,
   totalItems,
   pageSize,
+  setPageSize,
+  pageSizeOptions,
 }: PaginationProps) {
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
@@ -27,9 +31,26 @@ export function Pagination({
 
   return (
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-      <div className="text-muted small mb-2 mb-md-0">
-        Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1} to{" "}
-        {Math.min(page * pageSize, totalItems)} of {totalItems} entries
+      <div className="d-flex align-items-center gap-2 text-muted small mb-2 mb-md-0">
+        <span>
+          Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1} to{" "}
+          {Math.min(page * pageSize, totalItems)} of {totalItems} entries
+        </span>
+        <label className="d-flex align-items-center gap-2">
+          <span>Show</span>
+          <select
+            className="form-select form-select-sm w-auto"
+            value={pageSize}
+            onChange={(event) => setPageSize(Number(event.target.value))}
+            aria-label="Entries per page"
+          >
+            {pageSizeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <nav aria-label="Page navigation">
