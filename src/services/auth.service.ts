@@ -75,7 +75,7 @@ export const authService = {
 
   requireValidSession(): AuthSession {
     const session = this.getValidSession();
-    if (!session) throw new Error("Sesi tidak valid atau telah berakhir.");
+    if (!session) throw new Error("The session is invalid or has expired.");
 
     return session;
   },

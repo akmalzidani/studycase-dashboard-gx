@@ -30,8 +30,8 @@ export function UserTab() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<ManagedUser>({
-    deleteTitle: "Hapus user",
-    deleteMessage: (user) => `Apakah Anda yakin ingin menghapus ${user.name}?`,
+    deleteTitle: "Delete user",
+    deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
     modal: formModal,
     onDelete: deleteUser,
   });
@@ -85,7 +85,7 @@ export function UserTab() {
     <>
       <PageHeader
         title="User"
-        description="Kelola akun pengguna dan status aksesnya."
+        description="Manage user accounts and their access status."
         actions={[
           {
             id: "create",
@@ -98,7 +98,7 @@ export function UserTab() {
                 onClick={openCreateForm}
               >
                 <BsPlusLg className="me-2" />
-                Tambah User
+                Add User
               </button>
             ),
           },
@@ -110,7 +110,7 @@ export function UserTab() {
         rowActions={rowActions}
         keyExtractor={(user) => user.id ?? user.email}
         isLoading={isLoading}
-        emptyMessage="Belum ada user. Tambahkan user untuk mulai mengelola akses."
+        emptyMessage="No users yet. Add a user to start managing access."
       />
       <UserFormModal
         isOpen={formModal.isOpen}

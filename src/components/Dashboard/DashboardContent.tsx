@@ -55,19 +55,19 @@ export function DashboardContent({
         {canReadCustomers && (
           <>
             <MetricCard
-              label="Customer aktif"
+              label="Active customers"
               value={activeCustomerCount}
               icon={<BsPersonCheck className="fs-4" />}
               variant="success"
             />
             <MetricCard
-              label="Customer diblokir"
+              label="Blocked customers"
               value={blockedCustomerCount}
               icon={<BsExclamationTriangle className="fs-4" />}
               variant="danger"
             />
             <MetricCard
-              label="Estimasi MRR"
+              label="Estimated MRR"
               value={formatCurrency(estimatedMrr)}
               icon={<BsPeople className="fs-4" />}
               variant="primary"
@@ -76,7 +76,7 @@ export function DashboardContent({
         )}
         {canReadProspects && (
           <MetricCard
-            label="Prospect pending"
+            label="Pending prospects"
             value={pendingProspectCount}
             icon={<BsPersonPlus className="fs-4" />}
             variant="info"
@@ -89,17 +89,17 @@ export function DashboardContent({
           <div className="col-lg-6">
             <section className="card h-100">
               <div className="card-body">
-                <h2 className="h5">Tindak lanjut prospect</h2>
+                <h2 className="h5">Prospect follow-up</h2>
                 <p className="text-muted mb-4">
                   {pendingProspectCount > 0
-                    ? `${pendingProspectCount} prospect masih menunggu tindak lanjut.`
-                    : "Tidak ada prospect yang menunggu tindak lanjut."}
+                    ? `${pendingProspectCount} prospects are awaiting follow-up.`
+                    : "No prospects are awaiting follow-up."}
                 </p>
                 <Link
                   className="btn btn-outline-primary"
                   to={APP_PATHS.PROSPECT.INDEX}
                 >
-                  Lihat Prospect
+                  View Prospects
                 </Link>
               </div>
             </section>
@@ -109,17 +109,17 @@ export function DashboardContent({
           <div className="col-lg-6">
             <section className="card h-100">
               <div className="card-body">
-                <h2 className="h5">Status customer</h2>
+                <h2 className="h5">Customer status</h2>
                 <p className="text-muted mb-4">
                   {blockedCustomerCount > 0
-                    ? `${blockedCustomerCount} customer diblokir dan perlu diperiksa.`
-                    : "Seluruh customer berada dalam status aktif."}
+                    ? `${blockedCustomerCount} customers are blocked and need attention.`
+                    : "All customers have active status."}
                 </p>
                 <Link
                   className="btn btn-outline-primary"
                   to={APP_PATHS.CUSTOMERS.INDEX}
                 >
-                  Lihat Customer
+                  View Customers
                 </Link>
               </div>
             </section>

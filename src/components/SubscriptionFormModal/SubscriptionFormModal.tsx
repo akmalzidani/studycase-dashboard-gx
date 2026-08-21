@@ -62,7 +62,7 @@ export function SubscriptionFormModal({
     <Modal
       target={MODAL_TARGETS.SUBSCRIPTION_FORM}
       title={
-        isEditing ? "Edit Paket Subscription" : "Tambah Paket Subscription"
+        isEditing ? "Edit Subscription Package" : "Add Subscription Package"
       }
       isOpen={isOpen}
       closeDisabled={isSubmitting}
@@ -75,7 +75,7 @@ export function SubscriptionFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -84,10 +84,10 @@ export function SubscriptionFormModal({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? "Saving..."
               : isEditing
-                ? "Simpan Perubahan"
-                : "Tambah Paket"}
+                ? "Save Changes"
+                : "Add Package"}
           </button>
         </>
       }
@@ -95,8 +95,8 @@ export function SubscriptionFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="subscription-package-name"
-          label="Nama paket"
-          placeholder="Masukkan nama paket"
+          label="Package name"
+          placeholder="Enter package name"
           className="form-control"
           value={values.packageName}
           minLength={2}
@@ -106,7 +106,7 @@ export function SubscriptionFormModal({
         />
         <div className="mb-3">
           <label className="form-label" htmlFor="subscription-speed">
-            Kecepatan
+            Speed
           </label>
           <div className="input-group">
             <input
@@ -115,7 +115,7 @@ export function SubscriptionFormModal({
               min={1}
               className="form-control"
               value={values.speed || ""}
-              placeholder="Contoh: 100"
+              placeholder="Example: 100"
               required
               disabled={isSubmitting}
               onChange={(event) =>
@@ -127,13 +127,13 @@ export function SubscriptionFormModal({
         </div>
         <div>
           <label className="form-label" htmlFor="subscription-monthly-fee">
-            Biaya per bulan
+            Monthly fee
           </label>
           <div className="input-group">
             <span className="input-group-text">Rp</span>
             <input
               id="subscription-monthly-fee"
-              placeholder="Masukkan biaya per bulan"
+              placeholder="Enter monthly fee"
               type="text"
               inputMode="numeric"
               className="form-control text-end font-monospace"

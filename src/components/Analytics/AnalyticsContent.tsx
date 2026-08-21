@@ -28,9 +28,9 @@ export function AnalyticsContent({
         <div className="col-lg-4">
           <section className="card h-100">
             <div className="card-body">
-              <h2 className="h5">Funnel prospect</h2>
+              <h2 className="h5">Prospect funnel</h2>
               <p className="text-muted small">
-                Status tindak lanjut prospect saat ini.
+                Current prospect follow-up status.
               </p>
               <div className="d-flex justify-content-between mb-2">
                 <span>Completed</span>
@@ -65,22 +65,22 @@ export function AnalyticsContent({
         <div className="col-lg-8">
           <section className="card h-100">
             <div className="card-body">
-              <h2 className="h5">Estimasi MRR per paket</h2>
+              <h2 className="h5">Estimated MRR by package</h2>
               <p className="text-muted small">
-                Dihitung dari customer dengan status aktif.
+                Calculated from customers with active status.
               </p>
               {packageSummaries.length === 0 ? (
                 <p className="text-muted mb-0">
-                  Belum ada data paket untuk dianalisis.
+                  No package data is available for analysis yet.
                 </p>
               ) : (
                 <div className="table-responsive">
                   <table className="table align-middle mb-0">
                     <thead>
                       <tr>
-                        <th>Paket</th>
-                        <th className="text-end">Customer aktif</th>
-                        <th className="text-end">Estimasi MRR</th>
+                        <th>Package</th>
+                        <th className="text-end">Active customers</th>
+                        <th className="text-end">Estimated MRR</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -106,7 +106,7 @@ export function AnalyticsContent({
         <div className="col-12">
           <section className="card">
             <div className="card-body">
-              <h2 className="h5">Minat prospect per paket</h2>
+              <h2 className="h5">Prospect interest by package</h2>
               <div className="row g-3">
                 {packageSummaries.map((item) => (
                   <div key={item.name} className="col-md-4">
@@ -132,8 +132,8 @@ export function AnalyticsContent({
       {(canReadCustomers || canReadProspects) && highestMrrPackage && (
         <div className="col-12">
           <div className="alert alert-primary mb-0" role="status">
-            <strong>Insight:</strong> Paket {highestMrrPackage.name} saat ini
-            memberikan estimasi MRR terbesar, yaitu{" "}
+            <strong>Insight:</strong> The {highestMrrPackage.name} package currently
+            provides the highest estimated MRR of{" "}
             {formatCurrency(highestMrrPackage.estimatedMrr)}.
           </div>
         </div>

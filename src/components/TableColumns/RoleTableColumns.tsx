@@ -13,14 +13,14 @@ function countPermissions(permissions: Permissions): number {
 export const roleTableColumns: Column<Role>[] = [
   {
     key: "name",
-    header: "Nama role",
+    header: "Role name",
     sortKey: "name",
     render: (role) => <span className="fw-semibold">{role.name}</span>,
   },
-  { key: "description", header: "Deskripsi", sortKey: "description" },
+  { key: "description", header: "Description", sortKey: "description" },
   {
     key: "permissions",
-    header: "Jumlah akses",
+    header: "Access count",
     render: (role) => `${countPermissions(role.permissions)} permission`,
   },
 ];

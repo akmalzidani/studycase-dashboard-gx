@@ -28,11 +28,11 @@ export function Pagination({
   return (
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
       <div className="text-muted small mb-2 mb-md-0">
-        Menampilkan {totalItems === 0 ? 0 : (page - 1) * pageSize + 1} sampai{" "}
-        {Math.min(page * pageSize, totalItems)} dari {totalItems} entri
+        Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1} to{" "}
+        {Math.min(page * pageSize, totalItems)} of {totalItems} entries
       </div>
 
-      <nav aria-label="Navigasi halaman">
+      <nav aria-label="Page navigation">
         <ul className="pagination pagination-sm mb-0">
           <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
             <button
@@ -40,7 +40,7 @@ export function Pagination({
               onClick={() => setPage(page - 1)}
               disabled={page === 1}
             >
-              Sebelumnya
+              Previous
             </button>
           </li>
 
@@ -74,7 +74,7 @@ export function Pagination({
               onClick={() => setPage(page + 1)}
               disabled={page === totalPages || totalPages === 0}
             >
-              Selanjutnya
+              Next
             </button>
           </li>
         </ul>

@@ -51,7 +51,7 @@ export function ProfileFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -59,7 +59,7 @@ export function ProfileFormModal({
             className="btn btn-primary"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </button>
         </>
       }
@@ -67,7 +67,7 @@ export function ProfileFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="profile-name"
-          label="Nama"
+          label="Name"
           className="form-control"
           value={values.name}
           minLength={3}

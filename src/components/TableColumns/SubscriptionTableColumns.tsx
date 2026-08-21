@@ -5,19 +5,19 @@ import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
 export const subscriptionTableColumns: Column<Subscription>[] = [
   {
     key: "packageName",
-    header: "Paket",
+    header: "Package",
     sortKey: "packageName",
     className: "fw-semibold",
   },
   {
     key: "speed",
-    header: "Kecepatan",
+    header: "Speed",
     sortKey: "speed",
     render: (subscription) => formatSpeed(subscription.speed),
   },
   {
     key: "monthlyFee",
-    header: "Biaya per bulan",
+    header: "Monthly fee",
     className: "font-monospace",
     sortKey: "monthlyFee",
     render: (subscription) => formatCurrency(subscription.monthlyFee),

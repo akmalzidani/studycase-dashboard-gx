@@ -45,11 +45,11 @@ export default function ProfilePage() {
         });
         authService.updateSessionUser(updatedUser);
         checkSession();
-        toast.success("Profile berhasil diperbarui.");
+        toast.success("Profile updated successfully.");
         return true;
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Gagal memperbarui profile.",
+          error instanceof Error ? error.message : "Failed to update profile.",
         );
         return false;
       } finally {
@@ -64,7 +64,7 @@ export default function ProfilePage() {
       if (!user?.id) return false;
 
       if (values.newPassword !== values.confirmNewPassword) {
-        toast.error("Konfirmasi password baru tidak sesuai.");
+        toast.error("New password confirmation does not match.");
         return false;
       }
 
@@ -76,11 +76,11 @@ export default function ProfilePage() {
         });
         authService.updateSessionUser(updatedUser);
         checkSession();
-        toast.success("Password berhasil diubah.");
+        toast.success("Password changed successfully.");
         return true;
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Gagal mengubah password.",
+          error instanceof Error ? error.message : "Failed to change password.",
         );
         return false;
       } finally {
@@ -93,10 +93,10 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Profile"
-        description="Pengaturan profil akun Anda."
+        description="Manage your account profile settings."
         actions={[
           {
             id: "change-password",
@@ -108,7 +108,7 @@ export default function ProfilePage() {
                 onClick={changePasswordModal.open}
               >
                 <BsKey className="me-2" />
-                Ubah Password
+                Change Password
               </button>
             ),
           },
@@ -165,6 +165,6 @@ export default function ProfilePage() {
         onClose={changePasswordModal.close}
         onSubmit={handleChangePassword}
       />
-    </div>
+    </>
   );
 }

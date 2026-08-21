@@ -43,9 +43,9 @@ export default function ProspectPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Prospect>({
-    deleteTitle: "Hapus prospect",
+    deleteTitle: "Delete prospect",
     deleteMessage: (prospect) =>
-      `Apakah Anda yakin ingin menghapus ${prospect.name}?`,
+      `Are you sure you want to delete ${prospect.name}?`,
     modal: prospectFormModal,
     onDelete: deleteProspect,
   });
@@ -91,10 +91,10 @@ export default function ProspectPage() {
   );
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Prospect"
-        description="Manajemen data calon pelanggan (prospek)."
+        description="Manage potential customer data (prospects)."
         actions={[
           // {
           //   id: "reset",
@@ -126,7 +126,7 @@ export default function ProspectPage() {
                 onClick={openCreateForm}
               >
                 <BsPlusLg className="me-2" />
-                Tambah Prospect
+                Add Prospect
               </button>
             ),
           },
@@ -138,7 +138,7 @@ export default function ProspectPage() {
         columns={prospectTableColumns}
         rowActions={rowActions}
         keyExtractor={(prospect) => prospect.id ?? prospect.email}
-        emptyMessage="Belum ada prospect. Tambahkan prospect pertama Anda."
+        emptyMessage="There are no prospects yet. Add your first prospect."
         isLoading={isLoading}
       />
 
@@ -150,6 +150,6 @@ export default function ProspectPage() {
         onClose={prospectFormModal.close}
         onSubmit={handleSubmit}
       />
-    </div>
+    </>
   );
 }

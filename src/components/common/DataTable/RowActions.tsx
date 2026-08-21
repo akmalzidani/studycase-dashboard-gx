@@ -19,7 +19,7 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
   const defaultActions: DefaultActionDefinition<T>[] = [
     {
       id: "detail",
-      label: "Detail",
+      label: "Details",
       icon: <BsEye />,
       className: "btn btn-sm btn-secondary",
       config: actions.detail,
@@ -33,7 +33,7 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
     },
     {
       id: "delete",
-      label: "Hapus",
+      label: "Delete",
       icon: <BsTrash />,
       className: "btn btn-sm btn-danger",
       config: actions.delete,

@@ -24,16 +24,16 @@ function AnalyticsPage() {
   const isLoading = isLoadingCustomers || isLoadingProspects;
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Analytics"
-        description="Analisis customer, prospect, dan performa paket layanan."
+        description="Analysis of customers, prospects, and service package performance."
       />
 
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">
           <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Memuat analytics...</span>
+            <span className="visually-hidden">Loading analytics...</span>
           </div>
         </div>
       ) : (
@@ -43,7 +43,7 @@ function AnalyticsPage() {
           {...metrics}
         />
       )}
-    </div>
+    </>
   );
 }
 

@@ -25,7 +25,7 @@ export function useSubscriptions() {
     try {
       setSubscriptions(await subscriptionService.getAll());
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memuat subscription."));
+      toast.error(getErrorMessage(error, "Failed to load subscriptions."));
     } finally {
       setIsLoading(false);
     }
@@ -46,11 +46,11 @@ export function useSubscriptions() {
         ...useSubscriptionStore.getState().subscriptions,
         subscription,
       ]);
-      toast.success("Paket subscription berhasil ditambahkan.");
+      toast.success("Subscription package added successfully.");
       return true;
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Gagal menambahkan paket subscription."),
+        getErrorMessage(error, "Failed to add subscription package."),
       );
       return false;
     } finally {
@@ -70,11 +70,11 @@ export function useSubscriptions() {
           .getState()
           .subscriptions.map((item) => (item.id === id ? subscription : item)),
       );
-      toast.success("Paket subscription berhasil diperbarui.");
+      toast.success("Subscription package updated successfully.");
       return true;
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Gagal memperbarui paket subscription."),
+        getErrorMessage(error, "Failed to update subscription package."),
       );
       return false;
     } finally {
@@ -91,10 +91,10 @@ export function useSubscriptions() {
           .getState()
           .subscriptions.filter((item) => item.id !== id),
       );
-      toast.success("Paket subscription berhasil dihapus.");
+      toast.success("Subscription package deleted successfully.");
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Gagal menghapus paket subscription."),
+        getErrorMessage(error, "Failed to delete subscription package."),
       );
     } finally {
       setIsSubmitting(false);
@@ -105,9 +105,9 @@ export function useSubscriptions() {
     setIsSubmitting(true);
     try {
       setSubscriptions(await subscriptionService.reset());
-      toast.success("Data subscription berhasil direset.");
+      toast.success("Subscription data reset successfully.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal mereset subscription."));
+      toast.error(getErrorMessage(error, "Failed to reset subscriptions."));
     } finally {
       setIsSubmitting(false);
     }

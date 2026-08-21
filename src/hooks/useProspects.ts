@@ -23,7 +23,7 @@ export function useProspects() {
     try {
       setProspects(await prospectService.getAll());
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memuat data prospect."));
+      toast.error(getErrorMessage(error, "Failed to load prospect data."));
     } finally {
       setIsLoading(false);
     }
@@ -41,10 +41,10 @@ export function useProspects() {
     try {
       const prospect = await prospectService.create(payload);
       setProspects([...useProspectStore.getState().prospects, prospect]);
-      toast.success("Prospect berhasil ditambahkan.");
+      toast.success("Prospect added successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menambahkan prospect."));
+      toast.error(getErrorMessage(error, "Failed to add prospect."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -60,10 +60,10 @@ export function useProspects() {
           .getState()
           .prospects.map((item) => (item.id === id ? prospect : item)),
       );
-      toast.success("Prospect berhasil diperbarui.");
+      toast.success("Prospect updated successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memperbarui prospect."));
+      toast.error(getErrorMessage(error, "Failed to update prospect."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -77,9 +77,9 @@ export function useProspects() {
       setProspects(
         useProspectStore.getState().prospects.filter((item) => item.id !== id),
       );
-      toast.success("Prospect berhasil dihapus.");
+      toast.success("Prospect deleted successfully.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menghapus prospect."));
+      toast.error(getErrorMessage(error, "Failed to delete prospect."));
     } finally {
       setIsSubmitting(false);
     }
@@ -89,9 +89,9 @@ export function useProspects() {
     setIsSubmitting(true);
     try {
       setProspects(await prospectService.reset());
-      toast.info("Data prospect telah dikembalikan ke data awal.");
+      toast.info("Prospect data has been restored to its initial state.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal mereset data prospect."));
+      toast.error(getErrorMessage(error, "Failed to reset prospect data."));
     } finally {
       setIsSubmitting(false);
     }

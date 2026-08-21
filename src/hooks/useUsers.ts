@@ -17,7 +17,7 @@ export function useUsers() {
     try {
       setUsers(await userService.getAll());
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memuat data user."));
+      toast.error(getErrorMessage(error, "Failed to load user data."));
     } finally {
       setIsLoading(false);
     }
@@ -34,10 +34,10 @@ export function useUsers() {
     try {
       const created = await userService.create(payload);
       setUsers([...useUserStore.getState().users, created]);
-      toast.success("User berhasil ditambahkan.");
+      toast.success("User added successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menambahkan user."));
+      toast.error(getErrorMessage(error, "Failed to add user."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -53,10 +53,10 @@ export function useUsers() {
           .getState()
           .users.map((user) => (user.id === id ? updated : user)),
       );
-      toast.success("User berhasil diperbarui.");
+      toast.success("User updated successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memperbarui user."));
+      toast.error(getErrorMessage(error, "Failed to update user."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -68,9 +68,9 @@ export function useUsers() {
     try {
       await userService.remove(id);
       setUsers(useUserStore.getState().users.filter((user) => user.id !== id));
-      toast.success("User berhasil dihapus.");
+      toast.success("User deleted successfully.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menghapus user."));
+      toast.error(getErrorMessage(error, "Failed to delete user."));
     } finally {
       setIsSubmitting(false);
     }

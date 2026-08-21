@@ -13,13 +13,13 @@ export const MOCK_ROLES: Role[] = [
   {
     id: "role-superadmin",
     name: "Super Administrator",
-    description: "Akses penuh ke seluruh fitur dan pengaturan aplikasi.",
+    description: "Full access to all application features and settings.",
     permissions: createPermissions(ALL_PERMISSION_KEYS),
   },
   {
     id: "role-user",
     name: "Standard User",
-    description: "Akses operasional dasar untuk customer dan prospect.",
+    description: "Basic operational access for customers and prospects.",
     permissions: createPermissions([
       PERMISSION_KEYS.PROSPECT.CREATE,
       PERMISSION_KEYS.PROSPECT.READ,

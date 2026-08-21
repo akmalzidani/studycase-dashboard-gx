@@ -56,7 +56,7 @@ export function DataTable<T extends object>({
         ...columns,
         {
           key: "actions",
-          header: "Aksi",
+          header: "Actions",
           className: "text-end",
           headerClassName: "text-end",
           render: (item: T) => <RowActions item={item} actions={rowActions!} />,

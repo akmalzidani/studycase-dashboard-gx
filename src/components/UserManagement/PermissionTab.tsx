@@ -24,7 +24,7 @@ export function PermissionTab() {
     <>
       <PageHeader
         title="Permission"
-        description="Daftar hak akses yang tersedia di aplikasi."
+        description="List of access rights available in the application."
       />
       <div className="card">
         <div className="card-body">
@@ -32,8 +32,8 @@ export function PermissionTab() {
             <table className="table table-hover align-middle mb-0">
               <thead>
                 <tr>
-                  <th>Fitur</th>
-                  <th>Aksi</th>
+                  <th>Feature</th>
+                  <th>Action</th>
                   <th>Label</th>
                   <th>Permission key</th>
                 </tr>

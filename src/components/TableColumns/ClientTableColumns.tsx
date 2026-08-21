@@ -16,9 +16,9 @@ export function createClientTableColumns<T extends ClientTableItem>({
 }: ClientTableColumnsOptions<T>): Column<T>[] {
   return [
     { key: "id", header: "ID", sortKey: "id" },
-    { key: "name", header: "Nama", sortKey: "name" },
+    { key: "name", header: "Name", sortKey: "name" },
     { key: "email", header: "Email", sortKey: "email" },
-    { key: "phoneNumber", header: "Nomor Telepon", sortKey: "phoneNumber" },
+    { key: "phoneNumber", header: "Phone Number", sortKey: "phoneNumber" },
     {
       key: "subscription",
       header: "Subscription",

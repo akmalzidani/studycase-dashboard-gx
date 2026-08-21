@@ -68,7 +68,7 @@ export function UserFormModal({
   return (
     <Modal
       target={USER_FORM_MODAL_TARGET}
-      title={isEditing ? "Edit User" : "Tambah User"}
+      title={isEditing ? "Edit User" : "Add User"}
       isOpen={isOpen}
       closeDisabled={isSubmitting}
       onClose={onClose}
@@ -80,7 +80,7 @@ export function UserFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -89,10 +89,10 @@ export function UserFormModal({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? "Saving..."
               : isEditing
-                ? "Simpan Perubahan"
-                : "Tambah User"}
+                ? "Save Changes"
+                : "Add User"}
           </button>
         </>
       }
@@ -100,10 +100,10 @@ export function UserFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="user-name"
-          label="Nama"
+          label="Name"
           className="form-control"
           value={values.name}
-          placeholder="Masukkan Nama lengkap"
+          placeholder="Enter full name"
           onChange={(event) => updateValue("name", event.target.value)}
           required
           minLength={3}
@@ -114,7 +114,7 @@ export function UserFormModal({
           label="Email"
           className="form-control"
           type="email"
-          placeholder="Masukkan Email"
+          placeholder="Enter email"
           value={values.email}
           onChange={(event) => updateValue("email", event.target.value)}
           required
@@ -125,7 +125,7 @@ export function UserFormModal({
           label="Password"
           className="form-control"
           type="password"
-          placeholder="Masukkan Password"
+          placeholder="Enter password"
           value={values.password}
           onChange={(event) => updateValue("password", event.target.value)}
           required
@@ -145,7 +145,7 @@ export function UserFormModal({
             disabled={isSubmitting}
           >
             <option value="" disabled>
-              Pilih role
+              Select a role
             </option>
             {roles.map((role) => (
               <option key={role.id} value={role.id}>
@@ -170,8 +170,8 @@ export function UserFormModal({
             }
             disabled={isSubmitting}
           >
-            <option value="Active">Aktif</option>
-            <option value="Inactive">Tidak aktif</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
           </select>
         </div>
       </form>

@@ -23,7 +23,7 @@ export function TableControls({
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
       {showPagination && (
         <div className="d-flex align-items-center">
-          <span className="me-2 text-muted small">Tampilkan</span>
+          <span className="me-2 text-muted small">Show</span>
           <select
             className="form-select form-select-sm w-auto"
             style={{ cursor: "pointer" }}
@@ -36,7 +36,7 @@ export function TableControls({
               </option>
             ))}
           </select>
-          <span className="ms-2 text-muted small">entri</span>
+          <span className="ms-2 text-muted small">entries</span>
         </div>
       )}
 
@@ -49,7 +49,7 @@ export function TableControls({
             <input
               type="search"
               className="form-control border-start-0"
-              placeholder="Cari..."
+              placeholder="Search..."
               value={search}
 
               onChange={(e) => setSearch(e.target.value)}

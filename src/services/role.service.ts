@@ -21,7 +21,7 @@ export const roleService = createLocalStorageCrudService<Role>({
         role.id !== excludedId &&
         role.name.toLowerCase() === payload.name.toLowerCase(),
     )
-      ? "Nama role sudah digunakan."
+      ? "This role name is already in use."
       : undefined,
 });
 

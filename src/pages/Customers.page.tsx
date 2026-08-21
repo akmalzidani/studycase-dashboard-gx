@@ -43,9 +43,9 @@ export default function CustomersPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Customer>({
-    deleteTitle: "Hapus customer",
+    deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
-      `Apakah Anda yakin ingin menghapus ${customer.name}?`,
+      `Are you sure you want to delete ${customer.name}?`,
     modal: customerFormModal,
     onDelete: deleteCustomer,
   });
@@ -91,10 +91,10 @@ export default function CustomersPage() {
   );
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Customers"
-        description="Manajemen data pelanggan aktif."
+        description="Manage active customer data."
         actions={[
           // {
           //   id: "reset",
@@ -126,7 +126,7 @@ export default function CustomersPage() {
                 onClick={openCreateForm}
               >
                 <BsPlusLg className="me-2" />
-                Tambah Customer
+                Add Customer
               </button>
             ),
           },
@@ -138,7 +138,7 @@ export default function CustomersPage() {
         columns={customerTableColumns}
         rowActions={rowActions}
         keyExtractor={(customer) => customer.id ?? customer.email}
-        emptyMessage="Belum ada customer. Tambahkan customer pertama Anda."
+        emptyMessage="There are no customers yet. Add your first customer."
         isLoading={isLoading}
       />
 
@@ -150,6 +150,6 @@ export default function CustomersPage() {
         onClose={customerFormModal.close}
         onSubmit={handleSubmit}
       />
-    </div>
+    </>
   );
 }

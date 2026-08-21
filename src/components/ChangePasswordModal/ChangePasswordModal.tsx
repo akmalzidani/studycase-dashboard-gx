@@ -38,7 +38,7 @@ export function ChangePasswordModal({
   return (
     <Modal
       target={MODAL_TARGETS.CHANGE_PASSWORD}
-      title="Ubah Password"
+      title="Change Password"
       isOpen={isOpen}
       closeDisabled={isSubmitting}
       onClose={onClose}
@@ -50,7 +50,7 @@ export function ChangePasswordModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -58,7 +58,7 @@ export function ChangePasswordModal({
             className="btn btn-primary"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Menyimpan..." : "Ubah Password"}
+            {isSubmitting ? "Saving..." : "Change Password"}
           </button>
         </>
       }
@@ -68,13 +68,13 @@ export function ChangePasswordModal({
           [
             [
               "currentPassword",
-              "Password saat ini",
+              "Current password",
               "profile-current-password",
             ],
-            ["newPassword", "Password baru", "profile-new-password"],
+            ["newPassword", "New password", "profile-new-password"],
             [
               "confirmNewPassword",
-              "Konfirmasi password baru",
+              "Confirm new password",
               "profile-confirm-new-password",
             ],
           ] as const

@@ -57,7 +57,7 @@ export const userService = {
     const users = readUsers();
     const email = normalizeEmail(payload.email);
     if (users.some((user) => user.email === email)) {
-      throw new Error("Email sudah digunakan oleh user lain.");
+      throw new Error("This email address is already used by another user.");
     }
 
     const user: User = {
@@ -79,11 +79,11 @@ export const userService = {
 
     const users = readUsers();
     const index = users.findIndex((user) => user.id === id);
-    if (index === -1) throw new Error("User tidak ditemukan.");
+    if (index === -1) throw new Error("User was not found.");
 
     const email = normalizeEmail(payload.email);
     if (users.some((user) => user.id !== id && user.email === email)) {
-      throw new Error("Email sudah digunakan oleh user lain.");
+      throw new Error("This email address is already used by another user.");
     }
 
     const user: User = {
@@ -106,7 +106,7 @@ export const userService = {
 
     const users = readUsers();
     if (!users.some((user) => user.id === id)) {
-      throw new Error("User tidak ditemukan.");
+      throw new Error("User was not found.");
     }
     localStorage.setItem(
       STORAGE_KEYS.USERS,
@@ -121,11 +121,11 @@ export const userService = {
 
     const users = readUsers();
     const index = users.findIndex((user) => user.id === id);
-    if (index === -1) throw new Error("User tidak ditemukan.");
+    if (index === -1) throw new Error("User was not found.");
 
     const email = normalizeEmail(payload.email);
     if (users.some((user) => user.id !== id && user.email === email)) {
-      throw new Error("Email sudah digunakan oleh user lain.");
+      throw new Error("This email address is already used by another user.");
     }
 
     const updatedUser: User = {
@@ -149,10 +149,10 @@ export const userService = {
 
     const users = readUsers();
     const index = users.findIndex((user) => user.id === id);
-    if (index === -1) throw new Error("User tidak ditemukan.");
+    if (index === -1) throw new Error("User was not found.");
 
     if (users[index].password !== payload.currentPassword) {
-      throw new Error("Password saat ini tidak sesuai.");
+      throw new Error("The current password is incorrect.");
     }
 
     const updatedUser: User = {

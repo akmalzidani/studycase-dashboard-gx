@@ -9,7 +9,7 @@ export const subscriptionService = createLocalStorageCrudService<Subscription>({
   storageKey: STORAGE_KEYS.SUBSCRIPTIONS,
   initialData: MOCK_SUBSCRIPTIONS,
   idPrefix: "SUB",
-  entityName: "Paket subscription",
+  entityName: "Subscription package",
   normalizePayload: (payload) => ({
     ...payload,
     packageName: payload.packageName.trim(),
@@ -24,6 +24,6 @@ export const subscriptionService = createLocalStorageCrudService<Subscription>({
         subscription.packageName.toLowerCase() ===
           payload.packageName.toLowerCase(),
     )
-      ? "Nama paket subscription sudah digunakan."
+      ? "This subscription package name is already in use."
       : undefined,
 });

@@ -12,10 +12,10 @@ export default function ConfirmationDialog() {
   if (!options) return null;
 
   const {
-    title = "Konfirmasi",
+    title = "Confirmation",
     message,
-    confirmText = "Ya",
-    cancelText = "Batal",
+    confirmText = "Yes",
+    cancelText = "Cancel",
     variant = "primary",
     onConfirm,
   } = options;

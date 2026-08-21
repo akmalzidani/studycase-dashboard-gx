@@ -38,8 +38,8 @@ export function useCrudFormActions<T extends { id?: string }>({
       confirm({
         title: deleteTitle,
         message: deleteMessage(item),
-        confirmText: "Hapus",
-        cancelText: "Batal",
+        confirmText: "Delete",
+        cancelText: "Cancel",
         variant: "danger",
         onConfirm: () => onDelete(item.id!),
       });

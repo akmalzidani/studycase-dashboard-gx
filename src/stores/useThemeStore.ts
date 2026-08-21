@@ -8,7 +8,7 @@ interface ThemeState {
   setTheme: (theme: Theme) => void;
 }
 
-// Function helper untuk menerapkan atribut ke document element
+// Helper function to apply the attribute to the document element
 function applyThemeToDocument(theme: Theme) {
   document.documentElement.dataset.bsTheme = theme;
   localStorage.setItem("theme", theme);

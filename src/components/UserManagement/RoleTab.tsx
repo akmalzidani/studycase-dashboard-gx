@@ -27,9 +27,9 @@ export function RoleTab() {
     useRoles();
   const formModal = useModal(ROLE_FORM_MODAL_TARGET);
   const roleActions = useCrudFormActions<Role>({
-    deleteTitle: "Hapus role",
+    deleteTitle: "Delete role",
     deleteMessage: (role) =>
-      `Apakah Anda yakin ingin menghapus role ${role.name}?`,
+      `Are you sure you want to delete the ${role.name} role?`,
     modal: formModal,
     onDelete: deleteRole,
   });
@@ -77,7 +77,7 @@ export function RoleTab() {
     <>
       <PageHeader
         title="Role"
-        description="Kelola role dan hak akses pengguna."
+        description="Manage roles and user access rights."
         actions={[
           {
             id: "create",
@@ -90,7 +90,7 @@ export function RoleTab() {
                 onClick={roleActions.openCreateForm}
               >
                 <BsPlusLg className="me-2" />
-                Tambah Role
+                Add Role
               </button>
             ),
           },
@@ -102,7 +102,7 @@ export function RoleTab() {
         rowActions={rowActions}
         keyExtractor={(role) => role.id ?? role.name}
         isLoading={isLoading}
-        emptyMessage="Belum ada role."
+        emptyMessage="No roles yet."
       />
       <RoleFormModal
         isOpen={formModal.isOpen}

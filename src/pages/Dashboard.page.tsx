@@ -24,16 +24,16 @@ function DashboardPage() {
   const isLoading = isLoadingCustomers || isLoadingProspects;
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Dashboard"
-        description="Ringkasan operasional pelanggan dan prospect Anda."
+        description="An operational overview of your customers and prospects."
       />
 
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">
           <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Memuat ringkasan...</span>
+            <span className="visually-hidden">Loading overview...</span>
           </div>
         </div>
       ) : (
@@ -43,7 +43,7 @@ function DashboardPage() {
           {...metrics}
         />
       )}
-    </div>
+    </>
   );
 }
 

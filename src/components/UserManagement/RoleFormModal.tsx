@@ -106,7 +106,7 @@ export function RoleFormModal({
   return (
     <Modal
       target={ROLE_FORM_MODAL_TARGET}
-      title={isEditing ? "Edit Role" : "Tambah Role"}
+      title={isEditing ? "Edit Role" : "Add Role"}
       isOpen={isOpen}
       closeDisabled={isSubmitting}
       onClose={onClose}
@@ -119,7 +119,7 @@ export function RoleFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -128,10 +128,10 @@ export function RoleFormModal({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? "Saving..."
               : isEditing
-                ? "Simpan Perubahan"
-                : "Tambah Role"}
+                ? "Save Changes"
+                : "Add Role"}
           </button>
         </>
       }
@@ -139,13 +139,13 @@ export function RoleFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="role-name"
-          label="Nama role"
+          label="Role name"
           className="form-control"
           value={values.name}
           onChange={(event) =>
             setValues((current) => ({ ...current, name: event.target.value }))
           }
-          placeholder="Contoh: Administrator"
+          placeholder="Example: Administrator"
           minLength={3}
           required
           disabled={isSubmitting}
@@ -153,7 +153,7 @@ export function RoleFormModal({
         />
         <FormTextarea
           id="role-description"
-          label="Deskripsi"
+          label="Description"
           className="form-control"
           value={values.description}
           onChange={(event) =>
@@ -162,7 +162,7 @@ export function RoleFormModal({
               description: event.target.value,
             }))
           }
-          placeholder="Jelaskan cakupan akses role ini"
+          placeholder="Describe this role's access scope"
           rows={3}
           required
           disabled={isSubmitting}
@@ -173,8 +173,8 @@ export function RoleFormModal({
             <table className="table table-sm align-middle mb-0">
               <thead className="table-light">
                 <tr>
-                  <th>Fitur</th>
-                  <th>Hak akses</th>
+                  <th>Feature</th>
+                  <th>Access rights</th>
                 </tr>
               </thead>
               <tbody>

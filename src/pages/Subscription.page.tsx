@@ -41,9 +41,9 @@ export default function SubscriptionPage() {
     openEditForm,
     confirmDelete,
   } = useCrudFormActions<Subscription>({
-    deleteTitle: "Hapus paket subscription",
+    deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
-      `Apakah Anda yakin ingin menghapus paket ${subscription.packageName}?`,
+      `Are you sure you want to delete the ${subscription.packageName} package?`,
     modal: subscriptionFormModal,
     onDelete: deleteSubscription,
   });
@@ -97,10 +97,10 @@ export default function SubscriptionPage() {
   );
 
   return (
-    <div>
+    <>
       <PageHeader
         title="Subscription"
-        description="Kelola paket dan langganan."
+        description="Manage packages and subscriptions."
         actions={[
           // {
           //   id: "reset",
@@ -128,7 +128,7 @@ export default function SubscriptionPage() {
                 onClick={openCreateForm}
               >
                 <BsPlusLg className="me-2" />
-                Tambah Paket
+                Add Package
               </button>
             ),
           },
@@ -142,7 +142,7 @@ export default function SubscriptionPage() {
         keyExtractor={(subscription) =>
           subscription.id ?? subscription.packageName
         }
-        emptyMessage="Belum ada paket subscription. Tambahkan paket pertama Anda."
+        emptyMessage="There are no subscription packages yet. Add your first package."
         isLoading={isLoading}
       />
 
@@ -153,6 +153,6 @@ export default function SubscriptionPage() {
         onClose={subscriptionFormModal.close}
         onSubmit={handleSubmit}
       />
-    </div>
+    </>
   );
 }

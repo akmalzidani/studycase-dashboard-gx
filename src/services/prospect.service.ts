@@ -19,6 +19,6 @@ export const prospectService = createLocalStorageCrudService<Prospect>({
       (prospect) =>
         prospect.id !== excludedId && prospect.email === payload.email,
     )
-      ? "Email sudah digunakan oleh prospect lain."
+      ? "This email address is already used by another prospect."
       : undefined,
 });

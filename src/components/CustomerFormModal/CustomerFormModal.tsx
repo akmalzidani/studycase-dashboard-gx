@@ -76,7 +76,7 @@ export function CustomerFormModal({
   return (
     <Modal
       target={MODAL_TARGETS.CUSTOMER_FORM}
-      title={isEditing ? "Edit Customer" : "Tambah Customer"}
+      title={isEditing ? "Edit Customer" : "Add Customer"}
       isOpen={isOpen}
       closeDisabled={isSubmitting}
       onClose={onClose}
@@ -88,7 +88,7 @@ export function CustomerFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -97,10 +97,10 @@ export function CustomerFormModal({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? "Saving..."
               : isEditing
-                ? "Simpan Perubahan"
-                : "Tambah Customer"}
+                ? "Save Changes"
+                : "Add Customer"}
           </button>
         </>
       }
@@ -108,9 +108,9 @@ export function CustomerFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="customer-name"
-          label="Nama"
+          label="Name"
           className="form-control"
-          placeholder="Masukkan nama"
+          placeholder="Enter name"
           value={values.name}
           minLength={3}
           required
@@ -120,7 +120,7 @@ export function CustomerFormModal({
         <FormTextInput
           id="customer-email"
           label="Email"
-          placeholder="Masukkan email"
+          placeholder="Enter email"
           type="email"
           className="form-control"
           value={values.email}
@@ -130,13 +130,13 @@ export function CustomerFormModal({
         />
         <FormTextInput
           id="customer-phone"
-          label="Nomor telepon"
-          placeholder="Masukkan nomor telepon"
+          label="Phone number"
+          placeholder="Enter phone number"
           type="tel"
           className="form-control"
           value={values.phoneNumber}
           pattern="(?=.*\S)[0-9+() -]{8,}"
-          title="Masukkan nomor telepon yang valid, bukan hanya spasi."
+          title="Enter a valid phone number, not just spaces."
           required
           disabled={isSubmitting}
           onChange={(event) => updateValue("phoneNumber", event.target.value)}

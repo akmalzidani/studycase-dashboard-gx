@@ -23,7 +23,7 @@ export function useCustomers() {
     try {
       setCustomers(await customerService.getAll());
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memuat data customer."));
+      toast.error(getErrorMessage(error, "Failed to load customer data."));
     } finally {
       setIsLoading(false);
     }
@@ -41,10 +41,10 @@ export function useCustomers() {
     try {
       const customer = await customerService.create(payload);
       setCustomers([...useCustomerStore.getState().customers, customer]);
-      toast.success("Customer berhasil ditambahkan.");
+      toast.success("Customer added successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menambahkan customer."));
+      toast.error(getErrorMessage(error, "Failed to add customer."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -60,10 +60,10 @@ export function useCustomers() {
           .getState()
           .customers.map((item) => (item.id === id ? customer : item)),
       );
-      toast.success("Customer berhasil diperbarui.");
+      toast.success("Customer updated successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memperbarui customer."));
+      toast.error(getErrorMessage(error, "Failed to update customer."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -77,9 +77,9 @@ export function useCustomers() {
       setCustomers(
         useCustomerStore.getState().customers.filter((item) => item.id !== id),
       );
-      toast.success("Customer berhasil dihapus.");
+      toast.success("Customer deleted successfully.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menghapus customer."));
+      toast.error(getErrorMessage(error, "Failed to delete customer."));
     } finally {
       setIsSubmitting(false);
     }
@@ -89,9 +89,9 @@ export function useCustomers() {
     setIsSubmitting(true);
     try {
       setCustomers(await customerService.reset());
-      toast.info("Data customer telah dikembalikan ke data awal.");
+      toast.info("Customer data has been restored to its initial state.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal mereset data customer."));
+      toast.error(getErrorMessage(error, "Failed to reset customer data."));
     } finally {
       setIsSubmitting(false);
     }

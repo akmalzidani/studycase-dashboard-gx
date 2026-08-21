@@ -17,7 +17,7 @@ export function useRoles() {
     try {
       setRoles(await roleService.getAll());
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memuat role."));
+      toast.error(getErrorMessage(error, "Failed to load roles."));
     } finally {
       setIsLoading(false);
     }
@@ -33,10 +33,10 @@ export function useRoles() {
     setIsSubmitting(true);
     try {
       setRoles([...roles, await roleService.create(payload)]);
-      toast.success("Role berhasil ditambahkan.");
+      toast.success("Role added successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menambahkan role."));
+      toast.error(getErrorMessage(error, "Failed to add role."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -48,10 +48,10 @@ export function useRoles() {
     try {
       const updated = await roleService.update(id, payload);
       setRoles(roles.map((role) => (role.id === id ? updated : role)));
-      toast.success("Role berhasil diperbarui.");
+      toast.success("Role updated successfully.");
       return true;
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal memperbarui role."));
+      toast.error(getErrorMessage(error, "Failed to update role."));
       return false;
     } finally {
       setIsSubmitting(false);
@@ -63,9 +63,9 @@ export function useRoles() {
     try {
       await roleService.remove(id);
       setRoles(roles.filter((role) => role.id !== id));
-      toast.success("Role berhasil dihapus.");
+      toast.success("Role deleted successfully.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Gagal menghapus role."));
+      toast.error(getErrorMessage(error, "Failed to delete role."));
     } finally {
       setIsSubmitting(false);
     }

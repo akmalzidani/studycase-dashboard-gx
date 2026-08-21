@@ -1,10 +1,10 @@
 import type { Permissions } from "@/types";
 
 const ACTION_LABELS = {
-  create: "Tambah",
-  read: "Lihat",
-  update: "Ubah",
-  delete: "Hapus",
+  create: "Create",
+  read: "View",
+  update: "Edit",
+  delete: "Delete",
 } as const;
 
 type PermissionAction = keyof typeof ACTION_LABELS;

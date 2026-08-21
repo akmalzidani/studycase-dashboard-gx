@@ -4,7 +4,7 @@ import type { ManagedUser } from "@/components/UserManagement/types";
 export const userTableColumns: Column<ManagedUser>[] = [
   {
     key: "name",
-    header: "Nama",
+    header: "Name",
     sortKey: "name",
     render: (user) => <span className="fw-semibold">{user.name}</span>,
   },
@@ -17,7 +17,7 @@ export const userTableColumns: Column<ManagedUser>[] = [
       <span
         className={`badge text-bg-${user.status === "Inactive" ? "secondary" : "success"}`}
       >
-        {user.status === "Inactive" ? "Tidak aktif" : "Aktif"}
+        {user.status === "Inactive" ? "Inactive" : "Active"}
       </span>
     ),
   },

@@ -76,7 +76,7 @@ export function ProspectFormModal({
   return (
     <Modal
       target={MODAL_TARGETS.PROSPECT_FORM}
-      title={isEditing ? "Edit Prospect" : "Tambah Prospect"}
+      title={isEditing ? "Edit Prospect" : "Add Prospect"}
       isOpen={isOpen}
       closeDisabled={isSubmitting}
       onClose={onClose}
@@ -88,7 +88,7 @@ export function ProspectFormModal({
             disabled={isSubmitting}
             onClick={onClose}
           >
-            Batal
+            Cancel
           </button>
           <button
             type="submit"
@@ -97,10 +97,10 @@ export function ProspectFormModal({
             disabled={isSubmitting}
           >
             {isSubmitting
-              ? "Menyimpan..."
+              ? "Saving..."
               : isEditing
-                ? "Simpan Perubahan"
-                : "Tambah Prospect"}
+                ? "Save Changes"
+                : "Add Prospect"}
           </button>
         </>
       }
@@ -108,8 +108,8 @@ export function ProspectFormModal({
       <form id={FORM_ID} onSubmit={handleSubmit}>
         <FormTextInput
           id="prospect-name"
-          label="Nama"
-          placeholder="Masukkan nama"
+          label="Name"
+          placeholder="Enter name"
           className="form-control"
           value={values.name}
           minLength={3}
@@ -120,7 +120,7 @@ export function ProspectFormModal({
         <FormTextInput
           id="prospect-email"
           label="Email"
-          placeholder="Masukkan email"
+          placeholder="Enter email"
           type="email"
           className="form-control"
           value={values.email}
@@ -130,13 +130,13 @@ export function ProspectFormModal({
         />
         <FormTextInput
           id="prospect-phone"
-          label="Nomor telepon"
-          placeholder="Masukkan nomor telepon"
+          label="Phone number"
+          placeholder="Enter phone number"
           type="tel"
           className="form-control"
           value={values.phoneNumber}
           pattern="(?=.*\S)[0-9+() -]{8,}"
-          title="Masukkan nomor telepon yang valid, bukan hanya spasi."
+          title="Enter a valid phone number, not just spaces."
           required
           disabled={isSubmitting}
           onChange={(event) => updateValue("phoneNumber", event.target.value)}

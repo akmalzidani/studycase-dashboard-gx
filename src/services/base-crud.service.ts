@@ -104,7 +104,7 @@ export const createLocalStorageCrudService = <TEntity extends EntityWithId>(
         const index = entities.findIndex((entity) => entity.id === id);
 
         if (index === -1) {
-          throw new Error(`${config.entityName} tidak ditemukan.`);
+          throw new Error(`${config.entityName} was not found.`);
         }
 
         const normalizedPayload = config.normalizePayload?.(payload) ?? payload;
@@ -125,7 +125,7 @@ export const createLocalStorageCrudService = <TEntity extends EntityWithId>(
         const entities = read();
 
         if (!entities.some((entity) => entity.id === id)) {
-          throw new Error(`${config.entityName} tidak ditemukan.`);
+          throw new Error(`${config.entityName} was not found.`);
         }
 
         save(entities.filter((entity) => entity.id !== id));
