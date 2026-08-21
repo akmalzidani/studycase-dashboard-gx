@@ -1,4 +1,6 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
+import { MODAL_TARGETS } from "@/config/modal.config";
+import { showModal } from "@/helpers/modal.helpers";
 
 import {
   ProspectFormModal,
@@ -8,13 +10,13 @@ import {
   prospectTableColumns,
   searchClientTableItem,
 } from "@/components/TableColumns";
-import { MODAL_TARGETS } from "@/config/modal.config";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
-import { useModal } from "@/hooks/useModal";
+
 import { useProspects } from "@/hooks/useProspects";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -35,7 +37,7 @@ export default function ProspectPage() {
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
 
-  const prospectFormModal = useModal(MODAL_TARGETS.PROSPECT_FORM);
+
   const {
     selectedItem: selectedProspect,
     openCreateForm,
@@ -45,7 +47,7 @@ export default function ProspectPage() {
     deleteTitle: "Delete prospect",
     deleteMessage: (prospect) =>
       `Are you sure you want to delete ${prospect.name}?`,
-    modal: prospectFormModal,
+    onOpenForm: () => showModal(MODAL_TARGETS.PROSPECT_FORM),
     onDelete: deleteProspect,
   });
 
@@ -119,11 +121,9 @@ export default function ProspectPage() {
       />
 
       <ProspectFormModal
-        isOpen={prospectFormModal.isOpen}
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedProspect}
         subscriptions={subscriptions}
-        onClose={prospectFormModal.close}
         onSubmit={handleSubmit}
       />
     </>

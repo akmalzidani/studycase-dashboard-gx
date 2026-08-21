@@ -4,33 +4,33 @@ import {
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 import { roleTableColumns } from "@/components/TableColumns";
+import { MODAL_TARGETS } from "@/config/modal.config";
+import { showModal } from "@/helpers/modal.helpers";
 import { PageHeader } from "@/components/common/PageHeader";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
-import { useModal } from "@/hooks/useModal";
 import { useRoles } from "@/hooks/useRoles";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Role } from "@/types";
 import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import {
-  RoleFormModal,
-  type RoleFormValues,
-  ROLE_FORM_MODAL_TARGET,
-} from "./RoleFormModal";
+import { RoleFormModal, type RoleFormValues } from "./RoleFormModal";
 
 export function RoleTab() {
   const permissions = useAuthStore((state) => state.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
-  const formModal = useModal(ROLE_FORM_MODAL_TARGET);
+  const onOpenForm = useCallback(
+    () => showModal(MODAL_TARGETS.ROLE_FORM),
+    [],
+  );
   const roleActions = useCrudFormActions<Role>({
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
       `Are you sure you want to delete the ${role.name} role?`,
-    modal: formModal,
+    onOpenForm,
     onDelete: deleteRole,
   });
   const table = useDataTable({
@@ -101,10 +101,8 @@ export function RoleTab() {
         }
       />
       <RoleFormModal
-        isOpen={formModal.isOpen}
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}
-        onClose={formModal.close}
         onSubmit={submitRole}
       />
     </>

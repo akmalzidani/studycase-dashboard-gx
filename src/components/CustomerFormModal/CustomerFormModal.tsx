@@ -1,9 +1,10 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { MODAL_TARGETS } from "@/config/modal.config";
-import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import type { Customer, CustomerStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 
 export interface CustomerFormValues {
   name: string;
@@ -13,22 +14,19 @@ export interface CustomerFormValues {
   status: CustomerStatus;
 }
 
-interface CustomerFormModalProps extends FormModalProps<
-  Customer,
-  CustomerFormValues
-> {
+interface CustomerFormModalProps {
+  isSubmitting: boolean;
+  item: Customer | null;
   subscriptions: Subscription[];
+  onSubmit: (values: CustomerFormValues) => Promise<boolean>;
 }
 
 const STATUS_OPTIONS: CustomerStatus[] = ["Active", "Blocked"];
-const FORM_ID = "customer-form";
 
 export function CustomerFormModal({
-  isOpen,
   isSubmitting,
   item: customer,
   subscriptions,
-  onClose,
   onSubmit,
 }: CustomerFormModalProps) {
   const [values, setValues] = useState<CustomerFormValues>({
@@ -40,26 +38,28 @@ export function CustomerFormModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
+    const initializeValues = () => {
+      setValues(
+        customer
+          ? {
+              name: customer.name,
+              email: customer.email,
+              phoneNumber: customer.phoneNumber,
+              subscriptionId: customer.subscription.id ?? "",
+              status: customer.status,
+            }
+          : {
+              name: "",
+              email: "",
+              phoneNumber: "",
+              subscriptionId: subscriptions[0]?.id ?? "",
+              status: "Active",
+            },
+      );
+    };
 
-    setValues(
-      customer
-        ? {
-            name: customer.name,
-            email: customer.email,
-            phoneNumber: customer.phoneNumber,
-            subscriptionId: customer.subscription.id ?? "",
-            status: customer.status,
-          }
-        : {
-            name: "",
-            email: "",
-            phoneNumber: "",
-            subscriptionId: subscriptions[0]?.id ?? "",
-            status: "Active",
-          },
-    );
-  }, [customer, isOpen, subscriptions]);
+    return onModalShown(MODAL_TARGETS.CUSTOMER_FORM, initializeValues);
+  }, [customer, subscriptions]);
 
   const updateValue = <K extends keyof CustomerFormValues>(
     field: K,
@@ -68,7 +68,9 @@ export function CustomerFormModal({
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.CUSTOMER_FORM);
+    }
   };
 
   const isEditing = Boolean(customer);
@@ -77,22 +79,20 @@ export function CustomerFormModal({
     <Modal
       target={MODAL_TARGETS.CUSTOMER_FORM}
       title={isEditing ? "Edit Customer" : "Add Customer"}
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
+
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.CUSTOMER}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -105,7 +105,7 @@ export function CustomerFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.CUSTOMER} onSubmit={handleSubmit}>
         <FormTextInput
           id="customer-name"
           label="Name"

@@ -4,18 +4,19 @@ import {
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 import { userTableColumns } from "@/components/TableColumns";
+import { MODAL_TARGETS } from "@/config/modal.config";
+import { showModal } from "@/helpers/modal.helpers";
 import { PageHeader } from "@/components/common/PageHeader";
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
-import { useModal } from "@/hooks/useModal";
 import { useRoles } from "@/hooks/useRoles";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
-import { UserFormModal, USER_FORM_MODAL_TARGET } from "./UserFormModal";
+import { UserFormModal } from "./UserFormModal";
 import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
@@ -23,7 +24,10 @@ export function UserTab() {
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
-  const formModal = useModal(USER_FORM_MODAL_TARGET);
+  const onOpenForm = useCallback(
+    () => showModal(MODAL_TARGETS.USER_FORM),
+    [],
+  );
   const {
     selectedItem: selectedUser,
     openCreateForm,
@@ -32,7 +36,7 @@ export function UserTab() {
   } = useCrudFormActions<ManagedUser>({
     deleteTitle: "Delete user",
     deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
-    modal: formModal,
+    onOpenForm,
     onDelete: deleteUser,
   });
 
@@ -109,11 +113,9 @@ export function UserTab() {
         }
       />
       <UserFormModal
-        isOpen={formModal.isOpen}
         item={selectedUser}
         roles={roles}
         isSubmitting={isSubmitting}
-        onClose={formModal.close}
         onSubmit={submitUser}
       />
     </>

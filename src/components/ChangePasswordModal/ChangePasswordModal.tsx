@@ -1,6 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal, type FormModalProps } from "@/components/common/Modal";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { Modal } from "@/components/common/Modal";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { User } from "@/types";
 
 export interface ChangePasswordFormValues {
@@ -9,9 +10,13 @@ export interface ChangePasswordFormValues {
   confirmNewPassword: string;
 }
 
-type ChangePasswordModalProps = FormModalProps<User, ChangePasswordFormValues>;
+interface ChangePasswordModalProps {
+  isSubmitting: boolean;
+  item: User | null;
+  onSubmit: (values: ChangePasswordFormValues) => Promise<boolean>;
+}
 
-const FORM_ID = "change-password-form";
+
 const EMPTY_VALUES: ChangePasswordFormValues = {
   currentPassword: "",
   newPassword: "",
@@ -19,42 +24,41 @@ const EMPTY_VALUES: ChangePasswordFormValues = {
 };
 
 export function ChangePasswordModal({
-  isOpen,
   isSubmitting,
-  onClose,
   onSubmit,
 }: ChangePasswordModalProps) {
   const [values, setValues] = useState(EMPTY_VALUES);
 
   useEffect(() => {
-    if (isOpen) setValues(EMPTY_VALUES);
-  }, [isOpen]);
+    const resetValues = () => setValues(EMPTY_VALUES);
+    return onModalShown(MODAL_TARGETS.CHANGE_PASSWORD, resetValues);
+  }, []);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.CHANGE_PASSWORD);
+    }
   };
 
   return (
     <Modal
       target={MODAL_TARGETS.CHANGE_PASSWORD}
       title="Change Password"
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
+
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.CHANGE_PASSWORD}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -63,7 +67,7 @@ export function ChangePasswordModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.CHANGE_PASSWORD} onSubmit={handleSubmit}>
         {(
           [
             [

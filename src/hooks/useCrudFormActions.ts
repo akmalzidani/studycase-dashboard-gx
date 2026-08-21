@@ -4,31 +4,29 @@ import { useCallback, useState } from "react";
 interface UseCrudFormActionsOptions<T extends { id?: string }> {
   deleteTitle: string;
   deleteMessage: (item: T) => string;
-  modal: {
-    open: () => void;
-  };
+  onOpenForm: () => void;
   onDelete: (id: string) => Promise<void>;
 }
 
 export function useCrudFormActions<T extends { id?: string }>({
   deleteTitle,
   deleteMessage,
-  modal,
+  onOpenForm,
   onDelete,
 }: UseCrudFormActionsOptions<T>) {
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
   const openCreateForm = useCallback(() => {
     setSelectedItem(null);
-    modal.open();
-  }, [modal]);
+    onOpenForm();
+  }, [onOpenForm]);
 
   const openEditForm = useCallback(
     (item: T) => {
       setSelectedItem(item);
-      modal.open();
+      onOpenForm();
     },
-    [modal],
+    [onOpenForm],
   );
 
   const confirmDelete = useCallback(

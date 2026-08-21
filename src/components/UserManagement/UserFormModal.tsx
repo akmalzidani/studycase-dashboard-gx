@@ -1,28 +1,23 @@
-import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
-import type { ModalTarget } from "@/config/modal.config";
+import { Modal } from "@/components/common/Modal";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { Role } from "@/types";
 import { useEffect, useState, type SyntheticEvent } from "react";
 import type { ManagedUser, UserFormValues } from "./types";
 
 interface UserFormModalProps {
-  isOpen: boolean;
   item: ManagedUser | null;
   roles: Role[];
   isSubmitting: boolean;
-  onClose: () => void;
   onSubmit: (values: UserFormValues) => Promise<boolean>;
 }
 
-const FORM_ID = "user-form";
-export const USER_FORM_MODAL_TARGET = "user-form-modal" as ModalTarget;
 
 export function UserFormModal({
-  isOpen,
   item: user,
   roles,
   isSubmitting,
-  onClose,
   onSubmit,
 }: UserFormModalProps) {
   const [values, setValues] = useState<UserFormValues>({
@@ -34,25 +29,26 @@ export function UserFormModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
-    setValues(
-      user
-        ? {
-            name: user.name,
-            email: user.email,
-            password: user.password ?? "",
-            roleId: user.roleId,
-            status: user.status ?? "Active",
-          }
-        : {
-            name: "",
-            email: "",
-            password: "",
-            roleId: roles[0]?.id ?? "",
-            status: "Active",
-          },
-    );
-  }, [isOpen, roles, user]);
+    return onModalShown(MODAL_TARGETS.USER_FORM, () => {
+      setValues(
+        user
+          ? {
+              name: user.name,
+              email: user.email,
+              password: user.password ?? "",
+              roleId: user.roleId,
+              status: user.status ?? "Active",
+            }
+          : {
+              name: "",
+              email: "",
+              password: "",
+              roleId: roles[0]?.id ?? "",
+              status: "Active",
+            },
+      );
+    });
+  }, [roles, user]);
 
   const updateValue = <K extends keyof UserFormValues>(
     field: K,
@@ -61,30 +57,29 @@ export function UserFormModal({
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.USER_FORM);
+    }
   };
 
   const isEditing = Boolean(user);
   return (
     <Modal
-      target={USER_FORM_MODAL_TARGET}
+      target={MODAL_TARGETS.USER_FORM}
       title={isEditing ? "Edit User" : "Add User"}
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.USER}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -97,7 +92,7 @@ export function UserFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.USER} onSubmit={handleSubmit}>
         <FormTextInput
           id="user-name"
           label="Name"

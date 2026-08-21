@@ -1,8 +1,9 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { formatCurrencyInput } from "@/helpers/formatters.helpers";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { Subscription } from "@/types";
 
 export interface SubscriptionFormValues {
@@ -11,12 +12,13 @@ export interface SubscriptionFormValues {
   monthlyFee: number;
 }
 
-type SubscriptionFormModalProps = FormModalProps<
-  Subscription,
-  SubscriptionFormValues
->;
+interface SubscriptionFormModalProps {
+  isSubmitting: boolean;
+  item: Subscription | null;
+  onSubmit: (values: SubscriptionFormValues) => Promise<boolean>;
+}
 
-const FORM_ID = "subscription-form";
+
 const EMPTY_VALUES: SubscriptionFormValues = {
   packageName: "",
   speed: 0,
@@ -24,27 +26,27 @@ const EMPTY_VALUES: SubscriptionFormValues = {
 };
 
 export function SubscriptionFormModal({
-  isOpen,
   isSubmitting,
   item: subscription,
-  onClose,
   onSubmit,
 }: SubscriptionFormModalProps) {
   const [values, setValues] = useState<SubscriptionFormValues>(EMPTY_VALUES);
 
   useEffect(() => {
-    if (!isOpen) return;
+    const initializeValues = () => {
+      setValues(
+        subscription
+          ? {
+              packageName: subscription.packageName,
+              speed: subscription.speed,
+              monthlyFee: subscription.monthlyFee,
+            }
+          : EMPTY_VALUES,
+      );
+    };
 
-    setValues(
-      subscription
-        ? {
-            packageName: subscription.packageName,
-            speed: subscription.speed,
-            monthlyFee: subscription.monthlyFee,
-          }
-        : EMPTY_VALUES,
-    );
-  }, [isOpen, subscription]);
+    return onModalShown(MODAL_TARGETS.SUBSCRIPTION_FORM, initializeValues);
+  }, [subscription]);
 
   const updateValue = <K extends keyof SubscriptionFormValues>(
     field: K,
@@ -53,7 +55,9 @@ export function SubscriptionFormModal({
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.SUBSCRIPTION_FORM);
+    }
   };
 
   const isEditing = Boolean(subscription);
@@ -64,22 +68,20 @@ export function SubscriptionFormModal({
       title={
         isEditing ? "Edit Subscription Package" : "Add Subscription Package"
       }
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
+
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.SUBSCRIPTION}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -92,7 +94,7 @@ export function SubscriptionFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit}>
         <FormTextInput
           id="subscription-package-name"
           label="Package name"

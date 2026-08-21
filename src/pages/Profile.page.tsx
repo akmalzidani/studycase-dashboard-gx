@@ -8,9 +8,11 @@ import {
   ProfileFormModal,
   type ProfileFormValues,
 } from "@/components/ProfileFormModal";
+
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_KEYS } from "@/config/permission.config";
-import { useModal } from "@/hooks/useModal";
+
+
 import { authService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -29,8 +31,7 @@ export default function ProfilePage() {
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "-";
 
-  const profileFormModal = useModal(MODAL_TARGETS.PROFILE_FORM);
-  const changePasswordModal = useModal(MODAL_TARGETS.CHANGE_PASSWORD);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = useCallback(
@@ -105,7 +106,8 @@ export default function ProfilePage() {
               <button
                 type="button"
                 className="btn btn-info"
-                onClick={changePasswordModal.open}
+                data-bs-toggle="modal"
+                data-bs-target={`#${MODAL_TARGETS.CHANGE_PASSWORD}`}
               >
                 <BsKey className="me-2" />
                 Change Password
@@ -119,7 +121,8 @@ export default function ProfilePage() {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={profileFormModal.open}
+                data-bs-toggle="modal"
+                data-bs-target={`#${MODAL_TARGETS.PROFILE_FORM}`}
               >
                 <BsPencilSquare className="me-2" />
                 Edit Profile
@@ -151,18 +154,14 @@ export default function ProfilePage() {
       </section>
 
       <ProfileFormModal
-        isOpen={profileFormModal.isOpen}
         isSubmitting={isSubmitting}
         item={user}
-        onClose={profileFormModal.close}
         onSubmit={handleSubmit}
       />
 
       <ChangePasswordModal
-        isOpen={changePasswordModal.isOpen}
         isSubmitting={isSubmitting}
         item={user}
-        onClose={changePasswordModal.close}
         onSubmit={handleChangePassword}
       />
     </>

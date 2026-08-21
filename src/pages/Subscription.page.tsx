@@ -3,19 +3,21 @@ import {
   type SubscriptionFormValues,
 } from "@/components/SubscriptionFormModal";
 import { subscriptionTableColumns } from "@/components/TableColumns";
+import { MODAL_TARGETS } from "@/config/modal.config";
+import { showModal } from "@/helpers/modal.helpers";
 import {
   createCrudRowActions,
   DataTable,
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 
-import { MODAL_TARGETS } from "@/config/modal.config";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useDataTable } from "@/hooks/useDataTable";
-import { useModal } from "@/hooks/useModal";
+
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
@@ -33,7 +35,7 @@ export default function SubscriptionPage() {
     deleteSubscription,
   } = useSubscriptions();
 
-  const subscriptionFormModal = useModal(MODAL_TARGETS.SUBSCRIPTION_FORM);
+
   const {
     selectedItem: selectedSubscription,
     openCreateForm,
@@ -43,7 +45,7 @@ export default function SubscriptionPage() {
     deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
       `Are you sure you want to delete the ${subscription.packageName} package?`,
-    modal: subscriptionFormModal,
+    onOpenForm: () => showModal(MODAL_TARGETS.SUBSCRIPTION_FORM),
     onDelete: deleteSubscription,
   });
 
@@ -123,10 +125,8 @@ export default function SubscriptionPage() {
       />
 
       <SubscriptionFormModal
-        isOpen={subscriptionFormModal.isOpen}
         isSubmitting={isSubmitting}
         item={selectedSubscription}
-        onClose={subscriptionFormModal.close}
         onSubmit={handleSubmit}
       />
     </>

@@ -1,9 +1,10 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { MODAL_TARGETS } from "@/config/modal.config";
-import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
 import type { Prospect, ProspectStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 
 export interface ProspectFormValues {
   name: string;
@@ -13,22 +14,19 @@ export interface ProspectFormValues {
   status: ProspectStatus;
 }
 
-interface ProspectFormModalProps extends FormModalProps<
-  Prospect,
-  ProspectFormValues
-> {
+interface ProspectFormModalProps {
+  isSubmitting: boolean;
+  item: Prospect | null;
   subscriptions: Subscription[];
+  onSubmit: (values: ProspectFormValues) => Promise<boolean>;
 }
 
 const STATUS_OPTIONS: ProspectStatus[] = ["Pending", "Completed"];
-const FORM_ID = "prospect-form";
 
 export function ProspectFormModal({
-  isOpen,
   isSubmitting,
   item: prospect,
   subscriptions,
-  onClose,
   onSubmit,
 }: ProspectFormModalProps) {
   const [values, setValues] = useState<ProspectFormValues>({
@@ -40,26 +38,28 @@ export function ProspectFormModal({
   });
 
   useEffect(() => {
-    if (!isOpen) return;
+    const initializeValues = () => {
+      setValues(
+        prospect
+          ? {
+              name: prospect.name,
+              email: prospect.email,
+              phoneNumber: prospect.phoneNumber,
+              subscriptionId: prospect.subscription.id ?? "",
+              status: prospect.status,
+            }
+          : {
+              name: "",
+              email: "",
+              phoneNumber: "",
+              subscriptionId: subscriptions[0]?.id ?? "",
+              status: "Pending",
+            },
+      );
+    };
 
-    setValues(
-      prospect
-        ? {
-            name: prospect.name,
-            email: prospect.email,
-            phoneNumber: prospect.phoneNumber,
-            subscriptionId: prospect.subscription.id ?? "",
-            status: prospect.status,
-          }
-        : {
-            name: "",
-            email: "",
-            phoneNumber: "",
-            subscriptionId: subscriptions[0]?.id ?? "",
-            status: "Pending",
-          },
-    );
-  }, [isOpen, prospect, subscriptions]);
+    return onModalShown(MODAL_TARGETS.PROSPECT_FORM, initializeValues);
+  }, [prospect, subscriptions]);
 
   const updateValue = <K extends keyof ProspectFormValues>(
     field: K,
@@ -68,7 +68,9 @@ export function ProspectFormModal({
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.PROSPECT_FORM);
+    }
   };
 
   const isEditing = Boolean(prospect);
@@ -77,22 +79,20 @@ export function ProspectFormModal({
     <Modal
       target={MODAL_TARGETS.PROSPECT_FORM}
       title={isEditing ? "Edit Prospect" : "Add Prospect"}
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
+
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.PROSPECT}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -105,7 +105,7 @@ export function ProspectFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.PROSPECT} onSubmit={handleSubmit}>
         <FormTextInput
           id="prospect-name"
           label="Name"

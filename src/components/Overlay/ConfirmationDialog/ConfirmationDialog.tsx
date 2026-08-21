@@ -1,44 +1,82 @@
+import { Modal as BootstrapModal } from "bootstrap";
+import { useEffect, useRef, useState } from "react";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { Modal } from "@/components/common/Modal";
-import { useConfirmStore } from "@/stores/useConfirmStore";
+import { useConfirmStore, type ConfirmOptions } from "@/stores/useConfirmStore";
 import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function ConfirmationDialog() {
   const { options, hide } = useConfirmStore();
   const theme = useThemeStore((state) => state.theme);
+  const modalRef = useRef<BootstrapModal | null>(null);
+  const [displayedOptions, setDisplayedOptions] =
+    useState<ConfirmOptions | null>(null);
 
+  useEffect(() => {
+    const modalElement = document.getElementById(MODAL_TARGETS.CONFIRMATION);
+
+    if (!modalElement) {
+      throw new Error("Confirmation modal was not found.");
+    }
+
+    const modal = BootstrapModal.getOrCreateInstance(modalElement);
+    modalRef.current = modal;
+
+    const handleHidden = () => {
+      modalRef.current = null;
+      setDisplayedOptions(null);
+      hide();
+    };
+
+    modalElement.addEventListener("hidden.bs.modal", handleHidden);
+
+    return () => {
+      modalElement.removeEventListener("hidden.bs.modal", handleHidden);
+      modal.dispose();
+      modalRef.current = null;
+    };
+  }, [hide]);
+
+  useEffect(() => {
+    if (options) {
+      setDisplayedOptions(options);
+    } else {
+      modalRef.current?.hide();
+    }
+  }, [options]);
+
+  useEffect(() => {
+    if (displayedOptions && options) {
+      modalRef.current?.show();
+    }
+  }, [displayedOptions, options]);
+
+  const title = displayedOptions?.title ?? "Confirmation";
+  const message = displayedOptions?.message ?? "";
+  const confirmText = displayedOptions?.confirmText ?? "Yes";
+  const cancelText = displayedOptions?.cancelText ?? "Cancel";
+  const variant = displayedOptions?.variant ?? "primary";
   const textMessageColor = theme === "dark" ? "light" : "dark";
 
-  if (!options) return null;
-
-  const {
-    title = "Confirmation",
-    message,
-    confirmText = "Yes",
-    cancelText = "Cancel",
-    variant = "primary",
-    onConfirm,
-  } = options;
-
-  const handleConfirm = () => {
-    hide();
-    onConfirm();
+  const dismiss = () => {
+    modalRef.current?.hide();
   };
 
-  const handleCancel = () => hide();
+  const handleConfirm = () => {
+    dismiss();
+    displayedOptions?.onConfirm();
+  };
 
   return (
     <Modal
       target={MODAL_TARGETS.CONFIRMATION}
       title={title}
-      isOpen={Boolean(options)}
-      onClose={hide}
       footer={
         <>
           <button
             type="button"
             className="btn btn-light fw-medium"
-            onClick={handleCancel}
+            onClick={dismiss}
           >
             {cancelText}
           </button>

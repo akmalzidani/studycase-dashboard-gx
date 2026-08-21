@@ -1,7 +1,8 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Modal, type FormModalProps } from "@/components/common/Modal";
+import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput/FormInput";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { User } from "@/types";
 
 export interface ProfileFormValues {
@@ -9,15 +10,15 @@ export interface ProfileFormValues {
   email: string;
 }
 
-type ProfileFormModalProps = FormModalProps<User, ProfileFormValues>;
-
-const FORM_ID = "profile-form";
+interface ProfileFormModalProps {
+  isSubmitting: boolean;
+  item: User | null;
+  onSubmit: (values: ProfileFormValues) => Promise<boolean>;
+}
 
 export function ProfileFormModal({
-  isOpen,
   isSubmitting,
   item: user,
-  onClose,
   onSubmit,
 }: ProfileFormModalProps) {
   const [values, setValues] = useState<ProfileFormValues>({
@@ -26,36 +27,37 @@ export function ProfileFormModal({
   });
 
   useEffect(() => {
-    if (!isOpen || !user) return;
+    const initializeValues = () => {
+      setValues(user ? { name: user.name, email: user.email } : { name: "", email: "" });
+    };
 
-    setValues({ name: user.name, email: user.email });
-  }, [isOpen, user]);
+    return onModalShown(MODAL_TARGETS.PROFILE_FORM, initializeValues);
+  }, [user]);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.PROFILE_FORM);
+    }
   };
 
   return (
     <Modal
       target={MODAL_TARGETS.PROFILE_FORM}
       title="Edit Profile"
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
       footer={
         <>
           <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.PROFILE}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -64,7 +66,7 @@ export function ProfileFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit}>
         <FormTextInput
           id="profile-name"
           label="Name"

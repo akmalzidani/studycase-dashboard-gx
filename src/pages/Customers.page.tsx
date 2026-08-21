@@ -1,4 +1,6 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
+import { MODAL_TARGETS } from "@/config/modal.config";
+import { showModal } from "@/helpers/modal.helpers";
 
 import {
   CustomerFormModal,
@@ -8,14 +10,14 @@ import {
   customerTableColumns,
   searchClientTableItem,
 } from "@/components/TableColumns";
-import { MODAL_TARGETS } from "@/config/modal.config";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
 import { useCustomers } from "@/hooks/useCustomers";
 import { useDataTable } from "@/hooks/useDataTable";
-import { useModal } from "@/hooks/useModal";
+
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Customer } from "@/types";
@@ -35,7 +37,7 @@ export default function CustomersPage() {
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
 
-  const customerFormModal = useModal(MODAL_TARGETS.CUSTOMER_FORM);
+
   const {
     selectedItem: selectedCustomer,
     openCreateForm,
@@ -45,7 +47,7 @@ export default function CustomersPage() {
     deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
       `Are you sure you want to delete ${customer.name}?`,
-    modal: customerFormModal,
+    onOpenForm: () => showModal(MODAL_TARGETS.CUSTOMER_FORM),
     onDelete: deleteCustomer,
   });
 
@@ -119,11 +121,9 @@ export default function CustomersPage() {
       />
 
       <CustomerFormModal
-        isOpen={customerFormModal.isOpen}
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedCustomer}
         subscriptions={subscriptions}
-        onClose={customerFormModal.close}
         onSubmit={handleSubmit}
       />
     </>

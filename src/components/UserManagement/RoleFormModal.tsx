@@ -3,8 +3,9 @@ import {
   FormTextarea,
   FormTextInput,
 } from "@/components/common/FormInput/FormInput";
-import type { ModalTarget } from "@/config/modal.config";
+import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { Permissions, Role } from "@/types";
 import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
 
@@ -15,15 +16,11 @@ export interface RoleFormValues {
 }
 
 interface RoleFormModalProps {
-  isOpen: boolean;
   isSubmitting: boolean;
   item: Role | null;
-  onClose: () => void;
   onSubmit: (values: RoleFormValues) => Promise<boolean>;
 }
 
-const FORM_ID = "role-form";
-export const ROLE_FORM_MODAL_TARGET = "role-form-modal" as ModalTarget;
 
 type CatalogPermission = (typeof PERMISSION_CATALOG)[number];
 
@@ -66,10 +63,8 @@ const setPermissionValue = (
 };
 
 export function RoleFormModal({
-  isOpen,
   isSubmitting,
   item: role,
-  onClose,
   onSubmit,
 }: RoleFormModalProps) {
   const [values, setValues] = useState<RoleFormValues>({
@@ -84,32 +79,32 @@ export function RoleFormModal({
   );
 
   useEffect(() => {
-    if (!isOpen) return;
-    setValues(
-      role
-        ? {
-            name: role.name,
-            description: role.description,
-            permissions: role.permissions,
-          }
-        : { name: "", description: "", permissions: {} },
-    );
-  }, [isOpen, role]);
+    return onModalShown(MODAL_TARGETS.ROLE_FORM, () => {
+      setValues(
+        role
+          ? {
+              name: role.name,
+              description: role.description,
+              permissions: role.permissions,
+            }
+          : { name: "", description: "", permissions: {} },
+      );
+    });
+  }, [role]);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) onClose();
+    if (await onSubmit(values)) {
+      hideModal(MODAL_TARGETS.ROLE_FORM);
+    }
   };
 
   const isEditing = Boolean(role);
 
   return (
     <Modal
-      target={ROLE_FORM_MODAL_TARGET}
+      target={MODAL_TARGETS.ROLE_FORM}
       title={isEditing ? "Edit Role" : "Add Role"}
-      isOpen={isOpen}
-      closeDisabled={isSubmitting}
-      onClose={onClose}
       size="lg"
       footer={
         <>
@@ -117,13 +112,13 @@ export function RoleFormModal({
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
-            onClick={onClose}
+            data-bs-dismiss="modal"
           >
             Cancel
           </button>
           <button
             type="submit"
-            form={FORM_ID}
+            form={FORM_IDS.ROLE}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
@@ -136,7 +131,7 @@ export function RoleFormModal({
         </>
       }
     >
-      <form id={FORM_ID} onSubmit={handleSubmit}>
+      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit}>
         <FormTextInput
           id="role-name"
           label="Role name"
