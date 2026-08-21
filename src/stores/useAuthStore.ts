@@ -1,5 +1,8 @@
 import { STORAGE_KEYS } from "@/config/storage.config";
-import { authService } from "@/services/auth.service";
+import {
+  AUTH_SESSION_INVALIDATED_EVENT,
+  authService,
+} from "@/services/auth.service";
 import { getRoles } from "@/services/role.service";
 import { create } from "zustand";
 import type { AuthSession, Permissions, User } from "@/types";
@@ -45,9 +48,12 @@ export const useAuthStore = create<AuthState>((set) => ({
 }));
 
 if (typeof window !== "undefined") {
+  const checkSession = () => useAuthStore.getState().checkSession();
+
   window.addEventListener("storage", (event) => {
     if (event.key === STORAGE_KEYS.AUTH_SESSION) {
-      useAuthStore.getState().checkSession();
+      checkSession();
     }
   });
+  window.addEventListener(AUTH_SESSION_INVALIDATED_EVENT, checkSession);
 }

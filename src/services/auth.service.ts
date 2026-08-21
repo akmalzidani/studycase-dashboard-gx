@@ -5,6 +5,11 @@ import type { AuthSession, User } from "@/types";
 
 const AUTH_API_DELAY_MS = 800;
 const SESSION_DURATION_MS = 60 * 60 * 1000;
+export const AUTH_SESSION_INVALIDATED_EVENT = "auth-session-invalidated";
+
+const notifySessionInvalidated = () => {
+  window.dispatchEvent(new Event(AUTH_SESSION_INVALIDATED_EVENT));
+};
 
 const createToken = () =>
   `mock-token-${crypto.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
@@ -66,7 +71,10 @@ export const authService = {
     const session = readSession();
 
     if (!session?.token || !session.user || session.expiresAt <= Date.now()) {
-      localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+      if (session) {
+        localStorage.removeItem(STORAGE_KEYS.AUTH_SESSION);
+        notifySessionInvalidated();
+      }
       return null;
     }
 
