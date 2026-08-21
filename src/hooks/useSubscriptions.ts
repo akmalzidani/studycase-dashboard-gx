@@ -11,7 +11,7 @@ const getErrorMessage = (error: unknown, fallback: string) =>
 
 export function useSubscriptions() {
   const subscriptions = useSubscriptionStore((state) => state.subscriptions);
-  const hasLoaded = useSubscriptionStore((state) => state.hasLoaded);
+  const isLoaded = useSubscriptionStore((state) => state.isLoaded);
   const isLoading = useSubscriptionStore((state) => state.isLoading);
   const setSubscriptions = useSubscriptionStore(
     (state) => state.setSubscriptions,
@@ -32,11 +32,11 @@ export function useSubscriptions() {
   }, [setIsLoading, setSubscriptions]);
 
   useEffect(() => {
-    if (!hasLoaded && !hasFetched.current) {
+    if (!isLoaded && !hasFetched.current) {
       hasFetched.current = true;
       fetchSubscriptions();
     }
-  }, [fetchSubscriptions, hasLoaded]);
+  }, [fetchSubscriptions, isLoaded]);
 
   const createSubscription = async (payload: SubscriptionPayload) => {
     setIsSubmitting(true);
@@ -68,7 +68,9 @@ export function useSubscriptions() {
       setSubscriptions(
         useSubscriptionStore
           .getState()
-          .subscriptions.map((item) => (item.id === id ? subscription : item)),
+          .subscriptions.map((item) =>
+            item.id === id ? subscription : item,
+          ),
       );
       toast.success("Subscription package updated successfully.");
       return true;

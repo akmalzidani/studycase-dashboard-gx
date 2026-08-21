@@ -12,7 +12,10 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const demoAccounts = authService.getDemoAccounts();
-  const { login, isAuthenticated } = useAuthStore();
+  const login = useAuthStore((store) => store.login);
+  const isAuthenticated = useAuthStore(
+    (store) => store.isAuthenticated,
+  );
 
   const navigate = useNavigate();
   usePageTitle();

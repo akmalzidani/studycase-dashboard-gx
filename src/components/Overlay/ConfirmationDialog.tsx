@@ -7,7 +7,7 @@ import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function ConfirmationDialog() {
   const { options, hide } = useConfirmStore();
-  const theme = useThemeStore((state) => state.theme);
+  const { theme } = useThemeStore();
   const modalRef = useRef<BootstrapModal | null>(null);
   const [displayedOptions, setDisplayedOptions] =
     useState<ConfirmOptions | null>(null);

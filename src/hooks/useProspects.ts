@@ -11,7 +11,7 @@ const getErrorMessage = (error: unknown, fallback: string) =>
 
 export function useProspects() {
   const prospects = useProspectStore((state) => state.prospects);
-  const hasLoaded = useProspectStore((state) => state.hasLoaded);
+  const isLoaded = useProspectStore((state) => state.isLoaded);
   const isLoading = useProspectStore((state) => state.isLoading);
   const setProspects = useProspectStore((state) => state.setProspects);
   const setIsLoading = useProspectStore((state) => state.setIsLoading);
@@ -30,11 +30,11 @@ export function useProspects() {
   }, [setIsLoading, setProspects]);
 
   useEffect(() => {
-    if (!hasLoaded && !hasFetched.current) {
+    if (!isLoaded && !hasFetched.current) {
       hasFetched.current = true;
       fetchProspects();
     }
-  }, [fetchProspects, hasLoaded]);
+  }, [fetchProspects, isLoaded]);
 
   const createProspect = async (payload: ProspectPayload) => {
     setIsSubmitting(true);
@@ -99,7 +99,7 @@ export function useProspects() {
 
   return {
     prospects,
-    isLoading: isLoading || !hasLoaded,
+    isLoading: isLoading || !isLoaded,
     isSubmitting,
     createProspect,
     updateProspect,

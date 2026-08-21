@@ -25,7 +25,7 @@ import { useCallback, useMemo } from "react";
 import { BsPlusLg } from "react-icons/bs";
 
 export default function SubscriptionPage() {
-  const permissions = useAuthStore((state) => state.permissions);
+  const permissions = useAuthStore((store) => store.permissions);
   const {
     subscriptions,
     isLoading,

@@ -19,7 +19,7 @@ import { BsPlusLg } from "react-icons/bs";
 import { RoleFormModal, type RoleFormValues } from "./RoleFormModal";
 
 export function RoleTab() {
-  const permissions = useAuthStore((state) => state.permissions);
+  const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
   const onOpenForm = useCallback(

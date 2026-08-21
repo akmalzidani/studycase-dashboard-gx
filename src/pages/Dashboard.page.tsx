@@ -8,7 +8,7 @@ import { calculateDashboardMetrics } from "@/helpers/dashboard.helpers";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 function DashboardPage() {
-  const permissions = useAuthStore((state) => state.permissions);
+  const permissions = useAuthStore((store) => store.permissions);
   const canReadCustomers = hasPermission(
     permissions,
     PERMISSION_KEYS.CUSTOMERS.READ,

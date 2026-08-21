@@ -5,7 +5,7 @@ import { BsList, BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { HeaderProfileDropdown } from "./HeaderProfileDropdown";
 
 function Header() {
-  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+  const { toggleSidebar } = useSidebarStore();
   const { theme, toggleTheme } = useThemeStore();
   const pageTitle = usePageTitle();
   const nextTheme = theme === "dark" ? "light" : "dark";

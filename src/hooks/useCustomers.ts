@@ -11,7 +11,7 @@ const getErrorMessage = (error: unknown, fallback: string) =>
 
 export function useCustomers() {
   const customers = useCustomerStore((state) => state.customers);
-  const hasLoaded = useCustomerStore((state) => state.hasLoaded);
+  const isLoaded = useCustomerStore((state) => state.isLoaded);
   const isLoading = useCustomerStore((state) => state.isLoading);
   const setCustomers = useCustomerStore((state) => state.setCustomers);
   const setIsLoading = useCustomerStore((state) => state.setIsLoading);
@@ -30,11 +30,11 @@ export function useCustomers() {
   }, [setCustomers, setIsLoading]);
 
   useEffect(() => {
-    if (!hasLoaded && !hasFetched.current) {
+    if (!isLoaded && !hasFetched.current) {
       hasFetched.current = true;
       fetchCustomers();
     }
-  }, [fetchCustomers, hasLoaded]);
+  }, [fetchCustomers, isLoaded]);
 
   const createCustomer = async (payload: CustomerPayload) => {
     setIsSubmitting(true);
@@ -99,7 +99,7 @@ export function useCustomers() {
 
   return {
     customers,
-    isLoading: isLoading || !hasLoaded,
+    isLoading: isLoading || !isLoaded,
     isSubmitting,
     createCustomer,
     updateCustomer,

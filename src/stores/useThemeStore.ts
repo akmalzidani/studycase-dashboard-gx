@@ -32,9 +32,9 @@ export const useThemeStore = create<ThemeState>((set) => ({
       applyThemeToDocument(nextTheme);
       return { theme: nextTheme };
     }),
-  setTheme: (newTheme) => {
-    applyThemeToDocument(newTheme);
-    set({ theme: newTheme });
+  setTheme: (theme) => {
+    applyThemeToDocument(theme);
+    set({ theme });
   },
 }));
 

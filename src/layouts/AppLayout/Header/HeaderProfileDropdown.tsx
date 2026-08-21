@@ -9,7 +9,8 @@ import { authService } from "@/services/auth.service";
 import { BsPersonCircle, BsPerson, BsBoxArrowRight } from "react-icons/bs";
 
 export function HeaderProfileDropdown() {
-  const { user, checkSession } = useAuthStore();
+  const user = useAuthStore((store) => store.user);
+  const checkSession = useAuthStore((store) => store.checkSession);
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "User";
 

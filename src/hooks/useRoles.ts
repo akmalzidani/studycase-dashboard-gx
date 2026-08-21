@@ -7,10 +7,11 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useRoles() {
-  const { roles, setRoles } = useRoleStore();
+  const roles = useRoleStore((state) => state.roles);
+  const setRoles = useRoleStore((state) => state.setRoles);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasLoaded = useRef(false);
+  const isLoaded = useRef(false);
 
   const loadRoles = useCallback(async () => {
     setIsLoading(true);
@@ -24,8 +25,8 @@ export function useRoles() {
   }, [setRoles]);
 
   useEffect(() => {
-    if (hasLoaded.current) return;
-    hasLoaded.current = true;
+    if (isLoaded.current) return;
+    isLoaded.current = true;
     void loadRoles();
   }, [loadRoles]);
 

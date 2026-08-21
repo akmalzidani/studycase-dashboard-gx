@@ -20,7 +20,7 @@ import { UserFormModal } from "./UserFormModal";
 import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
-  const permissions = useAuthStore((state) => state.permissions);
+  const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();

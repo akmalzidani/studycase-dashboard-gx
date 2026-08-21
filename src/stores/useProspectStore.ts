@@ -3,7 +3,7 @@ import type { Prospect } from "@/types";
 
 interface ProspectState {
   prospects: Prospect[];
-  hasLoaded: boolean;
+  isLoaded: boolean;
   isLoading: boolean;
   setProspects: (prospects: Prospect[]) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -11,8 +11,8 @@ interface ProspectState {
 
 export const useProspectStore = create<ProspectState>((set) => ({
   prospects: [],
-  hasLoaded: false,
+  isLoaded: false,
   isLoading: false,
-  setProspects: (prospects) => set({ prospects, hasLoaded: true }),
+  setProspects: (prospects) => set({ prospects, isLoaded: true }),
   setIsLoading: (isLoading) => set({ isLoading }),
 }));

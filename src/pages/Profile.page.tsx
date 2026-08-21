@@ -27,7 +27,8 @@ import {
 } from "react-icons/bs";
 
 export default function ProfilePage() {
-  const { user, checkSession } = useAuthStore();
+  const user = useAuthStore((store) => store.user);
+  const checkSession = useAuthStore((store) => store.checkSession);
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "-";
 

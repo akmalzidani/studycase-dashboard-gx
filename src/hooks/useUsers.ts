@@ -7,8 +7,11 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useUsers() {
-  const { users, hasLoaded, isLoading, setUsers, setIsLoading } =
-    useUserStore();
+  const users = useUserStore((state) => state.users);
+  const isLoaded = useUserStore((state) => state.isLoaded);
+  const isLoading = useUserStore((state) => state.isLoading);
+  const setUsers = useUserStore((state) => state.setUsers);
+  const setIsLoading = useUserStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasFetched = useRef(false);
 
@@ -24,10 +27,10 @@ export function useUsers() {
   }, [setIsLoading, setUsers]);
 
   useEffect(() => {
-    if (hasLoaded || hasFetched.current) return;
+    if (isLoaded || hasFetched.current) return;
     hasFetched.current = true;
     void loadUsers();
-  }, [hasLoaded, loadUsers]);
+  }, [isLoaded, loadUsers]);
 
   const createUser = async (payload: UserPayload) => {
     setIsSubmitting(true);

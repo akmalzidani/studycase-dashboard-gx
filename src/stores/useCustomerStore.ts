@@ -3,7 +3,7 @@ import type { Customer } from "@/types";
 
 interface CustomerState {
   customers: Customer[];
-  hasLoaded: boolean;
+  isLoaded: boolean;
   isLoading: boolean;
   setCustomers: (customers: Customer[]) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -11,8 +11,8 @@ interface CustomerState {
 
 export const useCustomerStore = create<CustomerState>((set) => ({
   customers: [],
-  hasLoaded: false,
+  isLoaded: false,
   isLoading: false,
-  setCustomers: (customers) => set({ customers, hasLoaded: true }),
+  setCustomers: (customers) => set({ customers, isLoaded: true }),
   setIsLoading: (isLoading) => set({ isLoading }),
 }));

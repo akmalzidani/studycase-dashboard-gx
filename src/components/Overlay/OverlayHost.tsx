@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
-import { ConfirmationDialog } from "./ConfirmationDialog";
-import { ToastContainer } from "./ToastContainer";
+import ConfirmationDialog from "./ConfirmationDialog";
+import ToastContainer from "./ToastContainer";
 
 export function OverlayHost() {
   const portalTarget = document.getElementById("portal");

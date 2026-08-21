@@ -12,7 +12,7 @@ export function SidebarNavItem({
   isOpen: boolean;
 }) {
   const { pathname } = useLocation();
-  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+  const { toggleSidebar } = useSidebarStore();
   const hasChildren: boolean = (item.children?.length ?? 0) > 0;
 
   const isChildActive: boolean = hasChildren
