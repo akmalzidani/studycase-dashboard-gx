@@ -1,19 +1,18 @@
 import { toast } from "@/components/Overlay";
 import { userService, type UserPayload } from "@/services/user.service";
 import { useUserStore } from "@/stores/useUserStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useUsers() {
   const users = useUserStore((state) => state.users);
-  const isLoaded = useUserStore((state) => state.isLoaded);
+
   const isLoading = useUserStore((state) => state.isLoading);
   const setUsers = useUserStore((state) => state.setUsers);
   const setIsLoading = useUserStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasFetched = useRef(false);
 
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
@@ -27,10 +26,8 @@ export function useUsers() {
   }, [setIsLoading, setUsers]);
 
   useEffect(() => {
-    if (isLoaded || hasFetched.current) return;
-    hasFetched.current = true;
-    void loadUsers();
-  }, [isLoaded, loadUsers]);
+    loadUsers();
+  }, [loadUsers]);
 
   const createUser = async (payload: UserPayload) => {
     setIsSubmitting(true);

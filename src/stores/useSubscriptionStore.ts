@@ -3,7 +3,6 @@ import type { Subscription } from "@/types";
 
 interface SubscriptionState {
   subscriptions: Subscription[];
-  isLoaded: boolean;
   isLoading: boolean;
   setSubscriptions: (subscriptions: Subscription[]) => void;
   setIsLoading: (isLoading: boolean) => void;
@@ -11,8 +10,7 @@ interface SubscriptionState {
 
 export const useSubscriptionStore = create<SubscriptionState>((set) => ({
   subscriptions: [],
-  isLoaded: false,
   isLoading: false,
-  setSubscriptions: (subscriptions) => set({ subscriptions, isLoaded: true }),
+  setSubscriptions: (subscriptions) => set({ subscriptions }),
   setIsLoading: (isLoading) => set({ isLoading }),
 }));

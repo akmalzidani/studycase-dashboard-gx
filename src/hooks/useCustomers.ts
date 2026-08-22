@@ -4,19 +4,18 @@ import {
   type CustomerPayload,
 } from "@/services/customer.service";
 import { useCustomerStore } from "@/stores/useCustomerStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useCustomers() {
   const customers = useCustomerStore((state) => state.customers);
-  const isLoaded = useCustomerStore((state) => state.isLoaded);
+
   const isLoading = useCustomerStore((state) => state.isLoading);
   const setCustomers = useCustomerStore((state) => state.setCustomers);
   const setIsLoading = useCustomerStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasFetched = useRef(false);
 
   const fetchCustomers = useCallback(async () => {
     setIsLoading(true);
@@ -30,11 +29,8 @@ export function useCustomers() {
   }, [setCustomers, setIsLoading]);
 
   useEffect(() => {
-    if (!isLoaded && !hasFetched.current) {
-      hasFetched.current = true;
-      fetchCustomers();
-    }
-  }, [fetchCustomers, isLoaded]);
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const createCustomer = async (payload: CustomerPayload) => {
     setIsSubmitting(true);
@@ -99,7 +95,7 @@ export function useCustomers() {
 
   return {
     customers,
-    isLoading: isLoading || !isLoaded,
+    isLoading,
     isSubmitting,
     createCustomer,
     updateCustomer,

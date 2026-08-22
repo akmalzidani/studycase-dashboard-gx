@@ -1,7 +1,7 @@
 import { toast } from "@/components/Overlay";
 import { roleService, type RolePayload } from "@/services/role.service";
 import { useRoleStore } from "@/stores/useRoleStore";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -11,7 +11,6 @@ export function useRoles() {
   const setRoles = useRoleStore((state) => state.setRoles);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const isLoaded = useRef(false);
 
   const loadRoles = useCallback(async () => {
     setIsLoading(true);
@@ -25,9 +24,7 @@ export function useRoles() {
   }, [setRoles]);
 
   useEffect(() => {
-    if (isLoaded.current) return;
-    isLoaded.current = true;
-    void loadRoles();
+    loadRoles();
   }, [loadRoles]);
 
   const createRole = async (payload: RolePayload) => {

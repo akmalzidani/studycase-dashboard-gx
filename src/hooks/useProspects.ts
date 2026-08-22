@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   prospectService,
   type ProspectPayload,
@@ -11,12 +11,11 @@ const getErrorMessage = (error: unknown, fallback: string) =>
 
 export function useProspects() {
   const prospects = useProspectStore((state) => state.prospects);
-  const isLoaded = useProspectStore((state) => state.isLoaded);
+
   const isLoading = useProspectStore((state) => state.isLoading);
   const setProspects = useProspectStore((state) => state.setProspects);
   const setIsLoading = useProspectStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasFetched = useRef(false);
 
   const fetchProspects = useCallback(async () => {
     setIsLoading(true);
@@ -30,11 +29,8 @@ export function useProspects() {
   }, [setIsLoading, setProspects]);
 
   useEffect(() => {
-    if (!isLoaded && !hasFetched.current) {
-      hasFetched.current = true;
-      fetchProspects();
-    }
-  }, [fetchProspects, isLoaded]);
+    fetchProspects();
+  }, [fetchProspects]);
 
   const createProspect = async (payload: ProspectPayload) => {
     setIsSubmitting(true);
@@ -99,7 +95,7 @@ export function useProspects() {
 
   return {
     prospects,
-    isLoading: isLoading || !isLoaded,
+    isLoading,
     isSubmitting,
     createProspect,
     updateProspect,

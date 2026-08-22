@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   subscriptionService,
   type SubscriptionPayload,
@@ -11,14 +11,13 @@ const getErrorMessage = (error: unknown, fallback: string) =>
 
 export function useSubscriptions() {
   const subscriptions = useSubscriptionStore((state) => state.subscriptions);
-  const isLoaded = useSubscriptionStore((state) => state.isLoaded);
+
   const isLoading = useSubscriptionStore((state) => state.isLoading);
   const setSubscriptions = useSubscriptionStore(
     (state) => state.setSubscriptions,
   );
   const setIsLoading = useSubscriptionStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const hasFetched = useRef(false);
 
   const fetchSubscriptions = useCallback(async () => {
     setIsLoading(true);
@@ -32,11 +31,8 @@ export function useSubscriptions() {
   }, [setIsLoading, setSubscriptions]);
 
   useEffect(() => {
-    if (!isLoaded && !hasFetched.current) {
-      hasFetched.current = true;
-      fetchSubscriptions();
-    }
-  }, [fetchSubscriptions, isLoaded]);
+    fetchSubscriptions();
+  }, [fetchSubscriptions]);
 
   const createSubscription = async (payload: SubscriptionPayload) => {
     setIsSubmitting(true);
@@ -68,9 +64,7 @@ export function useSubscriptions() {
       setSubscriptions(
         useSubscriptionStore
           .getState()
-          .subscriptions.map((item) =>
-            item.id === id ? subscription : item,
-          ),
+          .subscriptions.map((item) => (item.id === id ? subscription : item)),
       );
       toast.success("Subscription package updated successfully.");
       return true;
