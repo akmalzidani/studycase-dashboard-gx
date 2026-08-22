@@ -1,4 +1,4 @@
-import type { OffcanvasTarget } from "@/config/modal.config";
+import type { OffcanvasTarget } from "@/config/overlay.config";
 import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
@@ -20,9 +20,10 @@ export function Offcanvas({ target, title, children, footer }: OffcanvasProps) {
   return createPortal(
     <div
       id={target}
-      className="offcanvas offcanvas-end form-offcanvas"
+      className="offcanvas offcanvas-end"
       tabIndex={-1}
-      aria-labelledby={titleId}
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div className="offcanvas-header">
         <h1 className="offcanvas-title fs-5 fw-bold" id={titleId}>
@@ -37,7 +38,9 @@ export function Offcanvas({ target, title, children, footer }: OffcanvasProps) {
       </div>
       <div className="offcanvas-body d-flex flex-column pt-2">
         <div className="flex-grow-1">{children}</div>
-        {footer && <div className="d-flex justify-content-end gap-2 pt-3">{footer}</div>}
+        {footer && (
+          <div className="d-flex justify-content-end gap-2 pt-3">{footer}</div>
+        )}
       </div>
     </div>,
     portalTarget,
