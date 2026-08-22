@@ -6,7 +6,7 @@ import {
 import { userTableColumns } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
@@ -87,10 +87,6 @@ export function UserTab() {
 
   return (
     <>
-      <PageHeader
-        title="User"
-        description="Manage user accounts and their access status."
-      />
       <DataTable
         {...table}
         columns={userTableColumns}

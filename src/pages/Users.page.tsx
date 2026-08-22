@@ -16,19 +16,19 @@ interface UserManagementTab {
 const tabs: UserManagementTab[] = [
   {
     id: "users",
-    label: "User",
+    label: "User/Account Management",
     Component: UserTab,
     permission: PERMISSION_KEYS.USERS.READ,
   },
   {
     id: "roles",
-    label: "Role",
+    label: "Role Management",
     Component: RoleTab,
     permission: PERMISSION_KEYS.ROLES.READ,
   },
   {
     id: "permissions",
-    label: "Permission",
+    label: "Permission List",
     Component: PermissionTab,
     permission: PERMISSION_KEYS.PERMISSIONS.READ,
   },
@@ -51,6 +51,7 @@ export default function UsersPage() {
           <li key={id} className="nav-item" role="presentation">
             <button
               className={`nav-link ${index === 0 ? "active" : ""}`}
+              id={`${id}-tab-button`}
               data-bs-toggle="tab"
               data-bs-target={`#${id}-tab`}
               type="button"
@@ -70,6 +71,7 @@ export default function UsersPage() {
             className={`tab-pane fade ${index === 0 ? "show active" : ""}`}
             id={`${id}-tab`}
             role="tabpanel"
+            aria-labelledby={`${id}-tab-button`}
           >
             <Component />
           </div>

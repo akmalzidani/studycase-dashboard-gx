@@ -6,7 +6,7 @@ import {
 import { roleTableColumns } from "@/components/TableColumns";
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
@@ -75,10 +75,6 @@ export function RoleTab() {
 
   return (
     <>
-      <PageHeader
-        title="Role"
-        description="Manage roles and user access rights."
-      />
       <DataTable
         {...table}
         columns={roleTableColumns}
