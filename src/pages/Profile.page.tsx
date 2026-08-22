@@ -3,7 +3,7 @@ import {
   type ChangePasswordFormValues,
 } from "@/components/Forms/ChangePasswordForm";
 import { Badge } from "@/components/common/Badge";
-import { PageHeader } from "@/components/common/PageHeader";
+
 import {
   ProfileForm,
   type ProfileFormValues,
@@ -11,7 +11,7 @@ import {
 
 import { MODAL_TARGETS } from "@/config/modal.config";
 import { PERMISSION_KEYS } from "@/config/permission.config";
-
+import { hasPermission } from "@/config/permission.helpers";
 
 import { authService } from "@/services/auth.service";
 import { userService } from "@/services/user.service";
@@ -29,9 +29,13 @@ import {
 export default function ProfilePage() {
   const user = useAuthStore((store) => store.user);
   const checkSession = useAuthStore((store) => store.checkSession);
+  const permissions = useAuthStore((store) => store.permissions);
+  const canUpdateProfile = hasPermission(
+    permissions,
+    PERMISSION_KEYS.PROFILE.UPDATE,
+  );
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "-";
-
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -96,49 +100,39 @@ export default function ProfilePage() {
 
   return (
     <>
-      <PageHeader
-        title="Profile"
-        description="Manage your account profile settings."
-        actions={[
-          {
-            id: "change-password",
-            permission: PERMISSION_KEYS.PROFILE.UPDATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-info"
-                data-bs-toggle="offcanvas"
-                data-bs-target={`#${MODAL_TARGETS.CHANGE_PASSWORD}`}
-              >
-                <BsKey className="me-2" />
-                Change Password
-              </button>
-            ),
-          },
-          {
-            id: "edit",
-            permission: PERMISSION_KEYS.PROFILE.UPDATE,
-            content: (
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-toggle="offcanvas"
-                data-bs-target={`#${MODAL_TARGETS.PROFILE_FORM}`}
-              >
-                <BsPencilSquare className="me-2" />
-                Edit Profile
-              </button>
-            ),
-          },
-        ]}
-      />
-
       <section className="card">
+        <div className="card-header bg-transparent py-3">
+          <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <h1 className="h5 mb-0">Profile</h1>
+            {canUpdateProfile && (
+              <div className="d-flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  data-bs-toggle="offcanvas"
+                  data-bs-target={`#${MODAL_TARGETS.CHANGE_PASSWORD}`}
+                >
+                  <BsKey className="me-2" />
+                  Change Password
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-toggle="offcanvas"
+                  data-bs-target={`#${MODAL_TARGETS.PROFILE_FORM}`}
+                >
+                  <BsPencilSquare className="me-2" />
+                  Edit Profile
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-3 mb-4">
             <BsPersonCircle className="display-5 text-primary" />
             <div>
-              <h2 className="h4 mb-1">{user.name}</h2>
+              <p className="h4 mb-1">{user.name}</p>
               <Badge variant="primary">{roleName}</Badge>
             </div>
           </div>
