@@ -9,7 +9,7 @@ import {
   type ProfileFormValues,
 } from "@/components/Forms/ProfileForm";
 
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { hasPermission } from "@/config/permission.helpers";
 
@@ -110,7 +110,7 @@ export default function ProfilePage() {
                   type="button"
                   className="btn btn-outline-secondary"
                   data-bs-toggle="offcanvas"
-                  data-bs-target={`#${MODAL_TARGETS.CHANGE_PASSWORD}`}
+                  data-bs-target={`#${OVERLAY_TARGETS.CHANGE_PASSWORD}`}
                 >
                   <BsKey className="me-2" />
                   Change Password
@@ -119,7 +119,7 @@ export default function ProfilePage() {
                   type="button"
                   className="btn btn-primary"
                   data-bs-toggle="offcanvas"
-                  data-bs-target={`#${MODAL_TARGETS.PROFILE_FORM}`}
+                  data-bs-target={`#${OVERLAY_TARGETS.PROFILE_FORM}`}
                 >
                   <BsPencilSquare className="me-2" />
                   Edit Profile

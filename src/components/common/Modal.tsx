@@ -1,9 +1,9 @@
-import type { ModalTarget } from "@/config/modal.config";
+import type { OverlayTarget } from "@/config/overlay.config";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 
 interface ModalProps {
-  target: ModalTarget;
+  target: OverlayTarget;
   title: string;
   children: ReactNode;
   footer?: ReactNode;
@@ -26,7 +26,9 @@ export function Modal({ target, title, children, footer, size }: ModalProps) {
       aria-labelledby={titleId}
       aria-hidden="true"
     >
-      <div className={`modal-dialog modal-dialog-centered${size ? ` modal-${size}` : ""}`}>
+      <div
+        className={`modal-dialog modal-dialog-centered${size ? ` modal-${size}` : ""}`}
+      >
         <div className="modal-content shadow-lg border-0">
           <div className="modal-header border-bottom-0 pb-0">
             <h1 className="modal-title fs-5 fw-bold" id={titleId}>
@@ -40,7 +42,9 @@ export function Modal({ target, title, children, footer, size }: ModalProps) {
             />
           </div>
           <div className="modal-body py-4">{children}</div>
-          {footer && <div className="modal-footer border-top-0 pt-0">{footer}</div>}
+          {footer && (
+            <div className="modal-footer border-top-0 pt-0">{footer}</div>
+          )}
         </div>
       </div>
     </div>,

@@ -1,5 +1,5 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
 import type { Customer, CustomerStatus, Subscription } from "@/types";
@@ -60,7 +60,7 @@ export function CustomerForm({
       );
     };
 
-    return onOffcanvasShown(MODAL_TARGETS.CUSTOMER_FORM, initializeValues);
+    return onOffcanvasShown(OVERLAY_TARGETS.CUSTOMER_FORM, initializeValues);
   }, [customer, subscriptions]);
 
   const handleValueChange = <K extends keyof CustomerFormValues>(
@@ -71,7 +71,7 @@ export function CustomerForm({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.CUSTOMER_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
     }
   };
 
@@ -79,7 +79,7 @@ export function CustomerForm({
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.CUSTOMER_FORM}
+      target={OVERLAY_TARGETS.CUSTOMER_FORM}
       title={isEditing ? "Edit Customer" : "Add Customer"}
 
       footer={
@@ -111,48 +111,51 @@ export function CustomerForm({
         <div className="col-12">
           <FormTextInput
             id="customer-name"
-          label="Name"
-          className="form-control"
-          placeholder="Enter name"
-          value={values.name}
-          minLength={3}
-          required
-          disabled={isSubmitting}
-          onChange={(event) => handleValueChange("name", event.target.value)}
+            label="Name"
+            className="form-control"
+            placeholder="Enter name"
+            value={values.name}
+            minLength={3}
+            required
+            disabled={isSubmitting}
+            onChange={(event) => handleValueChange("name", event.target.value)}
           />
         </div>
         <div className="col-12 col-md-6">
           <FormTextInput
             id="customer-email"
-          label="Email"
-          placeholder="Enter email"
-          type="email"
-          className="form-control"
-          value={values.email}
-          required
-          disabled={isSubmitting}
-          onChange={(event) => handleValueChange("email", event.target.value)}
+            label="Email"
+            placeholder="Enter email"
+            type="email"
+            className="form-control"
+            value={values.email}
+            required
+            disabled={isSubmitting}
+            onChange={(event) => handleValueChange("email", event.target.value)}
           />
         </div>
         <div className="col-12 col-md-6">
           <FormTextInput
             id="customer-phone"
-          label="Phone number"
-          placeholder="Enter phone number"
-          type="tel"
-          inputMode="numeric"
-          autoComplete="tel"
-          className="form-control"
-          value={values.phoneNumber}
-          pattern={PHONE_NUMBER_PATTERN}
-          title={PHONE_NUMBER_TITLE}
-          minLength={8}
-          maxLength={15}
-          required
-          disabled={isSubmitting}
-          onChange={(event) =>
-            handleValueChange("phoneNumber", event.target.value.replace(/\D/g, ""))
-          }
+            label="Phone number"
+            placeholder="Enter phone number"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            className="form-control"
+            value={values.phoneNumber}
+            pattern={PHONE_NUMBER_PATTERN}
+            title={PHONE_NUMBER_TITLE}
+            minLength={8}
+            maxLength={15}
+            required
+            disabled={isSubmitting}
+            onChange={(event) =>
+              handleValueChange(
+                "phoneNumber",
+                event.target.value.replace(/\D/g, ""),
+              )
+            }
           />
         </div>
         <div className="col-12 col-md-8">

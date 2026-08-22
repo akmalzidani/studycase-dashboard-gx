@@ -1,5 +1,5 @@
 import { Offcanvas as BootstrapOffcanvas } from "bootstrap";
-import type { OffcanvasTarget } from "@/config/modal.config";
+import type { OffcanvasTarget } from "@/config/overlay.config";
 
 export type OffcanvasShownEvent = Event & {
   relatedTarget: HTMLElement | null;

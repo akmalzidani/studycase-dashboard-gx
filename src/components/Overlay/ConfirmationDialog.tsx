@@ -1,6 +1,6 @@
 import { Modal as BootstrapModal } from "bootstrap";
 import { useEffect, useRef, useState } from "react";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { Modal } from "@/components/common/Modal";
 import { useConfirmStore, type ConfirmOptions } from "@/stores/useConfirmStore";
 import { useThemeStore } from "@/stores/useThemeStore";
@@ -13,7 +13,7 @@ export default function ConfirmationDialog() {
     useState<ConfirmOptions | null>(null);
 
   useEffect(() => {
-    const modalElement = document.getElementById(MODAL_TARGETS.CONFIRMATION);
+    const modalElement = document.getElementById(OVERLAY_TARGETS.CONFIRMATION);
 
     if (!modalElement) {
       throw new Error("Confirmation modal was not found.");
@@ -68,7 +68,7 @@ export default function ConfirmationDialog() {
 
   return (
     <Modal
-      target={MODAL_TARGETS.CONFIRMATION}
+      target={OVERLAY_TARGETS.CONFIRMATION}
       title={title}
       footer={
         <>

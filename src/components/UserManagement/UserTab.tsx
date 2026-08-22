@@ -4,7 +4,7 @@ import {
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 import { userTableColumns } from "@/components/TableColumns";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
 import { hasPermission } from "@/config/permission.helpers";
@@ -25,7 +25,7 @@ export function UserTab() {
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
   const handleFormOpen = useCallback(
-    () => showOffcanvas(MODAL_TARGETS.USER_FORM),
+    () => showOffcanvas(OVERLAY_TARGETS.USER_FORM),
     [],
   );
   const {

@@ -3,14 +3,13 @@ import {
   type SubscriptionFormValues,
 } from "@/components/Forms/SubscriptionForm";
 import { subscriptionTableColumns } from "@/components/TableColumns";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 import {
   createCrudRowActions,
   DataTable,
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
-
 
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -35,9 +34,8 @@ export default function SubscriptionPage() {
     deleteSubscription,
   } = useSubscriptions();
 
-
   const handleFormOpen = useCallback(
-    () => showOffcanvas(MODAL_TARGETS.SUBSCRIPTION_FORM),
+    () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM),
     [],
   );
   const {
@@ -103,7 +101,6 @@ export default function SubscriptionPage() {
 
   return (
     <>
-
       <DataTable<Subscription>
         {...table}
         columns={subscriptionTableColumns}

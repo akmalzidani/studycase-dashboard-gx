@@ -1,6 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Offcanvas } from "@/components/common/Offcanvas";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { User } from "@/types";
 
@@ -16,7 +16,6 @@ interface ChangePasswordFormProps {
   onSubmit: (values: ChangePasswordFormValues) => Promise<boolean>;
 }
 
-
 const EMPTY_VALUES: ChangePasswordFormValues = {
   currentPassword: "",
   newPassword: "",
@@ -31,19 +30,19 @@ export function ChangePasswordForm({
 
   useEffect(() => {
     const resetValues = () => setValues(EMPTY_VALUES);
-    return onOffcanvasShown(MODAL_TARGETS.CHANGE_PASSWORD, resetValues);
+    return onOffcanvasShown(OVERLAY_TARGETS.CHANGE_PASSWORD, resetValues);
   }, []);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.CHANGE_PASSWORD);
+      hideOffcanvas(OVERLAY_TARGETS.CHANGE_PASSWORD);
     }
   };
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.CHANGE_PASSWORD}
+      target={OVERLAY_TARGETS.CHANGE_PASSWORD}
       title="Change Password"
 
       footer={
@@ -67,14 +66,14 @@ export function ChangePasswordForm({
         </>
       }
     >
-      <form id={FORM_IDS.CHANGE_PASSWORD} onSubmit={handleSubmit} className="row g-3">
+      <form
+        id={FORM_IDS.CHANGE_PASSWORD}
+        onSubmit={handleSubmit}
+        className="row g-3"
+      >
         {(
           [
-            [
-              "currentPassword",
-              "Current password",
-              "profile-current-password",
-            ],
+            ["currentPassword", "Current password", "profile-current-password"],
             ["newPassword", "New password", "profile-new-password"],
             [
               "confirmNewPassword",

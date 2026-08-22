@@ -4,7 +4,7 @@ import {
   matchesSearchKeyword,
 } from "@/components/common/DataTable";
 import { roleTableColumns } from "@/components/TableColumns";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
 import { hasPermission } from "@/config/permission.helpers";
@@ -23,7 +23,7 @@ export function RoleTab() {
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
   const handleFormOpen = useCallback(
-    () => showOffcanvas(MODAL_TARGETS.ROLE_FORM),
+    () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM),
     [],
   );
   const roleActions = useCrudFormActions<Role>({

@@ -1,5 +1,5 @@
 import { createCrudRowActions, DataTable } from "@/components/common/DataTable";
-import { MODAL_TARGETS } from "@/config/modal.config";
+import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
 import {
@@ -37,9 +37,8 @@ export default function CustomersPage() {
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
 
-
   const handleFormOpen = useCallback(
-    () => showOffcanvas(MODAL_TARGETS.CUSTOMER_FORM),
+    () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM),
     [],
   );
   const {
@@ -97,7 +96,6 @@ export default function CustomersPage() {
 
   return (
     <>
-
       <DataTable<Customer>
         {...table}
         columns={customerTableColumns}

@@ -1,14 +1,14 @@
 import { Modal as BootstrapModal } from "bootstrap";
-import type { ModalTarget } from "@/config/modal.config";
+import type { OverlayTarget } from "@/config/overlay.config";
 
 export type ModalShownEvent = Event & {
   relatedTarget: HTMLElement | null;
 };
 
-export const getModalElement = (target: ModalTarget) =>
+export const getModalElement = (target: OverlayTarget) =>
   document.getElementById(target);
 
-export const showModal = (target: ModalTarget) => {
+export const showModal = (target: OverlayTarget) => {
   const modalElement = getModalElement(target);
 
   if (modalElement) {
@@ -16,7 +16,7 @@ export const showModal = (target: ModalTarget) => {
   }
 };
 
-export const hideModal = (target: ModalTarget) => {
+export const hideModal = (target: OverlayTarget) => {
   const modalElement = getModalElement(target);
 
   if (modalElement) {
@@ -25,7 +25,7 @@ export const hideModal = (target: ModalTarget) => {
 };
 
 export const onModalShown = (
-  target: ModalTarget,
+  target: OverlayTarget,
   listener: (event: ModalShownEvent) => void,
 ) => {
   const modalElement = getModalElement(target);

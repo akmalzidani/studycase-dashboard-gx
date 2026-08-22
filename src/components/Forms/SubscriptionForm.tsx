@@ -1,7 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { formatCurrencyInput } from "@/helpers/formatters.helpers";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Subscription } from "@/types";
@@ -17,7 +17,6 @@ interface SubscriptionFormProps {
   item: Subscription | null;
   onSubmit: (values: SubscriptionFormValues) => Promise<boolean>;
 }
-
 
 const EMPTY_VALUES: SubscriptionFormValues = {
   packageName: "",
@@ -45,7 +44,10 @@ export function SubscriptionForm({
       );
     };
 
-    return onOffcanvasShown(MODAL_TARGETS.SUBSCRIPTION_FORM, initializeValues);
+    return onOffcanvasShown(
+      OVERLAY_TARGETS.SUBSCRIPTION_FORM,
+      initializeValues,
+    );
   }, [subscription]);
 
   const handleValueChange = <K extends keyof SubscriptionFormValues>(
@@ -56,7 +58,7 @@ export function SubscriptionForm({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.SUBSCRIPTION_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
     }
   };
 
@@ -64,7 +66,7 @@ export function SubscriptionForm({
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.SUBSCRIPTION_FORM}
+      target={OVERLAY_TARGETS.SUBSCRIPTION_FORM}
       title={
         isEditing ? "Edit Subscription Package" : "Add Subscription Package"
       }
@@ -94,18 +96,24 @@ export function SubscriptionForm({
         </>
       }
     >
-      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit} className="row g-3">
+      <form
+        id={FORM_IDS.SUBSCRIPTION}
+        onSubmit={handleSubmit}
+        className="row g-3"
+      >
         <div className="col-12">
           <FormTextInput
             id="subscription-package-name"
-          label="Package name"
-          placeholder="Enter package name"
-          className="form-control"
-          value={values.packageName}
-          minLength={2}
-          required
-          disabled={isSubmitting}
-          onChange={(event) => handleValueChange("packageName", event.target.value)}
+            label="Package name"
+            placeholder="Enter package name"
+            className="form-control"
+            value={values.packageName}
+            minLength={2}
+            required
+            disabled={isSubmitting}
+            onChange={(event) =>
+              handleValueChange("packageName", event.target.value)
+            }
           />
         </div>
         <div className="col-12 col-md-5">

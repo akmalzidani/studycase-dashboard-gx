@@ -1,10 +1,13 @@
 import { FormTextInput } from "@/components/common/FormInput";
 import { Offcanvas } from "@/components/common/Offcanvas";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Role } from "@/types";
 import { useEffect, useState, type SyntheticEvent } from "react";
-import type { ManagedUser, UserFormValues } from "@/components/UserManagement/types";
+import type {
+  ManagedUser,
+  UserFormValues,
+} from "@/components/UserManagement/types";
 
 interface UserFormProps {
   item: ManagedUser | null;
@@ -12,7 +15,6 @@ interface UserFormProps {
   isSubmitting: boolean;
   onSubmit: (values: UserFormValues) => Promise<boolean>;
 }
-
 
 export function UserForm({
   item: user,
@@ -29,7 +31,7 @@ export function UserForm({
   });
 
   useEffect(() => {
-    return onOffcanvasShown(MODAL_TARGETS.USER_FORM, () => {
+    return onOffcanvasShown(OVERLAY_TARGETS.USER_FORM, () => {
       setValues(
         user
           ? {
@@ -58,14 +60,14 @@ export function UserForm({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.USER_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.USER_FORM);
     }
   };
 
   const isEditing = Boolean(user);
   return (
     <Offcanvas
-      target={MODAL_TARGETS.USER_FORM}
+      target={OVERLAY_TARGETS.USER_FORM}
       title={isEditing ? "Edit User" : "Add User"}
       footer={
         <>
@@ -96,41 +98,43 @@ export function UserForm({
         <div className="col-12">
           <FormTextInput
             id="user-name"
-          label="Name"
-          className="form-control"
-          value={values.name}
-          placeholder="Enter full name"
-          onChange={(event) => handleValueChange("name", event.target.value)}
-          required
-          minLength={3}
-          disabled={isSubmitting}
+            label="Name"
+            className="form-control"
+            value={values.name}
+            placeholder="Enter full name"
+            onChange={(event) => handleValueChange("name", event.target.value)}
+            required
+            minLength={3}
+            disabled={isSubmitting}
           />
         </div>
         <div className="col-12 col-md-6">
           <FormTextInput
             id="user-email"
-          label="Email"
-          className="form-control"
-          type="email"
-          placeholder="Enter email"
-          value={values.email}
-          onChange={(event) => handleValueChange("email", event.target.value)}
-          required
-          disabled={isSubmitting}
+            label="Email"
+            className="form-control"
+            type="email"
+            placeholder="Enter email"
+            value={values.email}
+            onChange={(event) => handleValueChange("email", event.target.value)}
+            required
+            disabled={isSubmitting}
           />
         </div>
         <div className="col-12 col-md-6">
           <FormTextInput
             id="user-password"
-          label="Password"
-          className="form-control"
-          type="password"
-          placeholder="Enter password"
-          value={values.password}
-          onChange={(event) => handleValueChange("password", event.target.value)}
-          required
-          minLength={4}
-          disabled={isSubmitting}
+            label="Password"
+            className="form-control"
+            type="password"
+            placeholder="Enter password"
+            value={values.password}
+            onChange={(event) =>
+              handleValueChange("password", event.target.value)
+            }
+            required
+            minLength={4}
+            disabled={isSubmitting}
           />
         </div>
         <div className="col-12 col-md-8">

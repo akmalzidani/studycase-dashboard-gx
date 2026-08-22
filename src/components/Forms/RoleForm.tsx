@@ -1,9 +1,6 @@
 import { Offcanvas } from "@/components/common/Offcanvas";
-import {
-  FormTextarea,
-  FormTextInput,
-} from "@/components/common/FormInput";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FormTextarea, FormTextInput } from "@/components/common/FormInput";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Permissions, Role } from "@/types";
@@ -20,7 +17,6 @@ interface RoleFormProps {
   item: Role | null;
   onSubmit: (values: RoleFormValues) => Promise<boolean>;
 }
-
 
 type CatalogPermission = (typeof PERMISSION_CATALOG)[number];
 
@@ -79,7 +75,7 @@ export function RoleForm({
   );
 
   useEffect(() => {
-    return onOffcanvasShown(MODAL_TARGETS.ROLE_FORM, () => {
+    return onOffcanvasShown(OVERLAY_TARGETS.ROLE_FORM, () => {
       setValues(
         role
           ? {
@@ -95,7 +91,7 @@ export function RoleForm({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.ROLE_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
     }
   };
 
@@ -103,7 +99,7 @@ export function RoleForm({
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.ROLE_FORM}
+      target={OVERLAY_TARGETS.ROLE_FORM}
       title={isEditing ? "Edit Role" : "Add Role"}
 
       footer={
@@ -135,35 +131,35 @@ export function RoleForm({
         <div className="col-12 col-md-4">
           <FormTextInput
             id="role-name"
-          label="Role name"
-          className="form-control"
-          value={values.name}
-          onChange={(event) =>
-            setValues((current) => ({ ...current, name: event.target.value }))
-          }
-          placeholder="Example: Administrator"
-          minLength={3}
-          required
-          disabled={isSubmitting}
-          autoFocus
+            label="Role name"
+            className="form-control"
+            value={values.name}
+            onChange={(event) =>
+              setValues((current) => ({ ...current, name: event.target.value }))
+            }
+            placeholder="Example: Administrator"
+            minLength={3}
+            required
+            disabled={isSubmitting}
+            autoFocus
           />
         </div>
         <div className="col-12 col-md-8">
           <FormTextarea
             id="role-description"
-          label="Description"
-          className="form-control"
-          value={values.description}
-          onChange={(event) =>
-            setValues((current) => ({
-              ...current,
-              description: event.target.value,
-            }))
-          }
-          placeholder="Describe this role's access scope"
-          rows={3}
-          required
-          disabled={isSubmitting}
+            label="Description"
+            className="form-control"
+            value={values.description}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                description: event.target.value,
+              }))
+            }
+            placeholder="Describe this role's access scope"
+            rows={3}
+            required
+            disabled={isSubmitting}
           />
         </div>
         <fieldset className="col-12">

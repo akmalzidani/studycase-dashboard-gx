@@ -1,7 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { User } from "@/types";
 
@@ -28,22 +28,24 @@ export function ProfileForm({
 
   useEffect(() => {
     const initializeValues = () => {
-      setValues(user ? { name: user.name, email: user.email } : { name: "", email: "" });
+      setValues(
+        user ? { name: user.name, email: user.email } : { name: "", email: "" },
+      );
     };
 
-    return onOffcanvasShown(MODAL_TARGETS.PROFILE_FORM, initializeValues);
+    return onOffcanvasShown(OVERLAY_TARGETS.PROFILE_FORM, initializeValues);
   }, [user]);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.PROFILE_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.PROFILE_FORM);
     }
   };
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.PROFILE_FORM}
+      target={OVERLAY_TARGETS.PROFILE_FORM}
       title="Edit Profile"
       footer={
         <>
@@ -70,32 +72,32 @@ export function ProfileForm({
         <div className="col-12 col-md-6">
           <FormTextInput
             id="profile-name"
-          label="Name"
-          className="form-control"
-          value={values.name}
-          minLength={3}
-          required
-          disabled={isSubmitting}
-          onChange={(event) =>
-            setValues((current) => ({ ...current, name: event.target.value }))
-          }
+            label="Name"
+            className="form-control"
+            value={values.name}
+            minLength={3}
+            required
+            disabled={isSubmitting}
+            onChange={(event) =>
+              setValues((current) => ({ ...current, name: event.target.value }))
+            }
           />
         </div>
         <div className="col-12 col-md-6">
           <FormTextInput
             id="profile-email"
-          label="Email"
-          type="email"
-          className="form-control"
-          value={values.email}
-          required
-          disabled={isSubmitting}
-          onChange={(event) =>
-            setValues((current) => ({
-              ...current,
-              email: event.target.value,
-            }))
-          }
+            label="Email"
+            type="email"
+            className="form-control"
+            value={values.email}
+            required
+            disabled={isSubmitting}
+            onChange={(event) =>
+              setValues((current) => ({
+                ...current,
+                email: event.target.value,
+              }))
+            }
           />
         </div>
       </form>
