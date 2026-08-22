@@ -4,6 +4,7 @@ export interface DashboardMetrics {
   activeCustomerCount: number;
   blockedCustomerCount: number;
   pendingProspectCount: number;
+  completedProspectCount: number;
   estimatedMrr: number;
 }
 
@@ -22,6 +23,9 @@ export const calculateDashboardMetrics = (
     ).length,
     pendingProspectCount: prospects.filter(
       (prospect) => prospect.status === "Pending",
+    ).length,
+    completedProspectCount: prospects.filter(
+      (prospect) => prospect.status === "Completed",
     ).length,
     estimatedMrr: activeCustomers.reduce(
       (total, customer) => total + customer.subscription.monthlyFee,

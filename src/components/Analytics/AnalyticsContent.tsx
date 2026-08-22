@@ -1,5 +1,8 @@
+import { PackageInterestSection } from "./PackageInterestSection";
+import { PackageMrrSection } from "./PackageMrrSection";
+import { ProspectFunnelSection } from "./ProspectFunnelSection";
+import { SalesInsight } from "./SalesInsight";
 import type { PackageSummary } from "@/helpers/analytics.helpers";
-import { formatCurrency } from "@/helpers/formatters.helpers";
 
 export type { PackageSummary } from "@/helpers/analytics.helpers";
 
@@ -25,118 +28,26 @@ export function AnalyticsContent({
   return (
     <div className="row g-4">
       {canReadProspects && (
-        <div className="col-lg-4">
-          <section className="card h-100">
-            <div className="card-body">
-              <h2 className="h5">Prospect funnel</h2>
-              <p className="text-muted small">
-                Current prospect follow-up status.
-              </p>
-              <div className="d-flex justify-content-between mb-2">
-                <span>Completed</span>
-                <strong>{completedProspectCount}</strong>
-              </div>
-              <div
-                className="progress mb-3"
-                role="progressbar"
-                aria-label="Prospect completed"
-                aria-valuenow={completionRate}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              >
-                <div
-                  className="progress-bar bg-success"
-                  style={{ width: `${completionRate}%` }}
-                />
-              </div>
-              <div className="d-flex justify-content-between">
-                <span>Pending</span>
-                <strong>{pendingProspectCount}</strong>
-              </div>
-              <p className="text-muted small mb-0 mt-3">
-                Completion rate: {completionRate}%
-              </p>
-            </div>
-          </section>
-        </div>
+        <ProspectFunnelSection
+          pendingProspectCount={pendingProspectCount}
+          completedProspectCount={completedProspectCount}
+          completionRate={completionRate}
+        />
       )}
 
       {canReadCustomers && (
-        <div className="col-lg-8">
-          <section className="card h-100">
-            <div className="card-body">
-              <h2 className="h5">Estimated MRR by package</h2>
-              <p className="text-muted small">
-                Calculated from customers with active status.
-              </p>
-              {packageSummaries.length === 0 ? (
-                <p className="text-muted mb-0">
-                  No package data is available for analysis yet.
-                </p>
-              ) : (
-                <div className="table-responsive">
-                  <table className="table align-middle mb-0">
-                    <thead>
-                      <tr>
-                        <th>Package</th>
-                        <th className="text-end">Active customers</th>
-                        <th className="text-end">Estimated MRR</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {packageSummaries.map((item) => (
-                        <tr key={item.name}>
-                          <td>{item.name}</td>
-                          <td className="text-end">{item.activeCustomers}</td>
-                          <td className="text-end fw-semibold">
-                            {formatCurrency(item.estimatedMrr)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
+        <PackageMrrSection
+          className={canReadProspects ? "col-lg-8" : "col-12"}
+          packageSummaries={packageSummaries}
+        />
       )}
 
       {canReadProspects && (
-        <div className="col-12">
-          <section className="card">
-            <div className="card-body">
-              <h2 className="h5">Prospect interest by package</h2>
-              <div className="row g-3">
-                {packageSummaries.map((item) => (
-                  <div key={item.name} className="col-md-4">
-                    <div className="border rounded p-3 h-100">
-                      <p className="fw-semibold mb-3">{item.name}</p>
-                      <div className="d-flex justify-content-between small">
-                        <span>Pending</span>
-                        <strong>{item.pendingProspects}</strong>
-                      </div>
-                      <div className="d-flex justify-content-between small">
-                        <span>Completed</span>
-                        <strong>{item.completedProspects}</strong>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
+        <PackageInterestSection packageSummaries={packageSummaries} />
       )}
 
       {(canReadCustomers || canReadProspects) && highestMrrPackage && (
-        <div className="col-12">
-          <div className="alert alert-primary mb-0" role="status">
-            <strong>Insight:</strong> The {highestMrrPackage.name} package currently
-            provides the highest estimated MRR of{" "}
-            {formatCurrency(highestMrrPackage.estimatedMrr)}.
-          </div>
-        </div>
+        <SalesInsight highestMrrPackage={highestMrrPackage} />
       )}
     </div>
   );

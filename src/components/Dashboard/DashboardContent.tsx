@@ -1,3 +1,7 @@
+import {
+  CustomerStatusChart,
+  ProspectFunnelChart,
+} from "@/components/common/Charts";
 import { APP_PATHS } from "@/config/paths.config";
 import { formatCurrency } from "@/helpers/formatters.helpers";
 import type { ReactNode } from "react";
@@ -22,6 +26,7 @@ interface DashboardContentProps {
   activeCustomerCount: number;
   blockedCustomerCount: number;
   pendingProspectCount: number;
+  completedProspectCount: number;
   estimatedMrr: number;
 }
 
@@ -47,6 +52,7 @@ export function DashboardContent({
   activeCustomerCount,
   blockedCustomerCount,
   pendingProspectCount,
+  completedProspectCount,
   estimatedMrr,
 }: DashboardContentProps) {
   return (
@@ -85,41 +91,58 @@ export function DashboardContent({
       </div>
 
       <div className="row g-4">
-        {canReadProspects && (
+        {canReadCustomers && (
           <div className="col-lg-6">
             <section className="card h-100">
-              <div className="card-body">
-                <h2 className="h5">Prospect follow-up</h2>
-                <p className="text-muted mb-4">
-                  {pendingProspectCount > 0
-                    ? `${pendingProspectCount} prospects are awaiting follow-up.`
-                    : "No prospects are awaiting follow-up."}
+              <div className="card-body d-flex flex-column">
+                <h2 className="h5">Customer health</h2>
+                <p className="text-muted small">
+                  Active customers compared with accounts requiring immediate
+                  attention.
                 </p>
-                <Link
-                  className="btn btn-outline-primary"
-                  to={APP_PATHS.PROSPECT.INDEX}
+                <div
+                  className="position-relative flex-grow-1"
+                  style={{ minHeight: 250 }}
                 >
-                  View Prospects
+                  <CustomerStatusChart
+                    activeCustomerCount={activeCustomerCount}
+                    blockedCustomerCount={blockedCustomerCount}
+                  />
+                </div>
+                <Link
+                  className="btn btn-outline-primary align-self-start mt-3"
+                  to={APP_PATHS.CUSTOMERS.INDEX}
+                >
+                  Review Customers
                 </Link>
               </div>
             </section>
           </div>
         )}
-        {canReadCustomers && (
+        {canReadProspects && (
           <div className="col-lg-6">
             <section className="card h-100">
-              <div className="card-body">
-                <h2 className="h5">Customer status</h2>
-                <p className="text-muted mb-4">
-                  {blockedCustomerCount > 0
-                    ? `${blockedCustomerCount} customers are blocked and need attention.`
-                    : "All customers have active status."}
+              <div className="card-body d-flex flex-column">
+                <h2 className="h5">Sales follow-up priority</h2>
+                <p className="text-muted small">
+                  {pendingProspectCount > 0
+                    ? `${pendingProspectCount} prospects are waiting for the next sales action.`
+                    : "No prospects are waiting for follow-up."}
                 </p>
-                <Link
-                  className="btn btn-outline-primary"
-                  to={APP_PATHS.CUSTOMERS.INDEX}
+                <div
+                  className="position-relative flex-grow-1"
+                  style={{ minHeight: 250 }}
                 >
-                  View Customers
+                  <ProspectFunnelChart
+                    pendingProspectCount={pendingProspectCount}
+                    completedProspectCount={completedProspectCount}
+                  />
+                </div>
+                <Link
+                  className="btn btn-outline-primary align-self-start mt-3"
+                  to={APP_PATHS.PROSPECT.INDEX}
+                >
+                  Open Sales Queue
                 </Link>
               </div>
             </section>
