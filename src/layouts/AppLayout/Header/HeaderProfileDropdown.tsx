@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { getRoles } from "@/services/role.service";
 import { toast, confirm } from "@/components/Overlay";
+import { Spinner } from "@/components/common/Spinner";
 import { APP_PATHS } from "@/config/paths.config";
 
 import { authService } from "@/services/auth.service";
@@ -79,14 +80,7 @@ export function HeaderProfileDropdown() {
             onClick={handleLogout}
             disabled={isLoggingOut}
           >
-            {isLoggingOut ? (
-              <span
-                className="spinner-border spinner-border-sm"
-                aria-hidden="true"
-              ></span>
-            ) : (
-              <BsBoxArrowRight />
-            )}
+            {isLoggingOut ? <Spinner size="sm" /> : <BsBoxArrowRight />}
             {isLoggingOut ? "Logging out..." : "Logout"}
           </button>
         </li>

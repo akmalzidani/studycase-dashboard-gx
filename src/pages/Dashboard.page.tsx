@@ -1,4 +1,5 @@
 import { DashboardContent } from "@/components/Dashboard/DashboardContent";
+import { Spinner } from "@/components/common/Spinner";
 
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -25,12 +26,9 @@ function DashboardPage() {
 
   return (
     <>
-
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading overview...</span>
-          </div>
+          <Spinner className="text-primary" label="Loading overview..." />
         </div>
       ) : (
         <DashboardContent

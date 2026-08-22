@@ -1,4 +1,5 @@
 import { AnalyticsContent } from "@/components/Analytics/AnalyticsContent";
+import { Spinner } from "@/components/common/Spinner";
 
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
@@ -25,12 +26,9 @@ function AnalyticsPage() {
 
   return (
     <>
-
       {isLoading ? (
         <div className="d-flex justify-content-center py-5">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading analytics...</span>
-          </div>
+          <Spinner className="text-primary" label="Loading analytics..." />
         </div>
       ) : (
         <AnalyticsContent

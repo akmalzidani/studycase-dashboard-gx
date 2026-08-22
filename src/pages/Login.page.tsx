@@ -1,3 +1,4 @@
+import { Spinner } from "@/components/common/Spinner";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import { authService } from "@/services/auth.service";
 import { getRoles } from "@/services/role.service";
@@ -13,9 +14,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const demoAccounts = authService.getDemoAccounts();
   const login = useAuthStore((store) => store.login);
-  const isAuthenticated = useAuthStore(
-    (store) => store.isAuthenticated,
-  );
+  const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
 
   const navigate = useNavigate();
   usePageTitle();
@@ -107,10 +106,7 @@ export default function LoginPage() {
             >
               {isLoading ? (
                 <>
-                  <span
-                    className="spinner-border spinner-border-sm"
-                    aria-hidden="true"
-                  ></span>
+                  <Spinner size="sm" />
                   <span role="status">Signing in...</span>
                 </>
               ) : (
