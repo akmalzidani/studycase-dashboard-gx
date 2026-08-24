@@ -46,8 +46,8 @@ export function SidebarNavItem({
         title={!isOpen ? item.label : undefined}
         className={navLinkClass}
       >
-        {Icon && <Icon className="fs-5" />}
-        {isOpen && <span className="text-truncate">{item.label}</span>}
+        {Icon ? <Icon className="fs-5" /> : null}
+        {isOpen ? <span className="text-truncate">{item.label}</span> : null}
       </NavLink>
     );
   }
@@ -73,8 +73,8 @@ export function SidebarNavItem({
           }
         }}
       >
-        {Icon && <Icon className="fs-5" />}
-        {isOpen && (
+        {Icon ? <Icon className="fs-5" /> : null}
+        {isOpen ? (
           <>
             <span className="text-truncate flex-grow-1">{item.label}</span>
             {isExpanded ? (
@@ -89,11 +89,11 @@ export function SidebarNavItem({
               />
             )}
           </>
-        )}
+        ) : null}
       </div>
 
       {/* Dropdown Item */}
-      {isOpen && isExpanded && (
+      {isOpen && isExpanded ? (
         <div className="ps-4 pe-2 pt-1 pb-1 d-flex flex-column gap-1">
           {item.children!.map((child) => {
             const ChildIcon = child.icon;
@@ -113,7 +113,7 @@ export function SidebarNavItem({
             );
           })}
         </div>
-      )}
+      ) : null}
     </>
   );
 }

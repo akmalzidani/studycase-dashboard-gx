@@ -32,14 +32,14 @@ export function PermissionTab() {
               {permissionsByFeature.flatMap(([feature, permissions]) =>
                 permissions.map((permission, index) => (
                   <tr key={permission.key}>
-                    {index === 0 && (
+                    {index === 0 ? (
                       <td
                         rowSpan={permissions.length}
                         className="fw-semibold align-middle"
                       >
                         {feature}
                       </td>
-                    )}
+                    ) : null}
                     <td className="text-capitalize">{permission.action}</td>
                     <td>{permission.label}</td>
                     <td>

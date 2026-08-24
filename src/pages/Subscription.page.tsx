@@ -90,7 +90,7 @@ export default function SubscriptionPage() {
       className: "text-end",
       content: (
         <div className="d-flex justify-content-end gap-2">
-          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.UPDATE) && (
+          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.UPDATE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
@@ -100,8 +100,8 @@ export default function SubscriptionPage() {
             >
               <BsPencilSquare />
             </button>
-          )}
-          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.DELETE) && (
+          ) : null}
+          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.DELETE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
@@ -111,7 +111,7 @@ export default function SubscriptionPage() {
             >
               <BsTrash />
             </button>
-          )}
+          ) : null}
         </div>
       ),
     },
@@ -125,10 +125,7 @@ export default function SubscriptionPage() {
             <div className="w-100" style={{ maxWidth: "320px" }}>
               <TableSearch value={table.search} onChange={table.setSearch} />
             </div>
-            {hasPermission(
-              permissions,
-              PERMISSION_KEYS.SUBSCRIPTION.CREATE,
-            ) && (
+            {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) ? (
               <button
                 type="button"
                 className="btn btn-primary"
@@ -138,7 +135,7 @@ export default function SubscriptionPage() {
                 <BsPlusLg className="me-2" />
                 Add Package
               </button>
-            )}
+            ) : null}
           </div>
 
           <Table
@@ -156,7 +153,7 @@ export default function SubscriptionPage() {
             onSort={table.handleSort}
           />
 
-          {!isLoading && (
+          {!isLoading ? (
             <TablePagination
               page={table.page}
               totalPages={table.totalPages}
@@ -165,7 +162,7 @@ export default function SubscriptionPage() {
               onPageChange={table.setPage}
               onPageSizeChange={table.setPageSize}
             />
-          )}
+          ) : null}
         </div>
       </div>
 

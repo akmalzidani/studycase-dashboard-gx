@@ -49,7 +49,7 @@ export function ClientDetail({ item, type }: ClientDetailProps) {
 
   return (
     <Offcanvas target={detailTargets[type]} title={`${clientLabel} Details`}>
-      {item && (
+      {item ? (
         <div className="d-grid gap-4">
           <div className="d-flex align-items-center gap-3 p-3 bg-body-tertiary border rounded">
             <BsPersonCircle
@@ -110,7 +110,7 @@ export function ClientDetail({ item, type }: ClientDetailProps) {
             </dl>
           </section>
         </div>
-      )}
+      ) : null}
     </Offcanvas>
   );
 }

@@ -58,7 +58,7 @@ export function DashboardContent({
   return (
     <>
       <div className="row g-3 mb-4">
-        {canReadCustomers && (
+        {canReadCustomers ? (
           <>
             <MetricCard
               label="Active customers"
@@ -79,19 +79,19 @@ export function DashboardContent({
               variant="primary"
             />
           </>
-        )}
-        {canReadProspects && (
+        ) : null}
+        {canReadProspects ? (
           <MetricCard
             label="Pending prospects"
             value={pendingProspectCount}
             icon={<BsPersonPlus className="fs-4" />}
             variant="info"
           />
-        )}
+        ) : null}
       </div>
 
       <div className="row g-4">
-        {canReadCustomers && (
+        {canReadCustomers ? (
           <div className="col-lg-6">
             <section className="card h-100">
               <div className="card-body d-flex flex-column">
@@ -118,8 +118,8 @@ export function DashboardContent({
               </div>
             </section>
           </div>
-        )}
-        {canReadProspects && (
+        ) : null}
+        {canReadProspects ? (
           <div className="col-lg-6">
             <section className="card h-100">
               <div className="card-body d-flex flex-column">
@@ -147,7 +147,7 @@ export function DashboardContent({
               </div>
             </section>
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );

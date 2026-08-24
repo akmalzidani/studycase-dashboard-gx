@@ -169,7 +169,7 @@ export default function ProspectPage() {
           >
             <BsEye />
           </button>
-          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.UPDATE) && (
+          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.UPDATE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
@@ -179,8 +179,8 @@ export default function ProspectPage() {
             >
               <BsPencilSquare />
             </button>
-          )}
-          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.DELETE) && (
+          ) : null}
+          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.DELETE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
@@ -190,7 +190,7 @@ export default function ProspectPage() {
             >
               <BsTrash />
             </button>
-          )}
+          ) : null}
         </div>
       ),
     },
@@ -229,7 +229,7 @@ export default function ProspectPage() {
                 onReset={() => setFilters({ subscription: "", status: "" })}
               />
             </div>
-            {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.CREATE) && (
+            {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.CREATE) ? (
               <button
                 type="button"
                 className="btn btn-primary"
@@ -243,7 +243,7 @@ export default function ProspectPage() {
                 <BsPlusLg className="me-2" />
                 Add Prospect
               </button>
-            )}
+            ) : null}
           </div>
 
           <Table
@@ -262,7 +262,7 @@ export default function ProspectPage() {
             emptyMessage="There are no prospects yet. Add your first prospect."
           ></Table>
 
-          {!isLoading && (
+          {!isLoading ? (
             <TablePagination
               page={table.page}
               totalPages={table.totalPages}
@@ -271,7 +271,7 @@ export default function ProspectPage() {
               onPageChange={table.setPage}
               onPageSizeChange={table.setPageSize}
             />
-          )}
+          ) : null}
         </div>
       </div>
 

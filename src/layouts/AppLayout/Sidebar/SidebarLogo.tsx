@@ -9,9 +9,9 @@ export function SidebarLogo({ isOpen }: { isOpen: boolean }) {
       >
         <BsRocketTakeoffFill className="text-warning fs-4" />
       </div>
-      {isOpen && (
+      {isOpen ? (
         <span className="fw-bold fs-5 text-truncate ms-2">LearnDash</span>
-      )}
+      ) : null}
     </div>
   );
 }

@@ -42,9 +42,9 @@ export function Modal({ target, title, children, footer, size }: ModalProps) {
             />
           </div>
           <div className="modal-body py-4">{children}</div>
-          {footer && (
+          {footer ? (
             <div className="modal-footer border-top-0 pt-0">{footer}</div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>,

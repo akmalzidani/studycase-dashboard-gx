@@ -93,7 +93,7 @@ export function DataTable<T extends object>({
           />
         )}
 
-        {showPagination && !isLoading && !isSearching && (
+        {showPagination && !isLoading && !isSearching ? (
           <Pagination
             page={page}
             totalPages={totalPages}
@@ -103,7 +103,7 @@ export function DataTable<T extends object>({
             setPageSize={setPageSize}
             pageSizeOptions={pageSizeOptions}
           />
-        )}
+        ) : null}
       </div>
     </div>
   );

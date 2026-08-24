@@ -78,7 +78,7 @@ export function RoleTab() {
         className: "text-end",
         content: (
           <div className="d-flex justify-content-end gap-2">
-            {hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE) && (
+            {hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE) ? (
               <button
                 type="button"
                 className="btn btn-sm border-0 bg-transparent p-0 text-primary"
@@ -88,8 +88,8 @@ export function RoleTab() {
               >
                 <BsPencilSquare />
               </button>
-            )}
-            {hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE) && (
+            ) : null}
+            {hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE) ? (
               <button
                 type="button"
                 className="btn btn-sm border-0 bg-transparent p-0 text-danger"
@@ -99,7 +99,7 @@ export function RoleTab() {
               >
                 <BsTrash />
               </button>
-            )}
+            ) : null}
           </div>
         ),
       },
@@ -112,7 +112,7 @@ export function RoleTab() {
         <div className="w-100" style={{ maxWidth: "320px" }}>
           <TableSearch value={table.search} onChange={table.setSearch} />
         </div>
-        {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) && (
+        {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) ? (
           <button
             className="btn btn-primary"
             type="button"
@@ -122,7 +122,7 @@ export function RoleTab() {
             <BsPlusLg className="me-2" />
             Add Role
           </button>
-        )}
+        ) : null}
       </div>
 
       <Table
@@ -140,7 +140,7 @@ export function RoleTab() {
         onSort={table.handleSort}
       />
 
-      {!isLoading && (
+      {!isLoading ? (
         <TablePagination
           page={table.page}
           totalPages={table.totalPages}
@@ -149,7 +149,7 @@ export function RoleTab() {
           onPageChange={table.setPage}
           onPageSizeChange={table.setPageSize}
         />
-      )}
+      ) : null}
 
       <RoleForm
         isSubmitting={isSubmitting}

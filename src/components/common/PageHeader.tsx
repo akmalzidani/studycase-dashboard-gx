@@ -31,13 +31,13 @@ export function PageHeader({
         <h1 className="h3 mb-1 fw-bold">{title}</h1>
         <p className="text-muted mb-0">{description}</p>
       </div>
-      {visibleActions.length > 0 && (
+      {visibleActions.length > 0 ? (
         <div className="d-flex gap-2">
           {visibleActions.map((action) => (
             <span key={action.id}>{action.content}</span>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

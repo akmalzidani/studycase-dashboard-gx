@@ -98,7 +98,7 @@ export default function ProfilePage() {
         <div className="card-header bg-transparent py-3">
           <div className="d-flex flex-wrap align-items-center justify-content-between gap-3">
             <h1 className="h5 mb-0">Profile</h1>
-            {canUpdateProfile && (
+            {canUpdateProfile ? (
               <div className="d-flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -119,7 +119,7 @@ export default function ProfilePage() {
                   Edit Profile
                 </button>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
         <div className="card-body p-4">

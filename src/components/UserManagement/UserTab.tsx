@@ -100,7 +100,7 @@ export function UserTab() {
       className: "text-end",
       content: (
         <div className="d-flex justify-content-end gap-2">
-          {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) && (
+          {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
@@ -110,8 +110,8 @@ export function UserTab() {
             >
               <BsPencilSquare />
             </button>
-          )}
-          {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) && (
+          ) : null}
+          {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
@@ -121,7 +121,7 @@ export function UserTab() {
             >
               <BsTrash />
             </button>
-          )}
+          ) : null}
         </div>
       ),
     },
@@ -160,7 +160,7 @@ export function UserTab() {
                 onReset={() => setFilters({ role: "", status: "" })}
               />
             </div>
-            {hasPermission(permissions, PERMISSION_KEYS.USERS.CREATE) && (
+            {hasPermission(permissions, PERMISSION_KEYS.USERS.CREATE) ? (
               <button
                 className="btn btn-primary"
                 type="button"
@@ -170,7 +170,7 @@ export function UserTab() {
                 <BsPlusLg className="me-2" />
                 Add User
               </button>
-            )}
+            ) : null}
           </div>
 
           <Table
@@ -188,7 +188,7 @@ export function UserTab() {
             onSort={table.handleSort}
           />
 
-          {!isLoading && (
+          {!isLoading ? (
             <TablePagination
               page={table.page}
               totalPages={table.totalPages}
@@ -197,7 +197,7 @@ export function UserTab() {
               onPageChange={table.setPage}
               onPageSizeChange={table.setPageSize}
             />
-          )}
+          ) : null}
         </div>
       </div>
       <UserForm

@@ -16,7 +16,7 @@ export function TableControls({
 }: TableControlsProps) {
   return (
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
-      {showSearch && (
+      {showSearch ? (
         <div className="d-flex align-items-center">
           <div className="input-group input-group-sm">
             <span className="input-group-text border-end-0">
@@ -32,9 +32,11 @@ export function TableControls({
             />
           </div>
         </div>
-      )}
+      ) : null}
 
-      {actions && <div className="d-flex align-items-center gap-2">{actions}</div>}
+      {actions ? (
+        <div className="d-flex align-items-center gap-2">{actions}</div>
+      ) : null}
     </div>
   );
 }

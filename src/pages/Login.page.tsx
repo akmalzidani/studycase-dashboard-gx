@@ -70,11 +70,11 @@ export default function LoginPage() {
             </p>
           </div>
 
-          {error && (
+          {error ? (
             <div className="alert alert-danger py-2 small" role="alert">
               {error}
             </div>
-          )}
+          ) : null}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-3">

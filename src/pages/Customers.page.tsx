@@ -166,7 +166,7 @@ export default function CustomersPage() {
           >
             <BsEye />
           </button>
-          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.UPDATE) && (
+          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.UPDATE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
@@ -176,8 +176,8 @@ export default function CustomersPage() {
             >
               <BsPencilSquare />
             </button>
-          )}
-          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.DELETE) && (
+          ) : null}
+          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.DELETE) ? (
             <button
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
@@ -187,7 +187,7 @@ export default function CustomersPage() {
             >
               <BsTrash />
             </button>
-          )}
+          ) : null}
         </div>
       ),
     },
@@ -226,7 +226,7 @@ export default function CustomersPage() {
                 onReset={() => setFilters({ subscription: "", status: "" })}
               />
             </div>
-            {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.CREATE) && (
+            {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.CREATE) ? (
               <button
                 type="button"
                 className="btn btn-primary"
@@ -240,7 +240,7 @@ export default function CustomersPage() {
                 <BsPlusLg className="me-2" />
                 Add Customer
               </button>
-            )}
+            ) : null}
           </div>
 
           <Table
@@ -259,7 +259,7 @@ export default function CustomersPage() {
             onSort={table.handleSort}
           />
 
-          {!isLoading && (
+          {!isLoading ? (
             <TablePagination
               page={table.page}
               totalPages={table.totalPages}
@@ -268,7 +268,7 @@ export default function CustomersPage() {
               onPageChange={table.setPage}
               onPageSizeChange={table.setPageSize}
             />
-          )}
+          ) : null}
         </div>
       </div>
 

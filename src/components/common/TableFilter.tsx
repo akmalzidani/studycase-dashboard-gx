@@ -54,11 +54,11 @@ export function TableFilter({
         data-bs-auto-close="outside"
       >
         <BsFunnel aria-hidden="true" />
-        {hasActiveFilters && (
+        {hasActiveFilters ? (
           <span className="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle">
             <span className="visually-hidden">Active filters</span>
           </span>
-        )}
+        ) : null}
       </button>
 
       <div

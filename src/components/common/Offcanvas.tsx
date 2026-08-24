@@ -36,19 +36,19 @@ export function Offcanvas({
         <h1 className="offcanvas-title fs-5 fw-bold me-auto" id={titleId}>
           {title}
         </h1>
-        {actions && (
+        {actions ? (
           <div className="d-flex flex-wrap align-items-center justify-content-end  gap-2">
             {actions}
           </div>
-        )}
-        {dismissible && (
+        ) : null}
+        {dismissible ? (
           <button
             type="button"
             className="btn-close"
             data-bs-dismiss="offcanvas"
             aria-label="Close"
           />
-        )}
+        ) : null}
       </div>
       <div className="offcanvas-body pt-2">{children}</div>
     </div>,

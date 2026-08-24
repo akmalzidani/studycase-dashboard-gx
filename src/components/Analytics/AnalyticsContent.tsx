@@ -27,28 +27,28 @@ export function AnalyticsContent({
 }: AnalyticsContentProps) {
   return (
     <div className="row g-4">
-      {canReadProspects && (
+      {canReadProspects ? (
         <ProspectFunnelSection
           pendingProspectCount={pendingProspectCount}
           completedProspectCount={completedProspectCount}
           completionRate={completionRate}
         />
-      )}
+      ) : null}
 
-      {canReadCustomers && (
+      {canReadCustomers ? (
         <PackageMrrSection
           className={canReadProspects ? "col-lg-8" : "col-12"}
           packageSummaries={packageSummaries}
         />
-      )}
+      ) : null}
 
-      {canReadProspects && (
+      {canReadProspects ? (
         <PackageInterestSection packageSummaries={packageSummaries} />
-      )}
+      ) : null}
 
-      {(canReadCustomers || canReadProspects) && highestMrrPackage && (
+      {(canReadCustomers || canReadProspects) && highestMrrPackage ? (
         <SalesInsight highestMrrPackage={highestMrrPackage} />
-      )}
+      ) : null}
     </div>
   );
 }
