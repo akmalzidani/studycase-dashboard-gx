@@ -13,12 +13,12 @@ import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { hasPermission } from "@/config/permission.helpers";
 
+import { toast } from "@/components/Overlay";
 import { authService } from "@/services/auth.service";
+import { getRoles } from "@/services/role.service";
 import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { toast } from "@/components/Overlay";
-import { getRoles } from "@/services/role.service";
-import { Fragment, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { BsKey, BsPencilSquare, BsPersonCircle } from "react-icons/bs";
 
 export default function ProfilePage() {
@@ -136,15 +136,15 @@ export default function ProfilePage() {
               <Badge variant="primary">{roleName}</Badge>
             </div>
           </div>
-          <dl className="row gy-3 mb-0">
-            {profileDetails.map(({ label, value }) => (
-              <Fragment key={label}>
-                <dt className="col-4 col-md-1 text-muted fw-normal">{label}</dt>
-                <dd className="col-auto mb-0 px-0 text-muted">:</dd>
-                <dd className="col mb-0 ps-2 fw-medium text-break">{value}</dd>
-              </Fragment>
-            ))}
-          </dl>
+          {profileDetails.map(({ label, value }) => (
+            <dl key={label} className="row my-4">
+              <dt className="col-1 fw-medium">{label}</dt>
+              <dd className="col-auto mb-0 px-0 text-muted">:</dd>
+              <dd className="col-auto mb-0 ps-2 fw-normal text-break">
+                {value}
+              </dd>
+            </dl>
+          ))}
         </div>
       </section>
 
