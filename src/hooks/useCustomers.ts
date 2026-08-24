@@ -4,7 +4,7 @@ import {
   type CustomerPayload,
 } from "@/services/customer.service";
 import { useCustomerStore } from "@/stores/useCustomerStore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -17,20 +17,20 @@ export function useCustomers() {
   const setIsLoading = useCustomerStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchCustomers = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      setCustomers(await customerService.getAll());
-    } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to load customer data."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setCustomers, setIsLoading]);
-
   useEffect(() => {
+    async function fetchCustomers() {
+      setIsLoading(true);
+      try {
+        setCustomers(await customerService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load customer data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     fetchCustomers();
-  }, [fetchCustomers]);
+  }, [setCustomers, setIsLoading]);
 
   const createCustomer = async (payload: CustomerPayload) => {
     setIsSubmitting(true);

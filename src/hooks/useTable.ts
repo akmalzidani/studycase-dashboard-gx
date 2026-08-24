@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "./useDebounce";
 
 export interface TableField<T> {
@@ -44,64 +44,47 @@ export function useTable<T>({
   }>({ key: null, direction: "asc" });
   const debouncedSearch = useDebounce(search);
 
-  const searchableFields = useMemo(
-    () => fields.filter((field) => field.searchable),
-    [fields],
-  );
-  const sortableFields = useMemo(
-    () =>
-      new Map(
-        fields
-          .filter((field) => field.sortable)
-          .map((field) => [field.key, field]),
-      ),
-    [fields],
+  const searchableFields = fields.filter((field) => field.searchable);
+  const sortableFields = new Map(
+    fields.filter((field) => field.sortable).map((field) => [field.key, field]),
   );
 
-  const filteredData = useMemo(() => {
-    const dataAfterFilters = filters.length
-      ? data.filter((item) => filters.every((filter) => filter(item)))
-      : data;
-    const keyword = debouncedSearch.trim().toLowerCase();
-    if (!keyword) return dataAfterFilters;
+  const dataAfterFilters = filters.length
+    ? data.filter((item) => filters.every((filter) => filter(item)))
+    : data;
+  const keyword = debouncedSearch.trim().toLowerCase();
+  const filteredData = keyword
+    ? dataAfterFilters.filter((item) =>
+        searchableFields.some((field) =>
+          String(field.getValue(item) ?? "")
+            .toLowerCase()
+            .includes(keyword),
+        ),
+      )
+    : dataAfterFilters;
 
-    return dataAfterFilters.filter((item) =>
-      searchableFields.some((field) =>
-        String(field.getValue(item) ?? "")
-          .toLowerCase()
-          .includes(keyword),
-      ),
-    );
-  }, [data, debouncedSearch, filters, searchableFields]);
+  const field = sortConfig.key ? sortableFields.get(sortConfig.key) : undefined;
+  const sortedData = field
+    ? [...filteredData].sort((left, right) => {
+        const leftValue = field.getValue(left);
+        const rightValue = field.getValue(right);
+        const direction = sortConfig.direction === "asc" ? 1 : -1;
 
-  const sortedData = useMemo(() => {
-    const field = sortConfig.key
-      ? sortableFields.get(sortConfig.key)
-      : undefined;
-    if (!field) return filteredData;
+        if (leftValue == null) return direction;
+        if (rightValue == null) return -direction;
 
-    return [...filteredData].sort((left, right) => {
-      const leftValue = field.getValue(left);
-      const rightValue = field.getValue(right);
-      const direction = sortConfig.direction === "asc" ? 1 : -1;
-
-      if (leftValue == null) return direction;
-      if (rightValue == null) return -direction;
-
-      return (
-        String(leftValue).localeCompare(String(rightValue), undefined, {
-          numeric: true,
-          sensitivity: "base",
-        }) * direction
-      );
-    });
-  }, [filteredData, sortConfig, sortableFields]);
+        return (
+          String(leftValue).localeCompare(String(rightValue), undefined, {
+            numeric: true,
+            sensitivity: "base",
+          }) * direction
+        );
+      })
+    : filteredData;
 
   const totalPages = Math.max(1, Math.ceil(sortedData.length / pageSize));
-  const paginatedData = useMemo(() => {
-    const startIndex = (page - 1) * pageSize;
-    return sortedData.slice(startIndex, startIndex + pageSize);
-  }, [page, pageSize, sortedData]);
+  const startIndex = (page - 1) * pageSize;
+  const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
 
   useEffect(() => {
     setPage(1);

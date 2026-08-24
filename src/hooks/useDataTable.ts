@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "./useDebounce";
 
 export interface UseDataTableOptions<T> {
@@ -48,43 +48,35 @@ export function useDataTable<T extends object>({
     setPage(1);
   }, [debouncedSearch, pageSize]);
 
-  const filteredData = useMemo(() => {
-    if (!debouncedSearch) return data;
-    const keyword = debouncedSearch.toLowerCase();
+  const keyword = debouncedSearch.toLowerCase();
+  const filteredData = !debouncedSearch
+    ? data
+    : searchPredicate
+      ? data.filter((item) => searchPredicate(item, keyword))
+      : data.filter((item) =>
+          Object.values(item as Record<string, unknown>).some(
+            (value) =>
+              value != null && String(value).toLowerCase().includes(keyword),
+          ),
+        );
 
-    if (searchPredicate)
-      return data.filter((item) => searchPredicate(item, keyword));
+  const sortedData = [...filteredData];
+  if (sortConfig.key !== null) {
+    sortedData.sort((a, b) => {
+      const aVal = a[sortConfig.key!] as string | number;
+      const bVal = b[sortConfig.key!] as string | number;
 
-    return data.filter((item) =>
-      Object.values(item as Record<string, unknown>).some(
-        (value) =>
-          value != null && String(value).toLowerCase().includes(keyword),
-      ),
-    );
-  }, [data, debouncedSearch, searchPredicate]);
+      if (aVal == null) return sortConfig.direction === "asc" ? 1 : -1;
+      if (bVal == null) return sortConfig.direction === "asc" ? -1 : 1;
 
-  const sortedData = useMemo(() => {
-    const sortableItems = [...filteredData];
-    if (sortConfig.key !== null) {
-      sortableItems.sort((a, b) => {
-        const aVal = a[sortConfig.key!] as string | number;
-        const bVal = b[sortConfig.key!] as string | number;
+      if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
 
-        if (aVal == null) return sortConfig.direction === "asc" ? 1 : -1;
-        if (bVal == null) return sortConfig.direction === "asc" ? -1 : 1;
-
-        if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
-        if (aVal > bVal) return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [filteredData, sortConfig]);
-
-  const paginatedData = useMemo(() => {
-    const startIndex = (page - 1) * pageSize;
-    return sortedData.slice(startIndex, startIndex + pageSize);
-  }, [sortedData, page, pageSize]);
+  const startIndex = (page - 1) * pageSize;
+  const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
 
   const handleSort = (key: keyof T) => {
     let direction: "asc" | "desc" = "asc";

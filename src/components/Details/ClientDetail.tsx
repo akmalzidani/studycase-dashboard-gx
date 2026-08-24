@@ -48,11 +48,7 @@ export function ClientDetail({ item, type }: ClientDetailProps) {
   const clientLabel = isCustomer ? "Customer" : "Prospect";
 
   return (
-    <Offcanvas
-      target={detailTargets[type]}
-      title={`${clientLabel} Details`}
-      dismissible
-    >
+    <Offcanvas target={detailTargets[type]} title={`${clientLabel} Details`}>
       {item && (
         <div className="d-grid gap-4">
           <div className="d-flex align-items-center gap-3 p-3 bg-body-tertiary border rounded">

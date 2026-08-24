@@ -19,7 +19,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Customer } from "@/types";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   BsEnvelope,
   BsEye,
@@ -44,52 +44,42 @@ export default function CustomersPage() {
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
 
-  const tableFields = useMemo(
-    () => [
-      {
-        key: "id",
-        getValue: (customer: Customer) => customer.id,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "userInformation",
-        getValue: (customer: Customer) =>
-          `${customer.name} ${customer.email} ${customer.phoneNumber}`,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "subscription",
-        getValue: (customer: Customer) => customer.subscription.packageName,
-        searchable: true,
-      },
-      {
-        key: "status",
-        getValue: (customer: Customer) => customer.status,
-        searchable: true,
-      },
-    ],
-    [],
-  );
-  const tableFilters = useMemo(
-    () => [
-      (customer: Customer) =>
-        !filters.subscription ||
-        customer.subscription.id === filters.subscription,
-      (customer: Customer) =>
-        !filters.status || customer.status === filters.status,
-    ],
-    [filters],
-  );
-  const subscriptionOptions = useMemo(
-    () =>
-      subscriptions.flatMap((subscription) =>
-        subscription.id
-          ? [{ value: subscription.id, label: subscription.packageName }]
-          : [],
-      ),
-    [subscriptions],
+  const tableFields = [
+    {
+      key: "id",
+      getValue: (customer: Customer) => customer.id,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "userInformation",
+      getValue: (customer: Customer) =>
+        `${customer.name} ${customer.email} ${customer.phoneNumber}`,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "subscription",
+      getValue: (customer: Customer) => customer.subscription.packageName,
+      searchable: true,
+    },
+    {
+      key: "status",
+      getValue: (customer: Customer) => customer.status,
+      searchable: true,
+    },
+  ];
+  const tableFilters = [
+    (customer: Customer) =>
+      !filters.subscription ||
+      customer.subscription.id === filters.subscription,
+    (customer: Customer) =>
+      !filters.status || customer.status === filters.status,
+  ];
+  const subscriptionOptions = subscriptions.flatMap((subscription) =>
+    subscription.id
+      ? [{ value: subscription.id, label: subscription.packageName }]
+      : [],
   );
   const table = useTable({
     data: customers,
@@ -97,14 +87,11 @@ export default function CustomersPage() {
     filters: tableFilters,
   });
 
-  const handleFormOpen = useCallback(
-    () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM),
-    [],
-  );
-  const openDetail = useCallback((customer: Customer) => {
+  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
+  const openDetail = (customer: Customer) => {
     setSelectedDetail(customer);
     showOffcanvas(OVERLAY_TARGETS.CUSTOMER_DETAIL);
-  }, []);
+  };
   const {
     selectedItem: selectedCustomer,
     openCreateForm,
@@ -118,107 +105,93 @@ export default function CustomersPage() {
     onDelete: deleteCustomer,
   });
 
-  const handleSubmit = useCallback(
-    async (values: CustomerFormValues) => {
-      const subscription = subscriptions.find(
-        (item) => item.id === values.subscriptionId,
-      );
-      if (!subscription) return false;
+  const handleSubmit = async (values: CustomerFormValues) => {
+    const subscription = subscriptions.find(
+      (item) => item.id === values.subscriptionId,
+    );
+    if (!subscription) return false;
 
-      const payload = {
-        name: values.name.trim(),
-        email: values.email.trim(),
-        phoneNumber: values.phoneNumber.trim(),
-        subscription,
-        status: values.status,
-      };
+    const payload = {
+      name: values.name.trim(),
+      email: values.email.trim(),
+      phoneNumber: values.phoneNumber.trim(),
+      subscription,
+      status: values.status,
+    };
 
-      return selectedCustomer?.id
-        ? updateCustomer(selectedCustomer.id, payload)
-        : createCustomer(payload);
+    return selectedCustomer?.id
+      ? updateCustomer(selectedCustomer.id, payload)
+      : createCustomer(payload);
+  };
+
+  const tableRows = table.data.map((customer: Customer) => [
+    customer.id ?? "-",
+    <div className="d-grid gap-1">
+      <span className="fw-semibold">{customer.name}</span>
+      <a
+        className="d-flex align-items-center gap-2 small text-decoration-none"
+        href={`mailto:${customer.email}`}
+      >
+        <BsEnvelope aria-hidden="true" />
+        {customer.email}
+      </a>
+      <a
+        className="d-flex align-items-center gap-2 small text-decoration-none"
+        href={getWhatsAppUrl(customer.phoneNumber)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <BsWhatsapp aria-hidden="true" />
+        {customer.phoneNumber}
+      </a>
+    </div>,
+    <div>
+      <div className="fw-medium">{customer.subscription.packageName}</div>
+      <small className="text-muted">
+        {formatSpeed(customer.subscription.speed)}
+      </small>
+    </div>,
+    <Badge variant={customer.status === "Active" ? "success" : "danger"}>
+      {customer.status}
+    </Badge>,
+    {
+      className: "text-end",
+      content: (
+        <div className="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
+            aria-label={`View ${customer.name} details`}
+            onClick={() => openDetail(customer)}
+          >
+            <BsEye />
+          </button>
+          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.UPDATE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+              aria-label={`Edit ${customer.name}`}
+              disabled={isSubmitting}
+              onClick={() => openEditForm(customer)}
+            >
+              <BsPencilSquare />
+            </button>
+          )}
+          {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.DELETE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+              aria-label={`Delete ${customer.name}`}
+              disabled={isSubmitting}
+              onClick={() => confirmDelete(customer)}
+            >
+              <BsTrash />
+            </button>
+          )}
+        </div>
+      ),
     },
-    [createCustomer, selectedCustomer, subscriptions, updateCustomer],
-  );
-
-  const tableRows = useMemo(
-    () =>
-      table.data.map((customer: Customer) => [
-        customer.id ?? "-",
-        <div className="d-grid gap-1">
-          <span className="fw-semibold">{customer.name}</span>
-          <a
-            className="d-flex align-items-center gap-2 small text-decoration-none"
-            href={`mailto:${customer.email}`}
-          >
-            <BsEnvelope aria-hidden="true" />
-            {customer.email}
-          </a>
-          <a
-            className="d-flex align-items-center gap-2 small text-decoration-none"
-            href={getWhatsAppUrl(customer.phoneNumber)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BsWhatsapp aria-hidden="true" />
-            {customer.phoneNumber}
-          </a>
-        </div>,
-        <div>
-          <div className="fw-medium">{customer.subscription.packageName}</div>
-          <small className="text-muted">
-            {formatSpeed(customer.subscription.speed)}
-          </small>
-        </div>,
-        <Badge variant={customer.status === "Active" ? "success" : "danger"}>
-          {customer.status}
-        </Badge>,
-        {
-          className: "text-end",
-          content: (
-            <div className="d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
-                aria-label={`View ${customer.name} details`}
-                onClick={() => openDetail(customer)}
-              >
-                <BsEye />
-              </button>
-              {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.UPDATE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-                  aria-label={`Edit ${customer.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => openEditForm(customer)}
-                >
-                  <BsPencilSquare />
-                </button>
-              )}
-              {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.DELETE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-                  aria-label={`Delete ${customer.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => confirmDelete(customer)}
-                >
-                  <BsTrash />
-                </button>
-              )}
-            </div>
-          ),
-        },
-      ]),
-    [
-      confirmDelete,
-      isSubmitting,
-      openDetail,
-      openEditForm,
-      permissions,
-      table.data,
-    ],
-  );
+  ]);
 
   return (
     <>

@@ -10,7 +10,7 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Permissions, Role } from "@/types";
-import { useCallback, useMemo } from "react";
+
 import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { RoleForm, type RoleFormValues } from "../Forms/RoleForm";
 
@@ -27,31 +27,25 @@ export function RoleTab() {
   const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
-  const tableFields = useMemo(
-    () => [
-      {
-        key: "name",
-        getValue: (role: Role) => role.name,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "description",
-        getValue: (role: Role) => role.description,
-      },
-      {
-        key: "accessCount",
-        getValue: (role: Role) => countPermissions(role.permissions),
-        sortable: true,
-      },
-    ],
-    [],
-  );
+  const tableFields = [
+    {
+      key: "name",
+      getValue: (role: Role) => role.name,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "description",
+      getValue: (role: Role) => role.description,
+    },
+    {
+      key: "accessCount",
+      getValue: (role: Role) => countPermissions(role.permissions),
+      sortable: true,
+    },
+  ];
   const table = useTable({ data: roles, fields: tableFields });
-  const handleFormOpen = useCallback(
-    () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM),
-    [],
-  );
+  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
   const roleActions = useCrudFormActions<Role>({
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
@@ -60,70 +54,57 @@ export function RoleTab() {
     onDelete: deleteRole,
   });
 
-  const handleRoleSubmit = useCallback(
-    async (values: RoleFormValues) => {
-      const payload = {
-        name: values.name.trim(),
-        description: values.description.trim(),
-        permissions: values.permissions,
-      };
-      const isSaved = roleActions.selectedItem?.id
-        ? await updateRole(roleActions.selectedItem.id, payload)
-        : await createRole(payload);
+  const handleRoleSubmit = async (values: RoleFormValues) => {
+    const payload = {
+      name: values.name.trim(),
+      description: values.description.trim(),
+      permissions: values.permissions,
+    };
+    const isSaved = roleActions.selectedItem?.id
+      ? await updateRole(roleActions.selectedItem.id, payload)
+      : await createRole(payload);
 
-      return isSaved;
-    },
-    [createRole, roleActions.selectedItem, updateRole],
-  );
+    return isSaved;
+  };
 
-  const tableRows = useMemo(
-    () =>
-      table.data.map((role) => {
-        const accessCount = countPermissions(role.permissions);
+  const tableRows = table.data.map((role) => {
+    const accessCount = countPermissions(role.permissions);
 
-        return [
-          <span className="fw-semibold">{role.name}</span>,
-          role.description,
-          `${accessCount} permission${accessCount === 1 ? "" : "s"}`,
-          {
-            className: "text-end",
-            content: (
-              <div className="d-flex justify-content-end gap-2">
-                {hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE) && (
-                  <button
-                    type="button"
-                    className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-                    aria-label={`Edit ${role.name}`}
-                    disabled={isSubmitting}
-                    onClick={() => roleActions.openEditForm(role)}
-                  >
-                    <BsPencilSquare />
-                  </button>
-                )}
-                {hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE) && (
-                  <button
-                    type="button"
-                    className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-                    aria-label={`Delete ${role.name}`}
-                    disabled={isSubmitting}
-                    onClick={() => roleActions.confirmDelete(role)}
-                  >
-                    <BsTrash />
-                  </button>
-                )}
-              </div>
-            ),
-          },
-        ];
-      }),
-    [
-      isSubmitting,
-      permissions,
-      roleActions.confirmDelete,
-      roleActions.openEditForm,
-      table.data,
-    ],
-  );
+    return [
+      <span className="fw-semibold">{role.name}</span>,
+      role.description,
+      `${accessCount} permission${accessCount === 1 ? "" : "s"}`,
+      {
+        className: "text-end",
+        content: (
+          <div className="d-flex justify-content-end gap-2">
+            {hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE) && (
+              <button
+                type="button"
+                className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+                aria-label={`Edit ${role.name}`}
+                disabled={isSubmitting}
+                onClick={() => roleActions.openEditForm(role)}
+              >
+                <BsPencilSquare />
+              </button>
+            )}
+            {hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE) && (
+              <button
+                type="button"
+                className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+                aria-label={`Delete ${role.name}`}
+                disabled={isSubmitting}
+                onClick={() => roleActions.confirmDelete(role)}
+              >
+                <BsTrash />
+              </button>
+            )}
+          </div>
+        ),
+      },
+    ];
+  });
 
   return (
     <>

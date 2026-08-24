@@ -18,7 +18,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
 import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
-import { useCallback, useMemo } from "react";
+
 import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 
 export default function SubscriptionPage() {
@@ -32,10 +32,7 @@ export default function SubscriptionPage() {
     deleteSubscription,
   } = useSubscriptions();
 
-  const handleFormOpen = useCallback(
-    () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM),
-    [],
-  );
+  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
   const {
     selectedItem: selectedSubscription,
     openCreateForm,
@@ -49,92 +46,76 @@ export default function SubscriptionPage() {
     onDelete: deleteSubscription,
   });
 
-  const tableFields = useMemo(
-    () => [
-      {
-        key: "packageName",
-        getValue: (subscription: Subscription) => subscription.packageName,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "speed",
-        getValue: (subscription: Subscription) => subscription.speed,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "monthlyFee",
-        getValue: (subscription: Subscription) => subscription.monthlyFee,
-        searchable: true,
-        sortable: true,
-      },
-    ],
-    [],
-  );
+  const tableFields = [
+    {
+      key: "packageName",
+      getValue: (subscription: Subscription) => subscription.packageName,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "speed",
+      getValue: (subscription: Subscription) => subscription.speed,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "monthlyFee",
+      getValue: (subscription: Subscription) => subscription.monthlyFee,
+      searchable: true,
+      sortable: true,
+    },
+  ];
   const table = useTable({ data: subscriptions, fields: tableFields });
 
-  const handleSubmit = useCallback(
-    (values: SubscriptionFormValues) => {
-      const payload = {
-        packageName: values.packageName.trim(),
-        speed: values.speed,
-        monthlyFee: values.monthlyFee,
-      };
+  const handleSubmit = (values: SubscriptionFormValues) => {
+    const payload = {
+      packageName: values.packageName.trim(),
+      speed: values.speed,
+      monthlyFee: values.monthlyFee,
+    };
 
-      return selectedSubscription?.id
-        ? updateSubscription(selectedSubscription.id, payload)
-        : createSubscription(payload);
+    return selectedSubscription?.id
+      ? updateSubscription(selectedSubscription.id, payload)
+      : createSubscription(payload);
+  };
+
+  const tableRows = table.data.map((subscription) => [
+    <span className="fw-semibold">{subscription.packageName}</span>,
+    formatSpeed(subscription.speed),
+    <span className="font-monospace">
+      {formatCurrency(subscription.monthlyFee)}
+    </span>,
+    {
+      className: "text-end",
+      content: (
+        <div className="d-flex justify-content-end gap-2">
+          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.UPDATE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+              aria-label={`Edit ${subscription.packageName}`}
+              disabled={isSubmitting}
+              onClick={() => openEditForm(subscription)}
+            >
+              <BsPencilSquare />
+            </button>
+          )}
+          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.DELETE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+              aria-label={`Hapus ${subscription.packageName}`}
+              disabled={isSubmitting}
+              onClick={() => confirmDelete(subscription)}
+            >
+              <BsTrash />
+            </button>
+          )}
+        </div>
+      ),
     },
-    [createSubscription, selectedSubscription, updateSubscription],
-  );
-
-  const tableRows = useMemo(
-    () =>
-      table.data.map((subscription) => [
-        <span className="fw-semibold">{subscription.packageName}</span>,
-        formatSpeed(subscription.speed),
-        <span className="font-monospace">
-          {formatCurrency(subscription.monthlyFee)}
-        </span>,
-        {
-          className: "text-end",
-          content: (
-            <div className="d-flex justify-content-end gap-2">
-              {hasPermission(
-                permissions,
-                PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
-              ) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-                  aria-label={`Edit ${subscription.packageName}`}
-                  disabled={isSubmitting}
-                  onClick={() => openEditForm(subscription)}
-                >
-                  <BsPencilSquare />
-                </button>
-              )}
-              {hasPermission(
-                permissions,
-                PERMISSION_KEYS.SUBSCRIPTION.DELETE,
-              ) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-                  aria-label={`Hapus ${subscription.packageName}`}
-                  disabled={isSubmitting}
-                  onClick={() => confirmDelete(subscription)}
-                >
-                  <BsTrash />
-                </button>
-              )}
-            </div>
-          ),
-        },
-      ]),
-    [confirmDelete, isSubmitting, openEditForm, permissions, table.data],
-  );
+  ]);
 
   return (
     <>

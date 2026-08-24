@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   subscriptionService,
   type SubscriptionPayload,
@@ -19,20 +19,20 @@ export function useSubscriptions() {
   const setIsLoading = useSubscriptionStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchSubscriptions = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      setSubscriptions(await subscriptionService.getAll());
-    } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to load subscriptions."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setIsLoading, setSubscriptions]);
-
   useEffect(() => {
+    async function fetchSubscriptions() {
+      setIsLoading(true);
+      try {
+        setSubscriptions(await subscriptionService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load subscriptions."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     fetchSubscriptions();
-  }, [fetchSubscriptions]);
+  }, [setIsLoading, setSubscriptions]);
 
   const createSubscription = async (payload: SubscriptionPayload) => {
     setIsSubmitting(true);

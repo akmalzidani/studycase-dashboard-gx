@@ -49,6 +49,7 @@ export function FormTextInput({
           <input
             {...inputProps}
             id={id}
+
             pattern={inputProps.pattern ?? NON_WHITESPACE_PATTERN}
             title={
               inputProps.title ?? whitespaceValidationMessage(validationLabel)

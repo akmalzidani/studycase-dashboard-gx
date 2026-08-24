@@ -18,7 +18,7 @@ import { authService } from "@/services/auth.service";
 import { getRoles } from "@/services/role.service";
 import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { BsKey, BsPencilSquare, BsPersonCircle } from "react-icons/bs";
 
 export default function ProfilePage() {
@@ -39,62 +39,56 @@ export default function ProfilePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = useCallback(
-    async (values: ProfileFormValues) => {
-      if (!user?.id) return false;
+  const handleSubmit = async (values: ProfileFormValues) => {
+    if (!user?.id) return false;
 
-      setIsSubmitting(true);
-      try {
-        const updatedUser = await userService.updateProfile(user.id, {
-          name: values.name,
-          email: values.email,
-        });
-        authService.updateSessionUser(updatedUser);
-        checkSession();
-        toast.success("Profile updated successfully.");
-        return true;
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : "Failed to update profile.",
-        );
-        return false;
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [checkSession, user?.id],
-  );
+    setIsSubmitting(true);
+    try {
+      const updatedUser = await userService.updateProfile(user.id, {
+        name: values.name,
+        email: values.email,
+      });
+      authService.updateSessionUser(updatedUser);
+      checkSession();
+      toast.success("Profile updated successfully.");
+      return true;
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update profile.",
+      );
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-  const handleChangePassword = useCallback(
-    async (values: ChangePasswordFormValues) => {
-      if (!user?.id) return false;
+  const handleChangePassword = async (values: ChangePasswordFormValues) => {
+    if (!user?.id) return false;
 
-      if (values.newPassword !== values.confirmNewPassword) {
-        toast.error("New password confirmation does not match.");
-        return false;
-      }
+    if (values.newPassword !== values.confirmNewPassword) {
+      toast.error("New password confirmation does not match.");
+      return false;
+    }
 
-      setIsSubmitting(true);
-      try {
-        const updatedUser = await userService.changePassword(user.id, {
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        });
-        authService.updateSessionUser(updatedUser);
-        checkSession();
-        toast.success("Password changed successfully.");
-        return true;
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : "Failed to change password.",
-        );
-        return false;
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [checkSession, user?.id],
-  );
+    setIsSubmitting(true);
+    try {
+      const updatedUser = await userService.changePassword(user.id, {
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+      });
+      authService.updateSessionUser(updatedUser);
+      checkSession();
+      toast.success("Password changed successfully.");
+      return true;
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to change password.",
+      );
+      return false;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!user) return null;
 

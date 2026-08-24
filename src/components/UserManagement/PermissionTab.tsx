@@ -1,5 +1,4 @@
 import { PERMISSION_CATALOG } from "@/config/permission.config";
-import { useMemo } from "react";
 
 type CatalogPermission = (typeof PERMISSION_CATALOG)[number];
 
@@ -14,10 +13,7 @@ function groupPermissionsByFeature() {
 }
 
 export function PermissionTab() {
-  const permissionsByFeature = useMemo(
-    () => Object.entries(groupPermissionsByFeature()),
-    [],
-  );
+  const permissionsByFeature = Object.entries(groupPermissionsByFeature());
 
   return (
     <div className="card">

@@ -1,5 +1,5 @@
 import { confirm } from "@/components/Overlay";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
 interface UseCrudFormActionsOptions<T extends { id?: string }> {
   deleteTitle: string;
@@ -16,34 +16,28 @@ export function useCrudFormActions<T extends { id?: string }>({
 }: UseCrudFormActionsOptions<T>) {
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
-  const openCreateForm = useCallback(() => {
+  const openCreateForm = () => {
     setSelectedItem(null);
     onOpenForm();
-  }, [onOpenForm]);
+  };
 
-  const openEditForm = useCallback(
-    (item: T) => {
-      setSelectedItem(item);
-      onOpenForm();
-    },
-    [onOpenForm],
-  );
+  const openEditForm = (item: T) => {
+    setSelectedItem(item);
+    onOpenForm();
+  };
 
-  const confirmDelete = useCallback(
-    (item: T) => {
-      if (!item.id) return;
+  const confirmDelete = (item: T) => {
+    if (!item.id) return;
 
-      confirm({
-        title: deleteTitle,
-        message: deleteMessage(item),
-        confirmText: "Delete",
-        cancelText: "Cancel",
-        variant: "danger",
-        onConfirm: () => onDelete(item.id!),
-      });
-    },
-    [deleteMessage, deleteTitle, onDelete],
-  );
+    confirm({
+      title: deleteTitle,
+      message: deleteMessage(item),
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+      onConfirm: () => onDelete(item.id!),
+    });
+  };
 
   return {
     selectedItem,

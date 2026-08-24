@@ -13,7 +13,7 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import { BsEnvelope, BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { UserForm } from "../Forms/UserForm";
 import type { ManagedUser, UserFormValues } from "./types";
@@ -24,10 +24,7 @@ export function UserTab() {
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
-  const handleFormOpen = useCallback(
-    () => showOffcanvas(OVERLAY_TARGETS.USER_FORM),
-    [],
-  );
+  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.USER_FORM);
   const {
     selectedItem: selectedUser,
     openCreateForm,
@@ -40,48 +37,34 @@ export function UserTab() {
     onDelete: deleteUser,
   });
 
-  const usersWithRoleNames = useMemo(
-    () =>
-      users.map((user) => ({
-        ...user,
-        roleName: roles.find((role) => role.id === user.roleId)?.name ?? "-",
-      })),
-    [roles, users],
-  );
-  const tableFields = useMemo(
-    () => [
-      {
-        key: "userInformation",
-        getValue: (user: ManagedUser) => `${user.name} ${user.email}`,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "role",
-        getValue: (user: ManagedUser) => user.roleName,
-        searchable: true,
-      },
-      {
-        key: "status",
-        getValue: (user: ManagedUser) => user.status,
-        searchable: true,
-      },
-    ],
-    [],
-  );
-  const tableFilters = useMemo(
-    () => [
-      (user: ManagedUser) => !filters.role || user.roleId === filters.role,
-      (user: ManagedUser) => !filters.status || user.status === filters.status,
-    ],
-    [filters],
-  );
-  const roleOptions = useMemo(
-    () =>
-      roles.flatMap((role) =>
-        role.id ? [{ value: role.id, label: role.name }] : [],
-      ),
-    [roles],
+  const usersWithRoleNames = users.map((user) => ({
+    ...user,
+    roleName: roles.find((role) => role.id === user.roleId)?.name ?? "-",
+  }));
+  const tableFields = [
+    {
+      key: "userInformation",
+      getValue: (user: ManagedUser) => `${user.name} ${user.email}`,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "role",
+      getValue: (user: ManagedUser) => user.roleName,
+      searchable: true,
+    },
+    {
+      key: "status",
+      getValue: (user: ManagedUser) => user.status,
+      searchable: true,
+    },
+  ];
+  const tableFilters = [
+    (user: ManagedUser) => !filters.role || user.roleId === filters.role,
+    (user: ManagedUser) => !filters.status || user.status === filters.status,
+  ];
+  const roleOptions = roles.flatMap((role) =>
+    role.id ? [{ value: role.id, label: role.name }] : [],
   );
   const table = useTable({
     data: usersWithRoleNames,
@@ -89,70 +72,60 @@ export function UserTab() {
     filters: tableFilters,
   });
 
-  const handleUserSubmit = useCallback(
-    (values: UserFormValues) => {
-      const payload = {
-        ...values,
-        name: values.name.trim(),
-        email: values.email.trim(),
-      };
+  const handleUserSubmit = (values: UserFormValues) => {
+    const payload = {
+      ...values,
+      name: values.name.trim(),
+      email: values.email.trim(),
+    };
 
-      return selectedUser?.id
-        ? updateUser(selectedUser.id, payload)
-        : createUser(payload);
+    return selectedUser?.id
+      ? updateUser(selectedUser.id, payload)
+      : createUser(payload);
+  };
+
+  const tableRows = table.data.map((user) => [
+    <div className="d-grid gap-1">
+      <span className="fw-semibold">{user.name}</span>
+      <span className="d-flex align-items-center gap-2 small text-decoration-none">
+        <BsEnvelope aria-hidden="true" />
+        {user.email}
+      </span>
+    </div>,
+    user.roleName,
+    <Badge variant={user.status === "Active" ? "success" : "danger"}>
+      {user.status}
+    </Badge>,
+    {
+      className: "text-end",
+      content: (
+        <div className="d-flex justify-content-end gap-2">
+          {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+              aria-label={`Edit ${user.name}`}
+              disabled={isSubmitting}
+              onClick={() => openEditForm(user)}
+            >
+              <BsPencilSquare />
+            </button>
+          )}
+          {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+              aria-label={`Delete ${user.name}`}
+              disabled={isSubmitting}
+              onClick={() => confirmDelete(user)}
+            >
+              <BsTrash />
+            </button>
+          )}
+        </div>
+      ),
     },
-    [createUser, selectedUser, updateUser],
-  );
-
-  const tableRows = useMemo(
-    () =>
-      table.data.map((user) => [
-        <div className="d-grid gap-1">
-          <span className="fw-semibold">{user.name}</span>
-          <a
-            className="d-flex align-items-center gap-2 small text-decoration-none"
-            href={`mailto:${user.email}`}
-          >
-            <BsEnvelope aria-hidden="true" />
-            {user.email}
-          </a>
-        </div>,
-        user.roleName,
-        <Badge variant={user.status === "Active" ? "success" : "danger"}>
-          {user.status}
-        </Badge>,
-        {
-          className: "text-end",
-          content: (
-            <div className="d-flex justify-content-end gap-2">
-              {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-                  aria-label={`Edit ${user.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => openEditForm(user)}
-                >
-                  <BsPencilSquare />
-                </button>
-              )}
-              {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-                  aria-label={`Delete ${user.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => confirmDelete(user)}
-                >
-                  <BsTrash />
-                </button>
-              )}
-            </div>
-          ),
-        },
-      ]),
-    [confirmDelete, isSubmitting, openEditForm, permissions, table.data],
-  );
+  ]);
 
   return (
     <>

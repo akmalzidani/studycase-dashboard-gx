@@ -23,7 +23,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Prospect } from "@/types";
 import { formatSpeed, getWhatsAppUrl } from "@/helpers/formatters.helpers";
-import { useCallback, useMemo, useState } from "react";
+import { useState } from "react";
 import {
   BsEnvelope,
   BsEye,
@@ -48,51 +48,41 @@ export default function ProspectPage() {
   const { subscriptions, isLoading: isLoadingSubscriptions } =
     useSubscriptions();
 
-  const tableFields = useMemo(
-    () => [
-      {
-        key: "id",
-        getValue: (prospect: Prospect) => prospect.id,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "userInformation",
-        getValue: (prospect: Prospect) => prospect.name,
-        searchable: true,
-        sortable: true,
-      },
-      {
-        key: "subscription",
-        getValue: (prospect: Prospect) => prospect.subscription.packageName,
-        searchable: true,
-      },
-      {
-        key: "status",
-        getValue: (prospect: Prospect) => prospect.status,
-        searchable: true,
-      },
-    ],
-    [],
-  );
-  const tableFilters = useMemo(
-    () => [
-      (prospect: Prospect) =>
-        !filters.subscription ||
-        prospect.subscription.id === filters.subscription,
-      (prospect: Prospect) =>
-        !filters.status || prospect.status === filters.status,
-    ],
-    [filters],
-  );
-  const subscriptionOptions = useMemo(
-    () =>
-      subscriptions.flatMap((subscription) =>
-        subscription.id
-          ? [{ value: subscription.id, label: subscription.packageName }]
-          : [],
-      ),
-    [subscriptions],
+  const tableFields = [
+    {
+      key: "id",
+      getValue: (prospect: Prospect) => prospect.id,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "userInformation",
+      getValue: (prospect: Prospect) => prospect.name,
+      searchable: true,
+      sortable: true,
+    },
+    {
+      key: "subscription",
+      getValue: (prospect: Prospect) => prospect.subscription.packageName,
+      searchable: true,
+    },
+    {
+      key: "status",
+      getValue: (prospect: Prospect) => prospect.status,
+      searchable: true,
+    },
+  ];
+  const tableFilters = [
+    (prospect: Prospect) =>
+      !filters.subscription ||
+      prospect.subscription.id === filters.subscription,
+    (prospect: Prospect) =>
+      !filters.status || prospect.status === filters.status,
+  ];
+  const subscriptionOptions = subscriptions.flatMap((subscription) =>
+    subscription.id
+      ? [{ value: subscription.id, label: subscription.packageName }]
+      : [],
   );
   const table = useTable({
     data: prospects,
@@ -100,14 +90,11 @@ export default function ProspectPage() {
     filters: tableFilters,
   });
 
-  const handleFormOpen = useCallback(
-    () => showOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM),
-    [],
-  );
-  const openDetail = useCallback((prospect: Prospect) => {
+  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
+  const openDetail = (prospect: Prospect) => {
     setSelectedDetail(prospect);
     showOffcanvas(OVERLAY_TARGETS.PROSPECT_DETAIL);
-  }, []);
+  };
   const {
     selectedItem: selectedProspect,
     openCreateForm,
@@ -121,109 +108,93 @@ export default function ProspectPage() {
     onDelete: deleteProspect,
   });
 
-  const handleSubmit = useCallback(
-    async (values: ProspectFormValues) => {
-      const subscription = subscriptions.find(
-        (item) => item.id === values.subscriptionId,
-      );
-      if (!subscription) return false;
+  const handleSubmit = async (values: ProspectFormValues) => {
+    const subscription = subscriptions.find(
+      (item) => item.id === values.subscriptionId,
+    );
+    if (!subscription) return false;
 
-      const payload = {
-        name: values.name.trim(),
-        email: values.email.trim(),
-        phoneNumber: values.phoneNumber.trim(),
-        subscription,
-        status: values.status,
-      };
+    const payload = {
+      name: values.name.trim(),
+      email: values.email.trim(),
+      phoneNumber: values.phoneNumber.trim(),
+      subscription,
+      status: values.status,
+    };
 
-      return selectedProspect?.id
-        ? updateProspect(selectedProspect.id, payload)
-        : createProspect(payload);
+    return selectedProspect?.id
+      ? updateProspect(selectedProspect.id, payload)
+      : createProspect(payload);
+  };
+
+  const tableRows = table.data.map((prospect) => [
+    prospect.id ?? "-",
+    <div className="d-grid gap-1">
+      <span className="fw-semibold">{prospect.name}</span>
+      <a
+        className="d-flex align-items-center gap-2 small text-decoration-none"
+        href={`mailto:${prospect.email}`}
+      >
+        <BsEnvelope aria-hidden="true" />
+        {prospect.email}
+      </a>
+      <a
+        className="d-flex align-items-center gap-2 small text-decoration-none"
+        href={getWhatsAppUrl(prospect.phoneNumber)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <BsWhatsapp aria-hidden="true" />
+        {prospect.phoneNumber}
+      </a>
+    </div>,
+    <div>
+      <div className="fw-medium">{prospect.subscription.packageName}</div>
+      <small className="text-muted">
+        {formatSpeed(prospect.subscription.speed)}
+      </small>
+    </div>,
+    <Badge variant={prospect.status === "Completed" ? "success" : "warning"}>
+      {prospect.status}
+    </Badge>,
+    {
+      className: "text-end",
+      content: (
+        <div className="d-flex justify-content-end gap-2">
+          <button
+            type="button"
+            className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
+            aria-label={`View ${prospect.name} details`}
+            onClick={() => openDetail(prospect)}
+          >
+            <BsEye />
+          </button>
+          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.UPDATE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+              aria-label={`Edit ${prospect.name}`}
+              disabled={isSubmitting}
+              onClick={() => openEditForm(prospect)}
+            >
+              <BsPencilSquare />
+            </button>
+          )}
+          {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.DELETE) && (
+            <button
+              type="button"
+              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+              aria-label={`Hapus ${prospect.name}`}
+              disabled={isSubmitting}
+              onClick={() => confirmDelete(prospect)}
+            >
+              <BsTrash />
+            </button>
+          )}
+        </div>
+      ),
     },
-    [createProspect, selectedProspect, subscriptions, updateProspect],
-  );
-
-  const tableRows = useMemo(
-    () =>
-      table.data.map((prospect) => [
-        prospect.id ?? "-",
-        <div className="d-grid gap-1">
-          <span className="fw-semibold">{prospect.name}</span>
-          <a
-            className="d-flex align-items-center gap-2 small text-decoration-none"
-            href={`mailto:${prospect.email}`}
-          >
-            <BsEnvelope aria-hidden="true" />
-            {prospect.email}
-          </a>
-          <a
-            className="d-flex align-items-center gap-2 small text-decoration-none"
-            href={getWhatsAppUrl(prospect.phoneNumber)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <BsWhatsapp aria-hidden="true" />
-            {prospect.phoneNumber}
-          </a>
-        </div>,
-        <div>
-          <div className="fw-medium">{prospect.subscription.packageName}</div>
-          <small className="text-muted">
-            {formatSpeed(prospect.subscription.speed)}
-          </small>
-        </div>,
-        <Badge
-          variant={prospect.status === "Completed" ? "success" : "warning"}
-        >
-          {prospect.status}
-        </Badge>,
-        {
-          className: "text-end",
-          content: (
-            <div className="d-flex justify-content-end gap-2">
-              <button
-                type="button"
-                className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
-                aria-label={`View ${prospect.name} details`}
-                onClick={() => openDetail(prospect)}
-              >
-                <BsEye />
-              </button>
-              {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.UPDATE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-                  aria-label={`Edit ${prospect.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => openEditForm(prospect)}
-                >
-                  <BsPencilSquare />
-                </button>
-              )}
-              {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.DELETE) && (
-                <button
-                  type="button"
-                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-                  aria-label={`Hapus ${prospect.name}`}
-                  disabled={isSubmitting}
-                  onClick={() => confirmDelete(prospect)}
-                >
-                  <BsTrash />
-                </button>
-              )}
-            </div>
-          ),
-        },
-      ]),
-    [
-      confirmDelete,
-      isSubmitting,
-      openDetail,
-      openEditForm,
-      permissions,
-      table.data,
-    ],
-  );
+  ]);
 
   return (
     <>
@@ -289,7 +260,7 @@ export default function ProspectPage() {
             onSort={table.handleSort}
             isWrapHeader
             emptyMessage="There are no prospects yet. Add your first prospect."
-          />
+          ></Table>
 
           {!isLoading && (
             <TablePagination

@@ -1,7 +1,7 @@
 import { toast } from "@/components/Overlay";
 import { userService, type UserPayload } from "@/services/user.service";
 import { useUserStore } from "@/stores/useUserStore";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
@@ -14,20 +14,20 @@ export function useUsers() {
   const setIsLoading = useUserStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const loadUsers = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      setUsers(await userService.getAll());
-    } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to load user data."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setIsLoading, setUsers]);
-
   useEffect(() => {
+    async function loadUsers() {
+      setIsLoading(true);
+      try {
+        setUsers(await userService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load user data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     loadUsers();
-  }, [loadUsers]);
+  }, [setIsLoading, setUsers]);
 
   const createUser = async (payload: UserPayload) => {
     setIsSubmitting(true);

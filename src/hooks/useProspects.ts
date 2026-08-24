@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   prospectService,
   type ProspectPayload,
@@ -17,20 +17,20 @@ export function useProspects() {
   const setIsLoading = useProspectStore((state) => state.setIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fetchProspects = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      setProspects(await prospectService.getAll());
-    } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to load prospect data."));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [setIsLoading, setProspects]);
-
   useEffect(() => {
+    async function fetchProspects() {
+      setIsLoading(true);
+      try {
+        setProspects(await prospectService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load prospect data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     fetchProspects();
-  }, [fetchProspects]);
+  }, [setIsLoading, setProspects]);
 
   const createProspect = async (payload: ProspectPayload) => {
     setIsSubmitting(true);

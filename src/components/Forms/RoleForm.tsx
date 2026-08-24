@@ -4,7 +4,7 @@ import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { PERMISSION_CATALOG } from "@/config/permission.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Permissions, Role } from "@/types";
-import { useEffect, useMemo, useState, type SyntheticEvent } from "react";
+import { useEffect, useState, type SyntheticEvent } from "react";
 
 export interface RoleFormValues {
   name: string;
@@ -69,10 +69,7 @@ export function RoleForm({
     permissions: {},
   });
 
-  const permissionsByFeature = useMemo(
-    () => Object.entries(groupPermissionsByFeature()),
-    [],
-  );
+  const permissionsByFeature = Object.entries(groupPermissionsByFeature());
 
   useEffect(() => {
     return onOffcanvasShown(OVERLAY_TARGETS.ROLE_FORM, () => {
