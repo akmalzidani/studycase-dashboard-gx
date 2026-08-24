@@ -102,20 +102,20 @@ export function RoleForm({
       actions={
         <>
           <button
-            type="submit"
-            form={FORM_IDS.ROLE}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
-          </button>
-          <button
             type="button"
             className="btn btn-light"
             disabled={isSubmitting}
             data-bs-dismiss="offcanvas"
           >
             Cancel
+          </button>
+          <button
+            type="submit"
+            form={FORM_IDS.ROLE}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
           </button>
         </>
       }
