@@ -1,4 +1,5 @@
-import { barChartOptions } from "./chart.config";
+import { getBarChartOptions, getBarChartScales } from "./chart.config";
+import { useThemeStore } from "@/stores/useThemeStore";
 import type { PackageSummary } from "@/helpers/analytics.helpers";
 import type { ChartData, ChartOptions } from "chart.js";
 import { Bar } from "react-chartjs-2";
@@ -10,6 +11,7 @@ interface PackageInterestChartProps {
 export function PackageInterestChart({
   packageSummaries,
 }: PackageInterestChartProps) {
+  const isDark = useThemeStore((store) => store.theme === "dark");
   const data: ChartData<"bar"> = {
     labels: packageSummaries.map((item) => item.name),
     datasets: [
@@ -27,11 +29,17 @@ export function PackageInterestChart({
       },
     ],
   };
+  const scales = getBarChartScales(isDark);
   const options: ChartOptions<"bar"> = {
-    ...barChartOptions,
+    ...getBarChartOptions(isDark),
     scales: {
-      x: { stacked: true, grid: { display: false } },
-      y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } },
+      x: { ...scales.x, stacked: true, grid: { display: false } },
+      y: {
+        ...scales.y,
+        stacked: true,
+        beginAtZero: true,
+        ticks: { ...scales.y.ticks, precision: 0 },
+      },
     },
   };
 

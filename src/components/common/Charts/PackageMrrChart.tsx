@@ -1,4 +1,5 @@
-import { barChartOptions } from "./chart.config";
+import { getBarChartOptions, getBarChartScales } from "./chart.config";
+import { useThemeStore } from "@/stores/useThemeStore";
 import type { PackageSummary } from "@/helpers/analytics.helpers";
 import { formatCurrency } from "@/helpers/formatters.helpers";
 import type { ChartData, ChartOptions } from "chart.js";
@@ -9,6 +10,7 @@ interface PackageMrrChartProps {
 }
 
 export function PackageMrrChart({ packageSummaries }: PackageMrrChartProps) {
+  const isDark = useThemeStore((store) => store.theme === "dark");
   const data: ChartData<"bar"> = {
     labels: packageSummaries.map((item) => item.name),
     datasets: [
@@ -21,16 +23,19 @@ export function PackageMrrChart({ packageSummaries }: PackageMrrChartProps) {
       },
     ],
   };
+  const scales = getBarChartScales(isDark);
   const options: ChartOptions<"bar"> = {
-    ...barChartOptions,
+    ...getBarChartOptions(isDark),
     scales: {
       y: {
+        ...scales.y,
         beginAtZero: true,
         ticks: {
+          ...scales.y.ticks,
           callback: (value: string | number) => formatCurrency(Number(value)),
         },
       },
-      x: { grid: { display: false } },
+      x: { ...scales.x, grid: { display: false } },
     },
   };
 

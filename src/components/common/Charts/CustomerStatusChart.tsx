@@ -1,4 +1,5 @@
-import { doughnutChartOptions } from "./chart.config";
+import { getDoughnutChartOptions } from "./chart.config";
+import { useThemeStore } from "@/stores/useThemeStore";
 import type { ChartData } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 
@@ -11,6 +12,7 @@ export function CustomerStatusChart({
   activeCustomerCount,
   blockedCustomerCount,
 }: CustomerStatusChartProps) {
+  const isDark = useThemeStore((store) => store.theme === "dark");
   const data: ChartData<"doughnut"> = {
     labels: ["Active", "Blocked"],
     datasets: [
@@ -23,5 +25,5 @@ export function CustomerStatusChart({
     ],
   };
 
-  return <Doughnut data={data} options={doughnutChartOptions} />;
+  return <Doughnut data={data} options={getDoughnutChartOptions(isDark)} />;
 }
