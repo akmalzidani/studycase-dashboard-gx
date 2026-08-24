@@ -1,7 +1,9 @@
 export const OVERLAY_TARGETS = {
   CONFIRMATION: "confirmation-dialog",
   CUSTOMER_FORM: "customer-form-overlay",
+  CUSTOMER_DETAIL: "customer-detail-overlay",
   PROSPECT_FORM: "prospect-form-overlay",
+  PROSPECT_DETAIL: "prospect-detail-overlay",
   SUBSCRIPTION_FORM: "subscription-form-overlay",
   PROFILE_FORM: "profile-form-overlay",
   CHANGE_PASSWORD: "change-password-overlay",

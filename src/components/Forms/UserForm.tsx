@@ -4,6 +4,7 @@ import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
 import type { Role } from "@/types";
 import { useEffect, useState, type SyntheticEvent } from "react";
+import { BsEnvelope, BsLock } from "react-icons/bs";
 import type {
   ManagedUser,
   UserFormValues,
@@ -69,8 +70,16 @@ export function UserForm({
     <Offcanvas
       target={OVERLAY_TARGETS.USER_FORM}
       title={isEditing ? "Edit User" : "Add User"}
-      footer={
+      actions={
         <>
+          <button
+            type="submit"
+            form={FORM_IDS.USER}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
           <button
             type="button"
             className="btn btn-light"
@@ -79,23 +88,11 @@ export function UserForm({
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            form={FORM_IDS.USER}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add User"}
-          </button>
         </>
       }
     >
-      <form id={FORM_IDS.USER} onSubmit={handleSubmit} className="row g-3">
-        <div className="col-12">
+      <form id={FORM_IDS.USER} onSubmit={handleSubmit} className="row">
+        <div className="col-12 col-md-6">
           <FormTextInput
             id="user-name"
             label="Name"
@@ -115,6 +112,7 @@ export function UserForm({
             className="form-control"
             type="email"
             placeholder="Enter email"
+            startAdornment={<BsEnvelope />}
             value={values.email}
             onChange={(event) => handleValueChange("email", event.target.value)}
             required
@@ -128,6 +126,7 @@ export function UserForm({
             className="form-control"
             type="password"
             placeholder="Enter password"
+            startAdornment={<BsLock />}
             value={values.password}
             onChange={(event) =>
               handleValueChange("password", event.target.value)
@@ -137,7 +136,7 @@ export function UserForm({
             disabled={isSubmitting}
           />
         </div>
-        <div className="col-12 col-md-8">
+        <div className="col-12 col-md-6">
           <label className="form-label" htmlFor="user-role">
             Role
           </label>
@@ -161,26 +160,31 @@ export function UserForm({
             ))}
           </select>
         </div>
-        <div className="col-12 col-md-4">
-          <label className="form-label" htmlFor="user-status">
-            Status
-          </label>
-          <select
-            id="user-status"
-            className="form-select"
-            value={values.status}
-            onChange={(event) =>
-              handleValueChange(
-                "status",
-                event.target.value as UserFormValues["status"],
-              )
-            }
-            disabled={isSubmitting}
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
+        <fieldset className="col-12 col-md-6">
+          <label className="form-label mb-2">Status</label>
+          <div className="d-flex flex-wrap gap-3">
+            {(["Active", "Inactive"] as const).map((status) => (
+              <div key={status} className="form-check">
+                <input
+                  id={`user-status-${status.toLowerCase()}`}
+                  className="form-check-input"
+                  type="radio"
+                  name="user-status"
+                  value={status}
+                  checked={values.status === status}
+                  disabled={isSubmitting}
+                  onChange={() => handleValueChange("status", status)}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`user-status-${status.toLowerCase()}`}
+                >
+                  {status}
+                </label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
       </form>
     </Offcanvas>
   );

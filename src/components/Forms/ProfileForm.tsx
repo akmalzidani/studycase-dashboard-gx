@@ -1,9 +1,10 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Offcanvas } from "@/components/common/Offcanvas";
+import { Modal } from "@/components/common/Modal";
 import { FormTextInput } from "@/components/common/FormInput";
 import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
-import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { User } from "@/types";
+import { BsEnvelope } from "react-icons/bs";
 
 export interface ProfileFormValues {
   name: string;
@@ -33,30 +34,22 @@ export function ProfileForm({
       );
     };
 
-    return onOffcanvasShown(OVERLAY_TARGETS.PROFILE_FORM, initializeValues);
+    return onModalShown(OVERLAY_TARGETS.PROFILE_FORM, initializeValues);
   }, [user]);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(OVERLAY_TARGETS.PROFILE_FORM);
+      hideModal(OVERLAY_TARGETS.PROFILE_FORM);
     }
   };
 
   return (
-    <Offcanvas
+    <Modal
       target={OVERLAY_TARGETS.PROFILE_FORM}
       title="Edit Profile"
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn-light"
-            disabled={isSubmitting}
-            data-bs-dismiss="offcanvas"
-          >
-            Cancel
-          </button>
           <button
             type="submit"
             form={FORM_IDS.PROFILE}
@@ -65,14 +58,23 @@ export function ProfileForm({
           >
             {isSubmitting ? "Saving..." : "Save Changes"}
           </button>
+          <button
+            type="button"
+            className="btn btn-light"
+            disabled={isSubmitting}
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
         </>
       }
     >
-      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit} className="row g-3">
-        <div className="col-12 col-md-6">
+      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit} className="row">
+        <div className="col-12">
           <FormTextInput
             id="profile-name"
             label="Name"
+            placeholder="Enter your name"
             className="form-control"
             value={values.name}
             minLength={3}
@@ -83,12 +85,14 @@ export function ProfileForm({
             }
           />
         </div>
-        <div className="col-12 col-md-6">
+        <div className="col-12">
           <FormTextInput
             id="profile-email"
             label="Email"
             type="email"
+            placeholder="Enter your email"
             className="form-control"
+            startAdornment={<BsEnvelope />}
             value={values.email}
             required
             disabled={isSubmitting}
@@ -101,6 +105,6 @@ export function ProfileForm({
           />
         </div>
       </form>
-    </Offcanvas>
+    </Modal>
   );
 }

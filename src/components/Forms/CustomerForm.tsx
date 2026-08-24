@@ -5,6 +5,7 @@ import { FormTextInput } from "@/components/common/FormInput";
 import type { Customer, CustomerStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
+import { BsEnvelope, BsTelephone } from "react-icons/bs";
 
 export interface CustomerFormValues {
   name: string;
@@ -82,8 +83,16 @@ export function CustomerForm({
       target={OVERLAY_TARGETS.CUSTOMER_FORM}
       title={isEditing ? "Edit Customer" : "Add Customer"}
 
-      footer={
+      actions={
         <>
+          <button
+            type="submit"
+            form={FORM_IDS.CUSTOMER}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
           <button
             type="button"
             className="btn btn-light"
@@ -92,22 +101,10 @@ export function CustomerForm({
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            form={FORM_IDS.CUSTOMER}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add Customer"}
-          </button>
         </>
       }
     >
-      <form id={FORM_IDS.CUSTOMER} onSubmit={handleSubmit} className="row g-3">
+      <form id={FORM_IDS.CUSTOMER} onSubmit={handleSubmit} className="row">
         <div className="col-12">
           <FormTextInput
             id="customer-name"
@@ -128,6 +125,7 @@ export function CustomerForm({
             placeholder="Enter email"
             type="email"
             className="form-control"
+            startAdornment={<BsEnvelope />}
             value={values.email}
             required
             disabled={isSubmitting}
@@ -143,6 +141,7 @@ export function CustomerForm({
             inputMode="numeric"
             autoComplete="tel"
             className="form-control"
+            startAdornment={<BsTelephone />}
             value={values.phoneNumber}
             pattern={PHONE_NUMBER_PATTERN}
             title={PHONE_NUMBER_TITLE}
@@ -158,7 +157,7 @@ export function CustomerForm({
             }
           />
         </div>
-        <div className="col-12 col-md-8">
+        <div className="col-12 col-md-6">
           <label className="form-label" htmlFor="customer-subscription">
             Subscription
           </label>
@@ -179,24 +178,31 @@ export function CustomerForm({
             ))}
           </select>
         </div>
-        <div className="col-12 col-md-4">
-          <label className="form-label" htmlFor="customer-status">
-            Status
-          </label>
-          <select
-            id="customer-status"
-            className="form-select"
-            value={values.status}
-            disabled={isSubmitting}
-            onChange={(event) =>
-              handleValueChange("status", event.target.value as CustomerStatus)
-            }
-          >
+        <fieldset className="col-12 col-md-6">
+          <label className="form-label mb-2">Status</label>
+          <div className="d-flex flex-wrap gap-3">
             {STATUS_OPTIONS.map((status) => (
-              <option key={status}>{status}</option>
+              <div key={status} className="form-check">
+                <input
+                  id={`customer-status-${status.toLowerCase()}`}
+                  className="form-check-input"
+                  type="radio"
+                  name="customer-status"
+                  value={status}
+                  checked={values.status === status}
+                  disabled={isSubmitting}
+                  onChange={() => handleValueChange("status", status)}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`customer-status-${status.toLowerCase()}`}
+                >
+                  {status}
+                </label>
+              </div>
             ))}
-          </select>
-        </div>
+          </div>
+        </fieldset>
       </form>
     </Offcanvas>
   );

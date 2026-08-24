@@ -1,8 +1,10 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { Offcanvas } from "@/components/common/Offcanvas";
+import { FormTextInput } from "@/components/common/FormInput";
+import { Modal } from "@/components/common/Modal";
 import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
-import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
+import { hideModal, onModalShown } from "@/helpers/modal.helpers";
 import type { User } from "@/types";
+import { BsLock } from "react-icons/bs";
 
 export interface ChangePasswordFormValues {
   currentPassword: string;
@@ -30,31 +32,22 @@ export function ChangePasswordForm({
 
   useEffect(() => {
     const resetValues = () => setValues(EMPTY_VALUES);
-    return onOffcanvasShown(OVERLAY_TARGETS.CHANGE_PASSWORD, resetValues);
+    return onModalShown(OVERLAY_TARGETS.CHANGE_PASSWORD, resetValues);
   }, []);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(OVERLAY_TARGETS.CHANGE_PASSWORD);
+      hideModal(OVERLAY_TARGETS.CHANGE_PASSWORD);
     }
   };
 
   return (
-    <Offcanvas
+    <Modal
       target={OVERLAY_TARGETS.CHANGE_PASSWORD}
       title="Change Password"
-
       footer={
         <>
-          <button
-            type="button"
-            className="btn btn-light"
-            disabled={isSubmitting}
-            data-bs-dismiss="offcanvas"
-          >
-            Cancel
-          </button>
           <button
             type="submit"
             form={FORM_IDS.CHANGE_PASSWORD}
@@ -62,6 +55,14 @@ export function ChangePasswordForm({
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : "Change Password"}
+          </button>
+          <button
+            type="button"
+            className="btn btn-light"
+            disabled={isSubmitting}
+            data-bs-dismiss="modal"
+          >
+            Cancel
           </button>
         </>
       }
@@ -88,13 +89,13 @@ export function ChangePasswordForm({
             }
             key={field}
           >
-            <label className="form-label" htmlFor={id}>
-              {label}
-            </label>
-            <input
+            <FormTextInput
               id={id}
+              label={label}
               type="password"
               className="form-control"
+              placeholder={label}
+              startAdornment={<BsLock />}
               value={values[field]}
               minLength={field === "currentPassword" ? undefined : 6}
               required
@@ -109,6 +110,6 @@ export function ChangePasswordForm({
           </div>
         ))}
       </form>
-    </Offcanvas>
+    </Modal>
   );
 }

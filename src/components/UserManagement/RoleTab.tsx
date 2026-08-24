@@ -1,27 +1,53 @@
-import {
-  createCrudRowActions,
-  DataTable,
-  matchesSearchKeyword,
-} from "@/components/common/DataTable";
-import { roleTableColumns } from "@/components/TableColumns";
+import { Table } from "@/components/common/Table";
+import { TablePagination } from "@/components/common/TablePagination";
+import { TableSearch } from "@/components/common/TableSearch";
 import { OVERLAY_TARGETS } from "@/config/overlay.config";
-import { showOffcanvas } from "@/helpers/offcanvas.helpers";
-
-import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
+import { hasPermission } from "@/config/permission.helpers";
+import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
-import { useDataTable } from "@/hooks/useDataTable";
 import { useRoles } from "@/hooks/useRoles";
+import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
-import type { Role } from "@/types";
+import type { Permissions, Role } from "@/types";
 import { useCallback, useMemo } from "react";
-import { BsPlusLg } from "react-icons/bs";
+import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { RoleForm, type RoleFormValues } from "../Forms/RoleForm";
+
+function countPermissions(permissions: Permissions): number {
+  return Object.values(permissions).reduce<number>(
+    (total, value) =>
+      total +
+      (typeof value === "object" ? countPermissions(value) : Number(value)),
+    0,
+  );
+}
 
 export function RoleTab() {
   const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
+  const tableFields = useMemo(
+    () => [
+      {
+        key: "name",
+        getValue: (role: Role) => role.name,
+        searchable: true,
+        sortable: true,
+      },
+      {
+        key: "description",
+        getValue: (role: Role) => role.description,
+      },
+      {
+        key: "accessCount",
+        getValue: (role: Role) => countPermissions(role.permissions),
+        sortable: true,
+      },
+    ],
+    [],
+  );
+  const table = useTable({ data: roles, fields: tableFields });
   const handleFormOpen = useCallback(
     () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM),
     [],
@@ -32,11 +58,6 @@ export function RoleTab() {
       `Are you sure you want to delete the ${role.name} role?`,
     onOpenForm: handleFormOpen,
     onDelete: deleteRole,
-  });
-  const table = useDataTable({
-    data: roles,
-    searchPredicate: (role, keyword) =>
-      matchesSearchKeyword([role.name, role.description], keyword),
   });
 
   const handleRoleSubmit = useCallback(
@@ -55,47 +76,100 @@ export function RoleTab() {
     [createRole, roleActions.selectedItem, updateRole],
   );
 
-  const rowActions = useMemo(
+  const tableRows = useMemo(
     () =>
-      createCrudRowActions({
-        disabled: isSubmitting,
-        canEdit: hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE),
-        canDelete: hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE),
-        getLabel: (role: Role) => role.name,
-        onEdit: roleActions.openEditForm,
-        onDelete: roleActions.confirmDelete,
+      table.data.map((role) => {
+        const accessCount = countPermissions(role.permissions);
+
+        return [
+          <span className="fw-semibold">{role.name}</span>,
+          role.description,
+          `${accessCount} permission${accessCount === 1 ? "" : "s"}`,
+          {
+            className: "text-end",
+            content: (
+              <div className="d-flex justify-content-end gap-2">
+                {hasPermission(permissions, PERMISSION_KEYS.ROLES.UPDATE) && (
+                  <button
+                    type="button"
+                    className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+                    aria-label={`Edit ${role.name}`}
+                    disabled={isSubmitting}
+                    onClick={() => roleActions.openEditForm(role)}
+                  >
+                    <BsPencilSquare />
+                  </button>
+                )}
+                {hasPermission(permissions, PERMISSION_KEYS.ROLES.DELETE) && (
+                  <button
+                    type="button"
+                    className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+                    aria-label={`Delete ${role.name}`}
+                    disabled={isSubmitting}
+                    onClick={() => roleActions.confirmDelete(role)}
+                  >
+                    <BsTrash />
+                  </button>
+                )}
+              </div>
+            ),
+          },
+        ];
       }),
     [
       isSubmitting,
       permissions,
       roleActions.confirmDelete,
       roleActions.openEditForm,
+      table.data,
     ],
   );
 
   return (
     <>
-      <DataTable
-        {...table}
-        columns={roleTableColumns}
-        rowActions={rowActions}
-        keyExtractor={(role) => role.id ?? role.name}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+        <div className="w-100" style={{ maxWidth: "320px" }}>
+          <TableSearch value={table.search} onChange={table.setSearch} />
+        </div>
+        {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) && (
+          <button
+            className="btn btn-primary"
+            type="button"
+            disabled={isSubmitting}
+            onClick={roleActions.openCreateForm}
+          >
+            <BsPlusLg className="me-2" />
+            Add Role
+          </button>
+        )}
+      </div>
+
+      <Table
+        ths={[
+          { content: "Role name", sortKey: "name" },
+          { content: "Description" },
+          { content: "Access count", sortKey: "accessCount" },
+          { className: "text-end", content: "Actions" },
+        ]}
+        tds={tableRows}
         isLoading={isLoading}
+        isWrapHeader
         emptyMessage="No roles yet."
-        actions={
-          hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) && (
-            <button
-              className="btn btn-primary"
-              type="button"
-              disabled={isSubmitting}
-              onClick={roleActions.openCreateForm}
-            >
-              <BsPlusLg className="me-2" />
-              Add Role
-            </button>
-          )
-        }
+        sortConfig={table.sortConfig}
+        onSort={table.handleSort}
       />
+
+      {!isLoading && (
+        <TablePagination
+          page={table.page}
+          totalPages={table.totalPages}
+          totalItems={table.totalItems}
+          pageSize={table.pageSize}
+          onPageChange={table.setPage}
+          onPageSizeChange={table.setPageSize}
+        />
+      )}
+
       <RoleForm
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}

@@ -1,10 +1,11 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
-import { FORM_IDS, MODAL_TARGETS } from "@/config/modal.config";
+import { FORM_IDS, OVERLAY_TARGETS } from "@/config/overlay.config";
 import { Offcanvas } from "@/components/common/Offcanvas";
 import { FormTextInput } from "@/components/common/FormInput";
 import type { Prospect, ProspectStatus, Subscription } from "@/types";
 import { formatSpeed } from "@/helpers/formatters.helpers";
 import { hideOffcanvas, onOffcanvasShown } from "@/helpers/offcanvas.helpers";
+import { BsEnvelope, BsTelephone } from "react-icons/bs";
 
 export interface ProspectFormValues {
   name: string;
@@ -60,7 +61,7 @@ export function ProspectForm({
       );
     };
 
-    return onOffcanvasShown(MODAL_TARGETS.PROSPECT_FORM, initializeValues);
+    return onOffcanvasShown(OVERLAY_TARGETS.PROSPECT_FORM, initializeValues);
   }, [prospect, subscriptions]);
 
   const handleValueChange = <K extends keyof ProspectFormValues>(
@@ -71,7 +72,7 @@ export function ProspectForm({
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
-      hideOffcanvas(MODAL_TARGETS.PROSPECT_FORM);
+      hideOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
     }
   };
 
@@ -79,11 +80,19 @@ export function ProspectForm({
 
   return (
     <Offcanvas
-      target={MODAL_TARGETS.PROSPECT_FORM}
+      target={OVERLAY_TARGETS.PROSPECT_FORM}
       title={isEditing ? "Edit Prospect" : "Add Prospect"}
 
-      footer={
+      actions={
         <>
+          <button
+            type="submit"
+            form={FORM_IDS.PROSPECT}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
           <button
             type="button"
             className="btn btn-light"
@@ -92,70 +101,63 @@ export function ProspectForm({
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            form={FORM_IDS.PROSPECT}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add Prospect"}
-          </button>
         </>
       }
     >
-      <form id={FORM_IDS.PROSPECT} onSubmit={handleSubmit} className="row g-3">
-        <div className="col-12">
+      <form id={FORM_IDS.PROSPECT} onSubmit={handleSubmit} className="row">
+        <div className="col-6">
           <FormTextInput
             id="prospect-name"
-          label="Name"
-          placeholder="Enter name"
-          className="form-control"
-          value={values.name}
-          minLength={3}
-          required
-          disabled={isSubmitting}
-          onChange={(event) => handleValueChange("name", event.target.value)}
+            label="Name"
+            placeholder="Enter name"
+            className="form-control"
+            value={values.name}
+            minLength={3}
+            required
+            disabled={isSubmitting}
+            onChange={(event) => handleValueChange("name", event.target.value)}
           />
         </div>
-        <div className="col-12 col-md-6">
+        <div className="col-6">
           <FormTextInput
             id="prospect-email"
-          label="Email"
-          placeholder="Enter email"
-          type="email"
-          className="form-control"
-          value={values.email}
-          required
-          disabled={isSubmitting}
-          onChange={(event) => handleValueChange("email", event.target.value)}
+            label="Email"
+            placeholder="Enter email"
+            type="email"
+            className="form-control"
+            startAdornment={<BsEnvelope />}
+            value={values.email}
+            required
+            disabled={isSubmitting}
+            onChange={(event) => handleValueChange("email", event.target.value)}
           />
         </div>
-        <div className="col-12 col-md-6">
+        <div className="col-6">
           <FormTextInput
             id="prospect-phone"
-          label="Phone number"
-          placeholder="Enter phone number"
-          type="tel"
-          inputMode="numeric"
-          autoComplete="tel"
-          className="form-control"
-          value={values.phoneNumber}
-          pattern={PHONE_NUMBER_PATTERN}
-          title={PHONE_NUMBER_TITLE}
-          minLength={8}
-          maxLength={15}
-          required
-          disabled={isSubmitting}
-          onChange={(event) =>
-            handleValueChange("phoneNumber", event.target.value.replace(/\D/g, ""))
-          }
+            label="Phone number"
+            placeholder="Enter phone number"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            className="form-control"
+            startAdornment={<BsTelephone />}
+            value={values.phoneNumber}
+            pattern={PHONE_NUMBER_PATTERN}
+            title={PHONE_NUMBER_TITLE}
+            minLength={8}
+            maxLength={15}
+            required
+            disabled={isSubmitting}
+            onChange={(event) =>
+              handleValueChange(
+                "phoneNumber",
+                event.target.value.replace(/\D/g, ""),
+              )
+            }
           />
         </div>
-        <div className="col-12 col-md-8">
+        <div className="col-6">
           <label className="form-label" htmlFor="prospect-subscription">
             Subscription
           </label>
@@ -176,24 +178,31 @@ export function ProspectForm({
             ))}
           </select>
         </div>
-        <div className="col-12 col-md-4">
-          <label className="form-label" htmlFor="prospect-status">
-            Status
-          </label>
-          <select
-            id="prospect-status"
-            className="form-select"
-            value={values.status}
-            disabled={isSubmitting}
-            onChange={(event) =>
-              handleValueChange("status", event.target.value as ProspectStatus)
-            }
-          >
+        <fieldset className="col-12">
+          <label className="form-label">Status</label>
+          <div className="d-flex flex-wrap gap-3">
             {STATUS_OPTIONS.map((status) => (
-              <option key={status}>{status}</option>
+              <div key={status} className="form-check">
+                <input
+                  id={`prospect-status-${status.toLowerCase()}`}
+                  className="form-check-input"
+                  type="radio"
+                  name="prospect-status"
+                  value={status}
+                  checked={values.status === status}
+                  disabled={isSubmitting}
+                  onChange={() => handleValueChange("status", status)}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor={`prospect-status-${status.toLowerCase()}`}
+                >
+                  {status}
+                </label>
+              </div>
             ))}
-          </select>
-        </div>
+          </div>
+        </fieldset>
       </form>
     </Offcanvas>
   );

@@ -102,8 +102,16 @@ export function RoleForm({
       target={OVERLAY_TARGETS.ROLE_FORM}
       title={isEditing ? "Edit Role" : "Add Role"}
 
-      footer={
+      actions={
         <>
+          <button
+            type="submit"
+            form={FORM_IDS.ROLE}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
           <button
             type="button"
             className="btn btn-light"
@@ -112,22 +120,10 @@ export function RoleForm({
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            form={FORM_IDS.ROLE}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add Role"}
-          </button>
         </>
       }
     >
-      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit} className="row g-3">
+      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit} className="row">
         <div className="col-12 col-md-4">
           <FormTextInput
             id="role-name"
@@ -163,7 +159,7 @@ export function RoleForm({
           />
         </div>
         <fieldset className="col-12">
-          <legend className="fs-6 fw-semibold mb-3">Permissions</legend>
+          <label className="fs-6 fw-semibold mb-3">Permissions</label>
           <div className="table-responsive border rounded">
             <table className="table table-sm align-middle mb-0">
               <thead className="table-light">

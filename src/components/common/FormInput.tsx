@@ -1,5 +1,6 @@
 import type {
   InputHTMLAttributes,
+  ReactNode,
   TextareaHTMLAttributes,
 } from "react";
 
@@ -13,14 +14,19 @@ const setWhitespaceValidity = (
   label: string,
 ) => {
   input.setCustomValidity(
-    input.value && !input.value.trim() ? whitespaceValidationMessage(label) : "",
+    input.value && !input.value.trim()
+      ? whitespaceValidationMessage(label)
+      : "",
   );
 };
 
-interface FormTextInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> {
+interface FormTextInputProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "onChange"
+> {
   label: string;
   validationLabel?: string;
+  startAdornment?: ReactNode;
   onChange: InputHTMLAttributes<HTMLInputElement>["onChange"];
 }
 
@@ -28,6 +34,7 @@ export function FormTextInput({
   id,
   label,
   validationLabel = label,
+  startAdornment,
   onChange,
   ...inputProps
 }: FormTextInputProps) {
@@ -36,22 +43,44 @@ export function FormTextInput({
       <label className="form-label" htmlFor={id}>
         {label}
       </label>
-      <input
-        {...inputProps}
-        id={id}
-        pattern={inputProps.pattern ?? NON_WHITESPACE_PATTERN}
-        title={inputProps.title ?? whitespaceValidationMessage(validationLabel)}
-        onChange={(event) => {
-          setWhitespaceValidity(event.currentTarget, validationLabel);
-          onChange?.(event);
-        }}
-      />
+      {startAdornment ? (
+        <div className="input-group">
+          <span className="input-group-text">{startAdornment}</span>
+          <input
+            {...inputProps}
+            id={id}
+            pattern={inputProps.pattern ?? NON_WHITESPACE_PATTERN}
+            title={
+              inputProps.title ?? whitespaceValidationMessage(validationLabel)
+            }
+            onChange={(event) => {
+              setWhitespaceValidity(event.currentTarget, validationLabel);
+              onChange?.(event);
+            }}
+          />
+        </div>
+      ) : (
+        <input
+          {...inputProps}
+          id={id}
+          pattern={inputProps.pattern ?? NON_WHITESPACE_PATTERN}
+          title={
+            inputProps.title ?? whitespaceValidationMessage(validationLabel)
+          }
+          onChange={(event) => {
+            setWhitespaceValidity(event.currentTarget, validationLabel);
+            onChange?.(event);
+          }}
+        />
+      )}
     </div>
   );
 }
 
-interface FormTextareaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "onChange"> {
+interface FormTextareaProps extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  "onChange"
+> {
   label: string;
   validationLabel?: string;
   onChange: TextareaHTMLAttributes<HTMLTextAreaElement>["onChange"];
@@ -72,7 +101,9 @@ export function FormTextarea({
       <textarea
         {...textareaProps}
         id={id}
-        title={textareaProps.title ?? whitespaceValidationMessage(validationLabel)}
+        title={
+          textareaProps.title ?? whitespaceValidationMessage(validationLabel)
+        }
         onChange={(event) => {
           setWhitespaceValidity(event.currentTarget, validationLabel);
           onChange?.(event);

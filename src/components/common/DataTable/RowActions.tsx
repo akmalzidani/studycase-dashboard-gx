@@ -23,7 +23,7 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
       id: "detail",
       label: "Details",
       icon: <BsEye />,
-      colorClassName: "text-secondary",
+      colorClassName: "text-body-secondary",
       config: actions.detail,
     },
     {

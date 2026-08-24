@@ -36,6 +36,9 @@ export function Pagination({
           Showing {totalItems === 0 ? 0 : (page - 1) * pageSize + 1} to{" "}
           {Math.min(page * pageSize, totalItems)} of {totalItems} entries
         </span>
+      </div>
+
+      <div className="d-flex align-items-center gap-2 text-muted small mb-2 mb-md-0">
         <label className="d-flex align-items-center gap-2">
           <span>Show</span>
           <select
@@ -51,55 +54,56 @@ export function Pagination({
             ))}
           </select>
         </label>
-      </div>
+        <nav aria-label="Page navigation">
+          <ul className="pagination pagination-sm mb-0">
+            <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
+              <button
+                className="page-link"
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+            </li>
 
-      <nav aria-label="Page navigation">
-        <ul className="pagination pagination-sm mb-0">
-          <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </button>
-          </li>
+            {getPageNumbers().map((pageNum, index) => {
+              if (pageNum === "...") {
+                return (
+                  <li key={`ellipsis-${index}`} className="page-item disabled">
+                    <span className="page-link">...</span>
+                  </li>
+                );
+              }
 
-          {getPageNumbers().map((pageNum, index) => {
-            if (pageNum === "...") {
               return (
-                <li key={`ellipsis-${index}`} className="page-item disabled">
-                  <span className="page-link">...</span>
+                <li
+                  key={pageNum}
+                  className={`page-item ${page === pageNum ? "active" : ""}`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => setPage(pageNum as number)}
+                  >
+                    {pageNum}
+                  </button>
                 </li>
               );
-            }
+            })}
 
-            return (
-              <li
-                key={pageNum}
-                className={`page-item ${page === pageNum ? "active" : ""}`}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => setPage(pageNum as number)}
-                >
-                  {pageNum}
-                </button>
-              </li>
-            );
-          })}
-
-          <li className={`page-item ${page === totalPages ? "disabled" : ""}`}>
-            <button
-              className="page-link"
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages || totalPages === 0}
+            <li
+              className={`page-item ${page === totalPages ? "disabled" : ""}`}
             >
-              Next
-            </button>
-          </li>
-        </ul>
-      </nav>
+              <button
+                className="page-link"
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages || totalPages === 0}
+              >
+                Next
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   );
 }

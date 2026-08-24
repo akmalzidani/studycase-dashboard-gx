@@ -71,8 +71,16 @@ export function SubscriptionForm({
         isEditing ? "Edit Subscription Package" : "Add Subscription Package"
       }
 
-      footer={
+      actions={
         <>
+          <button
+            type="submit"
+            form={FORM_IDS.SUBSCRIPTION}
+            className="btn btn-primary"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
           <button
             type="button"
             className="btn btn-light"
@@ -81,26 +89,10 @@ export function SubscriptionForm({
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            form={FORM_IDS.SUBSCRIPTION}
-            className="btn btn-primary"
-            disabled={isSubmitting}
-          >
-            {isSubmitting
-              ? "Saving..."
-              : isEditing
-                ? "Save Changes"
-                : "Add Package"}
-          </button>
         </>
       }
     >
-      <form
-        id={FORM_IDS.SUBSCRIPTION}
-        onSubmit={handleSubmit}
-        className="row g-3"
-      >
+      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit} className="row">
         <div className="col-12">
           <FormTextInput
             id="subscription-package-name"
@@ -115,27 +107,6 @@ export function SubscriptionForm({
               handleValueChange("packageName", event.target.value)
             }
           />
-        </div>
-        <div className="col-12 col-md-5">
-          <label className="form-label" htmlFor="subscription-speed">
-            Speed
-          </label>
-          <div className="input-group">
-            <input
-              id="subscription-speed"
-              type="number"
-              min={1}
-              className="form-control"
-              value={values.speed || ""}
-              placeholder="Example: 100"
-              required
-              disabled={isSubmitting}
-              onChange={(event) =>
-                handleValueChange("speed", Number(event.target.value))
-              }
-            />
-            <span className="input-group-text">Mbps</span>
-          </div>
         </div>
         <div className="col-12 col-md-7">
           <label className="form-label" htmlFor="subscription-monthly-fee">
@@ -159,6 +130,27 @@ export function SubscriptionForm({
                 handleValueChange("monthlyFee", digits ? Number(digits) : 0);
               }}
             />
+          </div>
+        </div>
+        <div className="col-12 col-md-5">
+          <label className="form-label" htmlFor="subscription-speed">
+            Speed
+          </label>
+          <div className="input-group">
+            <input
+              id="subscription-speed"
+              type="number"
+              min={1}
+              className="form-control"
+              value={values.speed || ""}
+              placeholder="Example: 100"
+              required
+              disabled={isSubmitting}
+              onChange={(event) =>
+                handleValueChange("speed", Number(event.target.value))
+              }
+            />
+            <span className="input-group-text">Mbps</span>
           </div>
         </div>
       </form>

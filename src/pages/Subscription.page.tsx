@@ -2,26 +2,24 @@ import {
   SubscriptionForm,
   type SubscriptionFormValues,
 } from "@/components/Forms/SubscriptionForm";
-import { subscriptionTableColumns } from "@/components/TableColumns";
+import { TablePagination } from "@/components/common/TablePagination";
+import { TableSearch } from "@/components/common/TableSearch";
+import { Table } from "@/components/common/Table";
 import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
-import {
-  createCrudRowActions,
-  DataTable,
-  matchesSearchKeyword,
-} from "@/components/common/DataTable";
 
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
-import { useDataTable } from "@/hooks/useDataTable";
+import { useTable } from "@/hooks/useTable";
 
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
+import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
 import { useCallback, useMemo } from "react";
-import { BsPlusLg } from "react-icons/bs";
+import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 
 export default function SubscriptionPage() {
   const permissions = useAuthStore((store) => store.permissions);
@@ -51,19 +49,30 @@ export default function SubscriptionPage() {
     onDelete: deleteSubscription,
   });
 
-  const table = useDataTable({
-    data: subscriptions,
-    searchPredicate: (subscription, keyword) =>
-      matchesSearchKeyword(
-        [
-          subscription.id,
-          subscription.packageName,
-          subscription.speed,
-          subscription.monthlyFee,
-        ],
-        keyword,
-      ),
-  });
+  const tableFields = useMemo(
+    () => [
+      {
+        key: "packageName",
+        getValue: (subscription: Subscription) => subscription.packageName,
+        searchable: true,
+        sortable: true,
+      },
+      {
+        key: "speed",
+        getValue: (subscription: Subscription) => subscription.speed,
+        searchable: true,
+        sortable: true,
+      },
+      {
+        key: "monthlyFee",
+        getValue: (subscription: Subscription) => subscription.monthlyFee,
+        searchable: true,
+        sortable: true,
+      },
+    ],
+    [],
+  );
+  const table = useTable({ data: subscriptions, fields: tableFields });
 
   const handleSubmit = useCallback(
     (values: SubscriptionFormValues) => {
@@ -80,50 +89,104 @@ export default function SubscriptionPage() {
     [createSubscription, selectedSubscription, updateSubscription],
   );
 
-  const rowActions = useMemo(
+  const tableRows = useMemo(
     () =>
-      createCrudRowActions({
-        disabled: isSubmitting,
-        canEdit: hasPermission(
-          permissions,
-          PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
-        ),
-        canDelete: hasPermission(
-          permissions,
-          PERMISSION_KEYS.SUBSCRIPTION.DELETE,
-        ),
-        getLabel: (subscription: Subscription) => subscription.packageName,
-        onEdit: openEditForm,
-        onDelete: confirmDelete,
-      }),
-    [confirmDelete, isSubmitting, openEditForm, permissions],
+      table.data.map((subscription) => [
+        <span className="fw-semibold">{subscription.packageName}</span>,
+        formatSpeed(subscription.speed),
+        <span className="font-monospace">
+          {formatCurrency(subscription.monthlyFee)}
+        </span>,
+        {
+          className: "text-end",
+          content: (
+            <div className="d-flex justify-content-end gap-2">
+              {hasPermission(
+                permissions,
+                PERMISSION_KEYS.SUBSCRIPTION.UPDATE,
+              ) && (
+                <button
+                  type="button"
+                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+                  aria-label={`Edit ${subscription.packageName}`}
+                  disabled={isSubmitting}
+                  onClick={() => openEditForm(subscription)}
+                >
+                  <BsPencilSquare />
+                </button>
+              )}
+              {hasPermission(
+                permissions,
+                PERMISSION_KEYS.SUBSCRIPTION.DELETE,
+              ) && (
+                <button
+                  type="button"
+                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+                  aria-label={`Hapus ${subscription.packageName}`}
+                  disabled={isSubmitting}
+                  onClick={() => confirmDelete(subscription)}
+                >
+                  <BsTrash />
+                </button>
+              )}
+            </div>
+          ),
+        },
+      ]),
+    [confirmDelete, isSubmitting, openEditForm, permissions, table.data],
   );
 
   return (
     <>
-      <DataTable<Subscription>
-        {...table}
-        columns={subscriptionTableColumns}
-        rowActions={rowActions}
-        keyExtractor={(subscription) =>
-          subscription.id ?? subscription.packageName
-        }
-        emptyMessage="There are no subscription packages yet. Add your first package."
-        isLoading={isLoading}
-        actions={
-          hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) && (
-            <button
-              type="button"
-              className="btn btn-primary"
-              disabled={isSubmitting}
-              onClick={openCreateForm}
-            >
-              <BsPlusLg className="me-2" />
-              Add Package
-            </button>
-          )
-        }
-      />
+      <div className="card">
+        <div className="card-body">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+            <div className="w-100" style={{ maxWidth: "320px" }}>
+              <TableSearch value={table.search} onChange={table.setSearch} />
+            </div>
+            {hasPermission(
+              permissions,
+              PERMISSION_KEYS.SUBSCRIPTION.CREATE,
+            ) && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={isSubmitting}
+                onClick={openCreateForm}
+              >
+                <BsPlusLg className="me-2" />
+                Add Package
+              </button>
+            )}
+          </div>
+
+          <Table
+            ths={[
+              { content: "Package", sortKey: "packageName" },
+              { content: "Speed", sortKey: "speed" },
+              { content: "Monthly fee", sortKey: "monthlyFee" },
+              { className: "text-end", content: "Actions" },
+            ]}
+            tds={tableRows}
+            isLoading={isLoading}
+            isWrapHeader
+            emptyMessage="There are no subscription packages yet. Add your first package."
+            sortConfig={table.sortConfig}
+            onSort={table.handleSort}
+          />
+
+          {!isLoading && (
+            <TablePagination
+              page={table.page}
+              totalPages={table.totalPages}
+              totalItems={table.totalItems}
+              pageSize={table.pageSize}
+              onPageChange={table.setPage}
+              onPageSizeChange={table.setPageSize}
+            />
+          )}
+        </div>
+      </div>
 
       <SubscriptionForm
         isSubmitting={isSubmitting}

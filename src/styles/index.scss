@@ -74,9 +74,9 @@ $theme-colors: map-merge($theme-colors, $custom-theme-colors);
   }
 }
 
-// .form-offcanvas {
-//   --bs-offcanvas-width: min(20rem, 100vw);
-// }
+.form-offcanvas {
+  --bs-offcanvas-width: min(35rem, 100vw);
+}
 
 .overlay-toast-container {
   z-index: var(--z-index-overlay-toast);

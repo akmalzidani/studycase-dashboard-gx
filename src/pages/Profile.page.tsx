@@ -18,13 +18,8 @@ import { userService } from "@/services/user.service";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { toast } from "@/components/Overlay";
 import { getRoles } from "@/services/role.service";
-import { useCallback, useState } from "react";
-import {
-  BsEnvelope,
-  BsKey,
-  BsPencilSquare,
-  BsPersonCircle,
-} from "react-icons/bs";
+import { Fragment, useCallback, useState } from "react";
+import { BsKey, BsPencilSquare, BsPersonCircle } from "react-icons/bs";
 
 export default function ProfilePage() {
   const user = useAuthStore((store) => store.user);
@@ -36,6 +31,11 @@ export default function ProfilePage() {
   );
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "-";
+  const profileDetails = [
+    { label: "Name", value: user?.name ?? "-" },
+    { label: "Email", value: user?.email ?? "-" },
+    { label: "Role", value: roleName },
+  ];
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -109,7 +109,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   className="btn btn-outline-secondary"
-                  data-bs-toggle="offcanvas"
+                  data-bs-toggle="modal"
                   data-bs-target={`#${OVERLAY_TARGETS.CHANGE_PASSWORD}`}
                 >
                   <BsKey className="me-2" />
@@ -118,7 +118,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  data-bs-toggle="offcanvas"
+                  data-bs-toggle="modal"
                   data-bs-target={`#${OVERLAY_TARGETS.PROFILE_FORM}`}
                 >
                   <BsPencilSquare className="me-2" />
@@ -136,14 +136,14 @@ export default function ProfilePage() {
               <Badge variant="primary">{roleName}</Badge>
             </div>
           </div>
-          <dl className="row mb-0">
-            <dt className="col-sm-3 text-muted fw-normal">Email</dt>
-            <dd className="col-sm-9 d-flex align-items-center gap-2">
-              <BsEnvelope className="text-muted" />
-              {user.email}
-            </dd>
-            <dt className="col-sm-3 text-muted fw-normal">Role</dt>
-            <dd className="col-sm-9">{roleName}</dd>
+          <dl className="row gy-3 mb-0">
+            {profileDetails.map(({ label, value }) => (
+              <Fragment key={label}>
+                <dt className="col-4 col-md-1 text-muted fw-normal">{label}</dt>
+                <dd className="col-auto mb-0 px-0 text-muted">:</dd>
+                <dd className="col mb-0 ps-2 fw-medium text-break">{value}</dd>
+              </Fragment>
+            ))}
           </dl>
         </div>
       </section>

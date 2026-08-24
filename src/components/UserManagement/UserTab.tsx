@@ -1,26 +1,26 @@
-import {
-  createCrudRowActions,
-  DataTable,
-  matchesSearchKeyword,
-} from "@/components/common/DataTable";
-import { userTableColumns } from "@/components/TableColumns";
+import { Badge } from "@/components/common/Badge";
+import { TableFilter } from "@/components/common/TableFilter";
+import { TablePagination } from "@/components/common/TablePagination";
+import { TableSearch } from "@/components/common/TableSearch";
+import { Table } from "@/components/common/Table";
 import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
 import { hasPermission } from "@/config/permission.helpers";
 import { PERMISSION_KEYS } from "@/config/permission.config";
 import { useCrudFormActions } from "@/hooks/useCrudFormActions";
-import { useDataTable } from "@/hooks/useDataTable";
 import { useRoles } from "@/hooks/useRoles";
+import { useTable } from "@/hooks/useTable";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useCallback, useMemo } from "react";
-import { BsPlusLg } from "react-icons/bs";
+import { useCallback, useMemo, useState } from "react";
+import { BsEnvelope, BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { UserForm } from "../Forms/UserForm";
 import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
   const permissions = useAuthStore((store) => store.permissions);
+  const [filters, setFilters] = useState({ role: "", status: "" });
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
@@ -48,13 +48,45 @@ export function UserTab() {
       })),
     [roles, users],
   );
-  const table = useDataTable({
-    data: usersWithRoleNames,
-    searchPredicate: (user, keyword) =>
-      matchesSearchKeyword(
-        [user.name, user.email, user.roleName, user.status],
-        keyword,
+  const tableFields = useMemo(
+    () => [
+      {
+        key: "userInformation",
+        getValue: (user: ManagedUser) => `${user.name} ${user.email}`,
+        searchable: true,
+        sortable: true,
+      },
+      {
+        key: "role",
+        getValue: (user: ManagedUser) => user.roleName,
+        searchable: true,
+      },
+      {
+        key: "status",
+        getValue: (user: ManagedUser) => user.status,
+        searchable: true,
+      },
+    ],
+    [],
+  );
+  const tableFilters = useMemo(
+    () => [
+      (user: ManagedUser) => !filters.role || user.roleId === filters.role,
+      (user: ManagedUser) => !filters.status || user.status === filters.status,
+    ],
+    [filters],
+  );
+  const roleOptions = useMemo(
+    () =>
+      roles.flatMap((role) =>
+        role.id ? [{ value: role.id, label: role.name }] : [],
       ),
+    [roles],
+  );
+  const table = useTable({
+    data: usersWithRoleNames,
+    fields: tableFields,
+    filters: tableFilters,
   });
 
   const handleUserSubmit = useCallback(
@@ -72,42 +104,129 @@ export function UserTab() {
     [createUser, selectedUser, updateUser],
   );
 
-  const rowActions = useMemo(
+  const tableRows = useMemo(
     () =>
-      createCrudRowActions({
-        disabled: isSubmitting,
-        canEdit: hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE),
-        canDelete: hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE),
-        getLabel: (user: ManagedUser) => user.name,
-        onEdit: openEditForm,
-        onDelete: confirmDelete,
-      }),
-    [confirmDelete, isSubmitting, openEditForm, permissions],
+      table.data.map((user) => [
+        <div className="d-grid gap-1">
+          <span className="fw-semibold">{user.name}</span>
+          <a
+            className="d-flex align-items-center gap-2 small text-decoration-none"
+            href={`mailto:${user.email}`}
+          >
+            <BsEnvelope aria-hidden="true" />
+            {user.email}
+          </a>
+        </div>,
+        user.roleName,
+        <Badge variant={user.status === "Active" ? "success" : "danger"}>
+          {user.status}
+        </Badge>,
+        {
+          className: "text-end",
+          content: (
+            <div className="d-flex justify-content-end gap-2">
+              {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) && (
+                <button
+                  type="button"
+                  className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+                  aria-label={`Edit ${user.name}`}
+                  disabled={isSubmitting}
+                  onClick={() => openEditForm(user)}
+                >
+                  <BsPencilSquare />
+                </button>
+              )}
+              {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) && (
+                <button
+                  type="button"
+                  className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+                  aria-label={`Delete ${user.name}`}
+                  disabled={isSubmitting}
+                  onClick={() => confirmDelete(user)}
+                >
+                  <BsTrash />
+                </button>
+              )}
+            </div>
+          ),
+        },
+      ]),
+    [confirmDelete, isSubmitting, openEditForm, permissions, table.data],
   );
 
   return (
     <>
-      <DataTable
-        {...table}
-        columns={userTableColumns}
-        rowActions={rowActions}
-        keyExtractor={(user) => user.id ?? user.email}
-        isLoading={isLoading}
-        emptyMessage="No users yet. Add a user to start managing access."
-        actions={
-          hasPermission(permissions, PERMISSION_KEYS.USERS.CREATE) && (
-            <button
-              className="btn btn-primary"
-              type="button"
-              disabled={isSubmitting || isLoading || isLoadingRoles}
-              onClick={openCreateForm}
-            >
-              <BsPlusLg className="me-2" />
-              Add User
-            </button>
-          )
-        }
-      />
+      <div className="card">
+        <div className="card-body">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+            <div className="d-flex flex-column flex-md-row gap-2">
+              <div style={{ maxWidth: "320px" }}>
+                <TableSearch value={table.search} onChange={table.setSearch} />
+              </div>
+              <TableFilter
+                fields={[
+                  {
+                    key: "role",
+                    label: "Role",
+                    options: roleOptions,
+                    disabled: isLoadingRoles,
+                  },
+                  {
+                    key: "status",
+                    label: "Status",
+                    options: [
+                      { value: "Active", label: "Active" },
+                      { value: "Inactive", label: "Inactive" },
+                    ],
+                  },
+                ]}
+                values={filters}
+                onChange={(key, value) =>
+                  setFilters((current) => ({ ...current, [key]: value }))
+                }
+                onReset={() => setFilters({ role: "", status: "" })}
+              />
+            </div>
+            {hasPermission(permissions, PERMISSION_KEYS.USERS.CREATE) && (
+              <button
+                className="btn btn-primary"
+                type="button"
+                disabled={isSubmitting || isLoading || isLoadingRoles}
+                onClick={openCreateForm}
+              >
+                <BsPlusLg className="me-2" />
+                Add User
+              </button>
+            )}
+          </div>
+
+          <Table
+            ths={[
+              { content: "User Information", sortKey: "userInformation" },
+              "Role",
+              "Status",
+              { className: "text-end", content: "Actions" },
+            ]}
+            tds={tableRows}
+            isLoading={isLoading}
+            isWrapHeader
+            emptyMessage="No users yet. Add a user to start managing access."
+            sortConfig={table.sortConfig}
+            onSort={table.handleSort}
+          />
+
+          {!isLoading && (
+            <TablePagination
+              page={table.page}
+              totalPages={table.totalPages}
+              totalItems={table.totalItems}
+              pageSize={table.pageSize}
+              onPageChange={table.setPage}
+              onPageSizeChange={table.setPageSize}
+            />
+          )}
+        </div>
+      </div>
       <UserForm
         item={selectedUser}
         roles={roles}
