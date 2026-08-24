@@ -12,7 +12,7 @@ export function ProspectFunnelChart({
   pendingProspectCount,
   completedProspectCount,
 }: ProspectFunnelChartProps) {
-  const isDark = useThemeStore((store) => store.theme === "dark");
+  const isDark = useThemeStore((store) => store.isDarkMode);
   const data: ChartData<"doughnut"> = {
     labels: ["Pending follow-up", "Completed"],
     datasets: [

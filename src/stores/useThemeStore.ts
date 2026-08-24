@@ -4,6 +4,7 @@ type Theme = "light" | "dark";
 
 interface ThemeState {
   theme: Theme;
+  isDarkMode: boolean;
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 }
@@ -24,19 +25,24 @@ function getInitialTheme(): Theme {
   return "light";
 }
 
-export const useThemeStore = create<ThemeState>((set) => ({
-  theme: getInitialTheme(),
-  toggleTheme: () =>
-    set((state) => {
-      const nextTheme = state.theme === "light" ? "dark" : "light";
-      applyThemeToDocument(nextTheme);
-      return { theme: nextTheme };
-    }),
-  setTheme: (theme) => {
-    applyThemeToDocument(theme);
-    set({ theme });
-  },
-}));
+export const useThemeStore = create<ThemeState>((set) => {
+  const theme = getInitialTheme();
+
+  return {
+    theme,
+    isDarkMode: theme === "dark",
+    toggleTheme: () =>
+      set((state) => {
+        const nextTheme = state.theme === "light" ? "dark" : "light";
+        applyThemeToDocument(nextTheme);
+        return { theme: nextTheme, isDarkMode: nextTheme === "dark" };
+      }),
+    setTheme: (theme) => {
+      applyThemeToDocument(theme);
+      set({ theme, isDarkMode: theme === "dark" });
+    },
+  };
+});
 
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
@@ -44,7 +50,10 @@ if (typeof window !== "undefined") {
       const newTheme = e.newValue as Theme;
       if (newTheme === "light" || newTheme === "dark") {
         document.documentElement.dataset.bsTheme = newTheme;
-        useThemeStore.setState({ theme: newTheme });
+        useThemeStore.setState({
+          theme: newTheme,
+          isDarkMode: newTheme === "dark",
+        });
       }
     }
   });

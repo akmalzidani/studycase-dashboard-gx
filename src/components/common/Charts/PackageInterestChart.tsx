@@ -11,7 +11,7 @@ interface PackageInterestChartProps {
 export function PackageInterestChart({
   packageSummaries,
 }: PackageInterestChartProps) {
-  const isDark = useThemeStore((store) => store.theme === "dark");
+  const isDark = useThemeStore((store) => store.isDarkMode);
   const data: ChartData<"bar"> = {
     labels: packageSummaries.map((item) => item.name),
     datasets: [

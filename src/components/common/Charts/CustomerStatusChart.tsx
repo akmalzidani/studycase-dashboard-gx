@@ -12,7 +12,7 @@ export function CustomerStatusChart({
   activeCustomerCount,
   blockedCustomerCount,
 }: CustomerStatusChartProps) {
-  const isDark = useThemeStore((store) => store.theme === "dark");
+  const isDark = useThemeStore((store) => store.isDarkMode);
   const data: ChartData<"doughnut"> = {
     labels: ["Active", "Blocked"],
     datasets: [

@@ -7,7 +7,7 @@ import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function ConfirmationDialog() {
   const { options, hide } = useConfirmStore();
-  const { theme } = useThemeStore();
+  const { isDarkMode } = useThemeStore();
   const modalRef = useRef<BootstrapModal | null>(null);
   const [displayedOptions, setDisplayedOptions] =
     useState<ConfirmOptions | null>(null);
@@ -55,7 +55,7 @@ export default function ConfirmationDialog() {
   const confirmText = displayedOptions?.confirmText ?? "Yes";
   const cancelText = displayedOptions?.cancelText ?? "Cancel";
   const variant = displayedOptions?.variant ?? "primary";
-  const textMessageColor = theme === "dark" ? "light" : "dark";
+  const textMessageColor = isDarkMode ? "light" : "dark";
 
   const handleDismiss = () => {
     modalRef.current?.hide();
