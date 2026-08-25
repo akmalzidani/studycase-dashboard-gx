@@ -19,9 +19,12 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
 import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
 
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef } from "react";
 import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 
 export default function SubscriptionPage() {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.permissions);
   const {
     subscriptions,
@@ -80,6 +83,17 @@ export default function SubscriptionPage() {
       : createSubscription(payload);
   };
 
+  useEffect(() => {
+    const tooltips = Array.from(
+      tableContainerRef.current?.querySelectorAll<HTMLElement>(
+        '[data-bs-toggle="tooltip"]',
+      ) ?? [],
+      (element) => Tooltip.getOrCreateInstance(element),
+    );
+
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
   const tableRows = table.data.map((subscription) => [
     <span className="fw-semibold">{subscription.packageName}</span>,
     formatSpeed(subscription.speed),
@@ -95,6 +109,8 @@ export default function SubscriptionPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
               aria-label={`Edit ${subscription.packageName}`}
+              data-bs-title={`Edit ${subscription.packageName}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => openEditForm(subscription)}
             >
@@ -106,6 +122,8 @@ export default function SubscriptionPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
               aria-label={`Hapus ${subscription.packageName}`}
+              data-bs-title={`Hapus ${subscription.packageName}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => confirmDelete(subscription)}
             >
@@ -141,7 +159,8 @@ export default function SubscriptionPage() {
             ) : null}
           </div>
 
-          <Table
+          <div ref={tableContainerRef}>
+            <Table
             ths={[
               { content: "Package", sortKey: "packageName" },
               { content: "Speed", sortKey: "speed" },
@@ -154,7 +173,8 @@ export default function SubscriptionPage() {
             emptyMessage="There are no subscription packages yet. Add your first package."
             sortConfig={table.sortConfig}
             actions={{ handleSort: table.actions.handleSort }}
-          />
+            />
+          </div>
 
           {!isLoading ? (
             <TablePagination

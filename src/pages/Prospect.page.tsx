@@ -23,7 +23,8 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Prospect } from "@/types";
 import { formatSpeed, getWhatsAppUrl } from "@/helpers/formatters.helpers";
-import { useState } from "react";
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef, useState } from "react";
 import {
   BsEnvelope,
   BsEye,
@@ -34,6 +35,7 @@ import {
 } from "react-icons/bs";
 
 export default function ProspectPage() {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.permissions);
   const [filters, setFilters] = useState({ subscription: "", status: "" });
   const [selectedDetail, setSelectedDetail] = useState<Prospect | null>(null);
@@ -127,6 +129,17 @@ export default function ProspectPage() {
       : createProspect(payload);
   };
 
+  useEffect(() => {
+    const tooltips = Array.from(
+      tableContainerRef.current?.querySelectorAll<HTMLElement>(
+        '[data-bs-toggle="tooltip"]',
+      ) ?? [],
+      (element) => Tooltip.getOrCreateInstance(element),
+    );
+
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
   const tableRows = table.data.map((prospect) => [
     prospect.id ?? "-",
     <div className="d-grid gap-1">
@@ -165,6 +178,8 @@ export default function ProspectPage() {
             type="button"
             className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
             aria-label={`View ${prospect.name} details`}
+            data-bs-title={`View ${prospect.name} details`}
+            data-bs-toggle="tooltip"
             onClick={() => openDetail(prospect)}
           >
             <BsEye />
@@ -174,6 +189,8 @@ export default function ProspectPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
               aria-label={`Edit ${prospect.name}`}
+              data-bs-title={`Edit ${prospect.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => openEditForm(prospect)}
             >
@@ -185,6 +202,8 @@ export default function ProspectPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
               aria-label={`Hapus ${prospect.name}`}
+              data-bs-title={`Hapus ${prospect.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => confirmDelete(prospect)}
             >
@@ -251,7 +270,8 @@ export default function ProspectPage() {
             ) : null}
           </div>
 
-          <Table
+          <div ref={tableContainerRef}>
+            <Table
             ths={[
               { content: "ID", sortKey: "id" },
               { content: "User Information", sortKey: "userInformation" },
@@ -265,7 +285,8 @@ export default function ProspectPage() {
             actions={{ handleSort: table.actions.handleSort }}
             isWrapHeader
             emptyMessage="There are no prospects yet. Add your first prospect."
-          ></Table>
+            ></Table>
+          </div>
 
           {!isLoading ? (
             <TablePagination

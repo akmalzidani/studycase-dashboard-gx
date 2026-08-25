@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef, type ReactNode } from "react";
 import { BsEye, BsPencilSquare, BsTrash } from "react-icons/bs";
 import type { DefaultRowAction, RowActionsConfig } from "./types";
 
@@ -18,6 +19,18 @@ interface DefaultActionDefinition<T> {
 const ACTION_BUTTON_CLASS_NAME = "btn btn-sm border-0 bg-transparent p-0";
 
 export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
+  const actionsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const actionButtons = actionsRef.current?.querySelectorAll<HTMLButtonElement>(
+      '[data-bs-toggle="tooltip"]',
+    );
+    if (!actionButtons) return;
+
+    const tooltips = Array.from(actionButtons, (button) => new Tooltip(button));
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
   const defaultActions: DefaultActionDefinition<T>[] = [
     {
       id: "detail",
@@ -47,21 +60,25 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
       : actions.children;
 
   return (
-    <div className="d-flex justify-content-end gap-2">
-      {defaultActions.map(({ id, label, icon, colorClassName, config }) =>
-        config ? (
+    <div ref={actionsRef} className="d-flex justify-content-end gap-2">
+      {defaultActions.map(({ id, label, icon, colorClassName, config }) => {
+        const ariaLabel = config?.ariaLabel?.(item) ?? label;
+
+        return config ? (
           <button
             key={id}
             type="button"
             className={`${ACTION_BUTTON_CLASS_NAME} ${colorClassName}`}
-            aria-label={config.ariaLabel?.(item) ?? label}
+            aria-label={ariaLabel}
+            data-bs-toggle="tooltip"
+            data-bs-title={ariaLabel}
             disabled={config.disabled}
             onClick={() => config.onClick(item)}
           >
             {icon}
           </button>
-        ) : null,
-      )}
+        ) : null;
+      })}
       {children}
     </div>
   );

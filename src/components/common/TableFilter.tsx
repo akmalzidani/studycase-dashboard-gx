@@ -1,4 +1,4 @@
-import { Dropdown as BootstrapDropdown } from "bootstrap";
+import { Dropdown as BootstrapDropdown, Tooltip } from "bootstrap";
 import { useEffect, useId, useRef } from "react";
 import { BsFunnel, BsXCircle } from "react-icons/bs";
 
@@ -31,6 +31,7 @@ export function TableFilter({
   ariaLabel = "Filter table",
 }: TableFilterProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const filterButtonRef = useRef<HTMLButtonElement>(null);
   const idPrefix = useId();
   const hasActiveFilters = Object.values(values).some(Boolean);
 
@@ -42,16 +43,26 @@ export function TableFilter({
     return () => dropdown.dispose();
   }, []);
 
+  useEffect(() => {
+    const filterButton = filterButtonRef.current;
+    if (!filterButton) return;
+
+    const tooltip = new Tooltip(filterButton);
+    return () => tooltip.dispose();
+  }, [ariaLabel]);
+
   return (
     <div ref={dropdownRef} className="dropdown">
       <button
+        ref={filterButtonRef}
         type="button"
         className={`btn btn-sm btn-outline-primary position-relative ${
           hasActiveFilters ? "active" : ""
         }`}
         aria-label={ariaLabel}
-        title={ariaLabel}
         data-bs-toggle="dropdown"
+        data-bs-title={ariaLabel}
+        data-bs-placement="bottom"
         data-bs-auto-close="outside"
       >
         <BsFunnel aria-hidden="true" />

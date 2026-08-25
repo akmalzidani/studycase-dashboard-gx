@@ -10,6 +10,8 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Permissions, Role } from "@/types";
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef } from "react";
 
 import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { RoleForm, type RoleFormValues } from "../Forms/RoleForm";
@@ -24,6 +26,7 @@ function countPermissions(permissions: Permissions): number {
 }
 
 export function RoleTab() {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.permissions);
   const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
     useRoles();
@@ -67,6 +70,17 @@ export function RoleTab() {
     return isSaved;
   };
 
+  useEffect(() => {
+    const tooltips = Array.from(
+      tableContainerRef.current?.querySelectorAll<HTMLElement>(
+        '[data-bs-toggle="tooltip"]',
+      ) ?? [],
+      (element) => Tooltip.getOrCreateInstance(element),
+    );
+
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
   const tableRows = table.data.map((role) => {
     const accessCount = countPermissions(role.permissions);
 
@@ -83,6 +97,8 @@ export function RoleTab() {
                 type="button"
                 className="btn btn-sm border-0 bg-transparent p-0 text-primary"
                 aria-label={`Edit ${role.name}`}
+                data-bs-title={`Edit ${role.name}`}
+                data-bs-toggle="tooltip"
                 disabled={isSubmitting}
                 onClick={() => roleActions.openEditForm(role)}
               >
@@ -94,6 +110,8 @@ export function RoleTab() {
                 type="button"
                 className="btn btn-sm border-0 bg-transparent p-0 text-danger"
                 aria-label={`Delete ${role.name}`}
+                data-bs-title={`Delete ${role.name}`}
+                data-bs-toggle="tooltip"
                 disabled={isSubmitting}
                 onClick={() => roleActions.confirmDelete(role)}
               >
@@ -128,7 +146,8 @@ export function RoleTab() {
         ) : null}
       </div>
 
-      <Table
+      <div ref={tableContainerRef}>
+        <Table
         ths={[
           { content: "Role name", sortKey: "name" },
           { content: "Description" },
@@ -141,7 +160,8 @@ export function RoleTab() {
         emptyMessage="No roles yet."
         sortConfig={table.sortConfig}
         actions={{ handleSort: table.actions.handleSort }}
-      />
+        />
+      </div>
 
       {!isLoading ? (
         <TablePagination

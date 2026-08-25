@@ -19,7 +19,8 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Customer } from "@/types";
-import { useState } from "react";
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef, useState } from "react";
 import {
   BsEnvelope,
   BsEye,
@@ -30,6 +31,7 @@ import {
 } from "react-icons/bs";
 
 export default function CustomersPage() {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.permissions);
   const [filters, setFilters] = useState({ subscription: "", status: "" });
   const [selectedDetail, setSelectedDetail] = useState<Customer | null>(null);
@@ -124,7 +126,18 @@ export default function CustomersPage() {
       : createCustomer(payload);
   };
 
-  const tableRows = table.data.map((customer: Customer) => [
+  useEffect(() => {
+    const tooltips = Array.from(
+      tableContainerRef.current?.querySelectorAll<HTMLElement>(
+        '[data-bs-toggle="tooltip"]',
+      ) ?? [],
+      (element) => Tooltip.getOrCreateInstance(element),
+    );
+
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
+  const tableRows = table.data.map((customer) => [
     customer.id ?? "-",
     <div className="d-grid gap-1">
       <span className="fw-semibold">{customer.name}</span>
@@ -162,6 +175,8 @@ export default function CustomersPage() {
             type="button"
             className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
             aria-label={`View ${customer.name} details`}
+            data-bs-title={`View ${customer.name} details`}
+            data-bs-toggle="tooltip"
             onClick={() => openDetail(customer)}
           >
             <BsEye />
@@ -171,6 +186,8 @@ export default function CustomersPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
               aria-label={`Edit ${customer.name}`}
+              data-bs-title={`Edit ${customer.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => openEditForm(customer)}
             >
@@ -182,6 +199,8 @@ export default function CustomersPage() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
               aria-label={`Delete ${customer.name}`}
+              data-bs-title={`Delete ${customer.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => confirmDelete(customer)}
             >
@@ -248,7 +267,8 @@ export default function CustomersPage() {
             ) : null}
           </div>
 
-          <Table
+          <div ref={tableContainerRef}>
+            <Table
             ths={[
               { content: "ID", sortKey: "id" },
               { content: "User Information", sortKey: "userInformation" },
@@ -262,7 +282,8 @@ export default function CustomersPage() {
             emptyMessage="There are no customers yet. Add your first customer."
             sortConfig={table.sortConfig}
             actions={{ handleSort: table.actions.handleSort }}
-          />
+            />
+          </div>
 
           {!isLoading ? (
             <TablePagination

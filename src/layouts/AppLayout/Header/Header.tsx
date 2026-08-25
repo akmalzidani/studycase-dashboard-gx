@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+import { Tooltip } from "bootstrap";
 import { useSidebarStore } from "@/stores/useSidebarStore";
 import { useThemeStore } from "@/stores/useThemeStore";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -9,6 +11,28 @@ function Header() {
   const { isDarkMode, toggleTheme } = useThemeStore();
   const pageTitle = usePageTitle();
   const nextTheme = isDarkMode ? "light" : "dark";
+  const sidebarToggleRef = useRef<HTMLButtonElement>(null);
+  const themeToggleRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const sidebarToggle = sidebarToggleRef.current;
+
+    if (!sidebarToggle) return;
+
+    const tooltip = new Tooltip(sidebarToggle);
+
+    return () => tooltip.dispose();
+  }, []);
+
+  useEffect(() => {
+    const themeToggle = themeToggleRef.current;
+
+    if (!themeToggle) return;
+
+    const tooltip = new Tooltip(themeToggle);
+
+    return () => tooltip.dispose();
+  }, [nextTheme]);
 
   return (
     <header className="sticky-top z-1 px-4 py-3 bg-body border-bottom d-flex align-items-center justify-content-between">
@@ -16,8 +40,12 @@ function Header() {
         <button
           type="button"
           className={`btn hover-bg-light border-0 p-1 px-2 ${isDarkMode ? "text-white" : "text-dark"}`}
+          ref={sidebarToggleRef}
           onClick={toggleSidebar}
           aria-label="Toggle sidebar"
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
+          title="Toggle sidebar"
         >
           <BsList className="fs-4" />
         </button>
@@ -27,9 +55,12 @@ function Header() {
         <button
           type="button"
           className="btn hover-bg-light border-0 p-1 px-2"
+          ref={themeToggleRef}
           onClick={toggleTheme}
           aria-label={`Switch to ${nextTheme} mode`}
           aria-pressed={isDarkMode}
+          data-bs-toggle="tooltip"
+          data-bs-placement="bottom"
           title={`Switch to ${nextTheme} mode`}
         >
           {isDarkMode ? (

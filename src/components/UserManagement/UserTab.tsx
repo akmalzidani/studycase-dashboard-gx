@@ -13,12 +13,14 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { useState } from "react";
+import { Tooltip } from "bootstrap";
+import { useEffect, useRef, useState } from "react";
 import { BsEnvelope, BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 import { UserForm } from "../Forms/UserForm";
 import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.permissions);
   const [filters, setFilters] = useState({ role: "", status: "" });
   const { roles, isLoading: isLoadingRoles } = useRoles();
@@ -84,6 +86,17 @@ export function UserTab() {
       : createUser(payload);
   };
 
+  useEffect(() => {
+    const tooltips = Array.from(
+      tableContainerRef.current?.querySelectorAll<HTMLElement>(
+        '[data-bs-toggle="tooltip"]',
+      ) ?? [],
+      (element) => Tooltip.getOrCreateInstance(element),
+    );
+
+    return () => tooltips.forEach((tooltip) => tooltip.dispose());
+  });
+
   const tableRows = table.data.map((user) => [
     <div className="d-grid gap-1">
       <span className="fw-semibold">{user.name}</span>
@@ -105,6 +118,8 @@ export function UserTab() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-primary"
               aria-label={`Edit ${user.name}`}
+              data-bs-title={`Edit ${user.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => openEditForm(user)}
             >
@@ -116,6 +131,8 @@ export function UserTab() {
               type="button"
               className="btn btn-sm border-0 bg-transparent p-0 text-danger"
               aria-label={`Delete ${user.name}`}
+              data-bs-title={`Delete ${user.name}`}
+              data-bs-toggle="tooltip"
               disabled={isSubmitting}
               onClick={() => confirmDelete(user)}
             >
@@ -177,7 +194,8 @@ export function UserTab() {
             ) : null}
           </div>
 
-          <Table
+          <div ref={tableContainerRef}>
+            <Table
             ths={[
               { content: "User Information", sortKey: "userInformation" },
               "Role",
@@ -190,7 +208,8 @@ export function UserTab() {
             emptyMessage="No users yet. Add a user to start managing access."
             sortConfig={table.sortConfig}
             actions={{ handleSort: table.actions.handleSort }}
-          />
+            />
+          </div>
 
           {!isLoading ? (
             <TablePagination
