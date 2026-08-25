@@ -85,7 +85,7 @@ export function RoleForm({
     });
   }, [role]);
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
@@ -120,7 +120,7 @@ export function RoleForm({
         </>
       }
     >
-      <form id={FORM_IDS.ROLE} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.ROLE} onSubmit={_handleSubmit} className="row">
         <div className="col-12 col-md-4">
           <FormTextInput
             id="role-name"

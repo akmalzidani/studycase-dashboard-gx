@@ -90,7 +90,7 @@ export default function ProspectPage() {
     filters: tableFilters,
   });
 
-  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
+  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
   const openDetail = (prospect: Prospect) => {
     setSelectedDetail(prospect);
     showOffcanvas(OVERLAY_TARGETS.PROSPECT_DETAIL);
@@ -104,11 +104,11 @@ export default function ProspectPage() {
     deleteTitle: "Delete prospect",
     deleteMessage: (prospect) =>
       `Are you sure you want to delete ${prospect.name}?`,
-    onOpenForm: handleFormOpen,
+    onOpenForm: _handleFormOpen,
     onDelete: deleteProspect,
   });
 
-  const handleSubmit = async (values: ProspectFormValues) => {
+  const _handleSubmit = async (values: ProspectFormValues) => {
     const subscription = subscriptions.find(
       (item) => item.id === values.subscriptionId,
     );
@@ -281,7 +281,7 @@ export default function ProspectPage() {
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedProspect}
         subscriptions={subscriptions}
-        onSubmit={handleSubmit}
+        onSubmit={_handleSubmit}
       />
     </>
   );

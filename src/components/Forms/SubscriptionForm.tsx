@@ -50,12 +50,12 @@ export function SubscriptionForm({
     );
   }, [subscription]);
 
-  const handleValueChange = <K extends keyof SubscriptionFormValues>(
+  const _handleValueChange = <K extends keyof SubscriptionFormValues>(
     field: K,
     value: SubscriptionFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
@@ -92,7 +92,7 @@ export function SubscriptionForm({
         </>
       }
     >
-      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.SUBSCRIPTION} onSubmit={_handleSubmit} className="row">
         <div className="col-12">
           <FormTextInput
             id="subscription-package-name"
@@ -104,7 +104,7 @@ export function SubscriptionForm({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange("packageName", event.target.value)
+              _handleValueChange("packageName", event.target.value)
             }
           />
         </div>
@@ -127,7 +127,7 @@ export function SubscriptionForm({
               disabled={isSubmitting}
               onChange={(event) => {
                 const digits = event.target.value.replace(/\D/g, "");
-                handleValueChange("monthlyFee", digits ? Number(digits) : 0);
+                _handleValueChange("monthlyFee", digits ? Number(digits) : 0);
               }}
             />
           </div>
@@ -147,7 +147,7 @@ export function SubscriptionForm({
               required
               disabled={isSubmitting}
               onChange={(event) =>
-                handleValueChange("speed", Number(event.target.value))
+                _handleValueChange("speed", Number(event.target.value))
               }
             />
             <span className="input-group-text">Mbps</span>

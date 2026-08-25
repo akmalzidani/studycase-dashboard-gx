@@ -53,12 +53,12 @@ export function UserForm({
     });
   }, [roles, user]);
 
-  const handleValueChange = <K extends keyof UserFormValues>(
+  const _handleValueChange = <K extends keyof UserFormValues>(
     field: K,
     value: UserFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.USER_FORM);
@@ -91,7 +91,7 @@ export function UserForm({
         </>
       }
     >
-      <form id={FORM_IDS.USER} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.USER} onSubmit={_handleSubmit} className="row">
         <div className="col-12 col-md-6">
           <FormTextInput
             id="user-name"
@@ -99,7 +99,7 @@ export function UserForm({
             className="form-control"
             value={values.name}
             placeholder="Enter full name"
-            onChange={(event) => handleValueChange("name", event.target.value)}
+            onChange={(event) => _handleValueChange("name", event.target.value)}
             required
             minLength={3}
             disabled={isSubmitting}
@@ -114,7 +114,7 @@ export function UserForm({
             placeholder="Enter email"
             startAdornment={<BsEnvelope />}
             value={values.email}
-            onChange={(event) => handleValueChange("email", event.target.value)}
+            onChange={(event) => _handleValueChange("email", event.target.value)}
             required
             disabled={isSubmitting}
           />
@@ -129,7 +129,7 @@ export function UserForm({
             startAdornment={<BsLock />}
             value={values.password}
             onChange={(event) =>
-              handleValueChange("password", event.target.value)
+              _handleValueChange("password", event.target.value)
             }
             required
             minLength={4}
@@ -145,7 +145,7 @@ export function UserForm({
             className="form-select"
             value={values.roleId}
             onChange={(event) =>
-              handleValueChange("roleId", event.target.value)
+              _handleValueChange("roleId", event.target.value)
             }
             required
             disabled={isSubmitting}
@@ -173,7 +173,7 @@ export function UserForm({
                   value={status}
                   checked={values.status === status}
                   disabled={isSubmitting}
-                  onChange={() => handleValueChange("status", status)}
+                  onChange={() => _handleValueChange("status", status)}
                 />
                 <label
                   className="form-check-label"

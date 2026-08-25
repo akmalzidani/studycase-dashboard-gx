@@ -87,7 +87,7 @@ export default function CustomersPage() {
     filters: tableFilters,
   });
 
-  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
+  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
   const openDetail = (customer: Customer) => {
     setSelectedDetail(customer);
     showOffcanvas(OVERLAY_TARGETS.CUSTOMER_DETAIL);
@@ -101,11 +101,11 @@ export default function CustomersPage() {
     deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
       `Are you sure you want to delete ${customer.name}?`,
-    onOpenForm: handleFormOpen,
+    onOpenForm: _handleFormOpen,
     onDelete: deleteCustomer,
   });
 
-  const handleSubmit = async (values: CustomerFormValues) => {
+  const _handleSubmit = async (values: CustomerFormValues) => {
     const subscription = subscriptions.find(
       (item) => item.id === values.subscriptionId,
     );
@@ -278,7 +278,7 @@ export default function CustomersPage() {
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedCustomer}
         subscriptions={subscriptions}
-        onSubmit={handleSubmit}
+        onSubmit={_handleSubmit}
       />
     </>
   );

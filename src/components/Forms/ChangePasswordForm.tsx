@@ -35,7 +35,7 @@ export function ChangePasswordForm({
     return onModalShown(OVERLAY_TARGETS.CHANGE_PASSWORD, resetValues);
   }, []);
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideModal(OVERLAY_TARGETS.CHANGE_PASSWORD);
@@ -69,7 +69,7 @@ export function ChangePasswordForm({
     >
       <form
         id={FORM_IDS.CHANGE_PASSWORD}
-        onSubmit={handleSubmit}
+        onSubmit={_handleSubmit}
         className="row g-3"
       >
         {(

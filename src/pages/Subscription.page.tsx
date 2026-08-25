@@ -32,7 +32,7 @@ export default function SubscriptionPage() {
     deleteSubscription,
   } = useSubscriptions();
 
-  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
+  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
   const {
     selectedItem: selectedSubscription,
     openCreateForm,
@@ -42,7 +42,7 @@ export default function SubscriptionPage() {
     deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
       `Are you sure you want to delete the ${subscription.packageName} package?`,
-    onOpenForm: handleFormOpen,
+    onOpenForm: _handleFormOpen,
     onDelete: deleteSubscription,
   });
 
@@ -68,7 +68,7 @@ export default function SubscriptionPage() {
   ];
   const table = useTable({ data: subscriptions, fields: tableFields });
 
-  const handleSubmit = (values: SubscriptionFormValues) => {
+  const _handleSubmit = (values: SubscriptionFormValues) => {
     const payload = {
       packageName: values.packageName.trim(),
       speed: values.speed,
@@ -169,7 +169,7 @@ export default function SubscriptionPage() {
       <SubscriptionForm
         isSubmitting={isSubmitting}
         item={selectedSubscription}
-        onSubmit={handleSubmit}
+        onSubmit={_handleSubmit}
       />
     </>
   );

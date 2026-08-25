@@ -24,7 +24,7 @@ export function UserTab() {
   const { roles, isLoading: isLoadingRoles } = useRoles();
   const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
     useUsers();
-  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.USER_FORM);
+  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.USER_FORM);
   const {
     selectedItem: selectedUser,
     openCreateForm,
@@ -33,7 +33,7 @@ export function UserTab() {
   } = useCrudFormActions<ManagedUser>({
     deleteTitle: "Delete user",
     deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
-    onOpenForm: handleFormOpen,
+    onOpenForm: _handleFormOpen,
     onDelete: deleteUser,
   });
 
@@ -72,7 +72,7 @@ export function UserTab() {
     filters: tableFilters,
   });
 
-  const handleUserSubmit = (values: UserFormValues) => {
+  const _handleUserSubmit = (values: UserFormValues) => {
     const payload = {
       ...values,
       name: values.name.trim(),
@@ -204,7 +204,7 @@ export function UserTab() {
         item={selectedUser}
         roles={roles}
         isSubmitting={isSubmitting}
-        onSubmit={handleUserSubmit}
+        onSubmit={_handleUserSubmit}
       />
     </>
   );

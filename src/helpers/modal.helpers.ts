@@ -34,8 +34,8 @@ export const onModalShown = (
     return () => {};
   }
 
-  const handleShown = (event: Event) => listener(event as ModalShownEvent);
-  modalElement.addEventListener("shown.bs.modal", handleShown);
+  const _handleShown = (event: Event) => listener(event as ModalShownEvent);
+  modalElement.addEventListener("shown.bs.modal", _handleShown);
 
-  return () => modalElement.removeEventListener("shown.bs.modal", handleShown);
+  return () => modalElement.removeEventListener("shown.bs.modal", _handleShown);
 };

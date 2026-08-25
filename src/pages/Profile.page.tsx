@@ -39,7 +39,7 @@ export default function ProfilePage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (values: ProfileFormValues) => {
+  const _handleSubmit = async (values: ProfileFormValues) => {
     if (!user?.id) return false;
 
     setIsSubmitting(true);
@@ -62,7 +62,7 @@ export default function ProfilePage() {
     }
   };
 
-  const handleChangePassword = async (values: ChangePasswordFormValues) => {
+  const _handleChangePassword = async (values: ChangePasswordFormValues) => {
     if (!user?.id) return false;
 
     if (values.newPassword !== values.confirmNewPassword) {
@@ -145,13 +145,13 @@ export default function ProfilePage() {
       <ProfileForm
         isSubmitting={isSubmitting}
         item={user}
-        onSubmit={handleSubmit}
+        onSubmit={_handleSubmit}
       />
 
       <ChangePasswordForm
         isSubmitting={isSubmitting}
         item={user}
-        onSubmit={handleChangePassword}
+        onSubmit={_handleChangePassword}
       />
     </>
   );

@@ -45,16 +45,16 @@ export function RoleTab() {
     },
   ];
   const table = useTable({ data: roles, fields: tableFields });
-  const handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
+  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
   const roleActions = useCrudFormActions<Role>({
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
       `Are you sure you want to delete the ${role.name} role?`,
-    onOpenForm: handleFormOpen,
+    onOpenForm: _handleFormOpen,
     onDelete: deleteRole,
   });
 
-  const handleRoleSubmit = async (values: RoleFormValues) => {
+  const _handleRoleSubmit = async (values: RoleFormValues) => {
     const payload = {
       name: values.name.trim(),
       description: values.description.trim(),
@@ -154,7 +154,7 @@ export function RoleTab() {
       <RoleForm
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}
-        onSubmit={handleRoleSubmit}
+        onSubmit={_handleRoleSubmit}
       />
     </>
   );

@@ -64,12 +64,12 @@ export function CustomerForm({
     return onOffcanvasShown(OVERLAY_TARGETS.CUSTOMER_FORM, initializeValues);
   }, [customer, subscriptions]);
 
-  const handleValueChange = <K extends keyof CustomerFormValues>(
+  const _handleValueChange = <K extends keyof CustomerFormValues>(
     field: K,
     value: CustomerFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
@@ -104,7 +104,7 @@ export function CustomerForm({
         </>
       }
     >
-      <form id={FORM_IDS.CUSTOMER} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.CUSTOMER} onSubmit={_handleSubmit} className="row">
         <div className="col-12">
           <FormTextInput
             id="customer-name"
@@ -115,7 +115,7 @@ export function CustomerForm({
             minLength={3}
             required
             disabled={isSubmitting}
-            onChange={(event) => handleValueChange("name", event.target.value)}
+            onChange={(event) => _handleValueChange("name", event.target.value)}
           />
         </div>
         <div className="col-12 col-md-6">
@@ -129,7 +129,7 @@ export function CustomerForm({
             value={values.email}
             required
             disabled={isSubmitting}
-            onChange={(event) => handleValueChange("email", event.target.value)}
+            onChange={(event) => _handleValueChange("email", event.target.value)}
           />
         </div>
         <div className="col-12 col-md-6">
@@ -150,7 +150,7 @@ export function CustomerForm({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange(
+              _handleValueChange(
                 "phoneNumber",
                 event.target.value.replace(/\D/g, ""),
               )
@@ -168,7 +168,7 @@ export function CustomerForm({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange("subscriptionId", event.target.value)
+              _handleValueChange("subscriptionId", event.target.value)
             }
           >
             {subscriptions.map((subscription) => (
@@ -191,7 +191,7 @@ export function CustomerForm({
                   value={status}
                   checked={values.status === status}
                   disabled={isSubmitting}
-                  onChange={() => handleValueChange("status", status)}
+                  onChange={() => _handleValueChange("status", status)}
                 />
                 <label
                   className="form-check-label"

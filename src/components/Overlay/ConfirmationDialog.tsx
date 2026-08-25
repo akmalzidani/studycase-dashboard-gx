@@ -22,15 +22,15 @@ export default function ConfirmationDialog() {
     const modal = BootstrapModal.getOrCreateInstance(modalElement);
     modalRef.current = modal;
 
-    const handleHidden = () => {
+    const _handleHidden = () => {
       setDisplayedOptions(null);
       hide();
     };
 
-    modalElement.addEventListener("hidden.bs.modal", handleHidden);
+    modalElement.addEventListener("hidden.bs.modal", _handleHidden);
 
     return () => {
-      modalElement.removeEventListener("hidden.bs.modal", handleHidden);
+      modalElement.removeEventListener("hidden.bs.modal", _handleHidden);
       modal.dispose();
       modalRef.current = null;
     };
@@ -57,12 +57,12 @@ export default function ConfirmationDialog() {
   const variant = displayedOptions?.variant ?? "primary";
   const textMessageColor = isDarkMode ? "light" : "dark";
 
-  const handleDismiss = () => {
+  const _handleDismiss = () => {
     modalRef.current?.hide();
   };
 
-  const handleConfirm = () => {
-    handleDismiss();
+  const _handleConfirm = () => {
+    _handleDismiss();
     displayedOptions?.onConfirm();
   };
 
@@ -75,14 +75,14 @@ export default function ConfirmationDialog() {
           <button
             type="button"
             className="btn btn-light fw-medium"
-            onClick={handleDismiss}
+            onClick={_handleDismiss}
           >
             {cancelText}
           </button>
           <button
             type="button"
             className={`btn btn-${variant} fw-medium px-4`}
-            onClick={handleConfirm}
+            onClick={_handleConfirm}
           >
             {confirmText}
           </button>

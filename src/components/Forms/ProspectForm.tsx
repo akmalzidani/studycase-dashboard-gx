@@ -64,12 +64,12 @@ export function ProspectForm({
     return onOffcanvasShown(OVERLAY_TARGETS.PROSPECT_FORM, initializeValues);
   }, [prospect, subscriptions]);
 
-  const handleValueChange = <K extends keyof ProspectFormValues>(
+  const _handleValueChange = <K extends keyof ProspectFormValues>(
     field: K,
     value: ProspectFormValues[K],
   ) => setValues((current) => ({ ...current, [field]: value }));
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
@@ -104,7 +104,7 @@ export function ProspectForm({
         </>
       }
     >
-      <form id={FORM_IDS.PROSPECT} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.PROSPECT} onSubmit={_handleSubmit} className="row">
         <div className="col-6">
           <FormTextInput
             id="prospect-name"
@@ -115,7 +115,7 @@ export function ProspectForm({
             minLength={3}
             required
             disabled={isSubmitting}
-            onChange={(event) => handleValueChange("name", event.target.value)}
+            onChange={(event) => _handleValueChange("name", event.target.value)}
           />
         </div>
         <div className="col-6">
@@ -129,7 +129,7 @@ export function ProspectForm({
             value={values.email}
             required
             disabled={isSubmitting}
-            onChange={(event) => handleValueChange("email", event.target.value)}
+            onChange={(event) => _handleValueChange("email", event.target.value)}
           />
         </div>
         <div className="col-6">
@@ -150,7 +150,7 @@ export function ProspectForm({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange(
+              _handleValueChange(
                 "phoneNumber",
                 event.target.value.replace(/\D/g, ""),
               )
@@ -168,7 +168,7 @@ export function ProspectForm({
             required
             disabled={isSubmitting}
             onChange={(event) =>
-              handleValueChange("subscriptionId", event.target.value)
+              _handleValueChange("subscriptionId", event.target.value)
             }
           >
             {subscriptions.map((subscription) => (
@@ -191,7 +191,7 @@ export function ProspectForm({
                   value={status}
                   checked={values.status === status}
                   disabled={isSubmitting}
-                  onChange={() => handleValueChange("status", status)}
+                  onChange={() => _handleValueChange("status", status)}
                 />
                 <label
                   className="form-check-label"

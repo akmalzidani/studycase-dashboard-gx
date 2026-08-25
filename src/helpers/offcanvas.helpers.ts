@@ -34,9 +34,10 @@ export const onOffcanvasShown = (
     return () => {};
   }
 
-  const handleShown = (event: Event) => listener(event as OffcanvasShownEvent);
-  offcanvasElement.addEventListener("shown.bs.offcanvas", handleShown);
+  const _handleShown = (event: Event) =>
+    listener(event as OffcanvasShownEvent);
+  offcanvasElement.addEventListener("shown.bs.offcanvas", _handleShown);
 
   return () =>
-    offcanvasElement.removeEventListener("shown.bs.offcanvas", handleShown);
+    offcanvasElement.removeEventListener("shown.bs.offcanvas", _handleShown);
 };

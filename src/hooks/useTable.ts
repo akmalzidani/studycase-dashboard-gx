@@ -94,7 +94,7 @@ export function useTable<T>({
     setPage((currentPage) => Math.min(currentPage, totalPages));
   }, [totalPages]);
 
-  const handleSort = (key: string) => {
+  const _handleSort = (key: string) => {
     if (!sortableFields.has(key)) return;
 
     setSortConfig((current) => ({
@@ -115,6 +115,6 @@ export function useTable<T>({
     totalPages,
     totalItems: sortedData.length,
     sortConfig,
-    handleSort,
+    handleSort: _handleSort,
   };
 }

@@ -78,7 +78,7 @@ export function useDataTable<T extends object>({
   const startIndex = (page - 1) * pageSize;
   const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
 
-  const handleSort = (key: keyof T) => {
+  const _handleSort = (key: keyof T) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
       direction = "desc";
@@ -98,7 +98,7 @@ export function useDataTable<T extends object>({
     setSearch,
     isSearching,
     sortConfig,
-    handleSort,
+    handleSort: _handleSort,
     page,
     setPage,
     pageSize,

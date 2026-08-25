@@ -37,7 +37,7 @@ export function ProfileForm({
     return onModalShown(OVERLAY_TARGETS.PROFILE_FORM, initializeValues);
   }, [user]);
 
-  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (await onSubmit(values)) {
       hideModal(OVERLAY_TARGETS.PROFILE_FORM);
@@ -69,7 +69,7 @@ export function ProfileForm({
         </>
       }
     >
-      <form id={FORM_IDS.PROFILE} onSubmit={handleSubmit} className="row">
+      <form id={FORM_IDS.PROFILE} onSubmit={_handleSubmit} className="row">
         <div className="col-12">
           <FormTextInput
             id="profile-name"

@@ -25,7 +25,7 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isLoading) return;
 
@@ -44,7 +44,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoAccountSelection = (account: {
+  const _handleDemoAccountSelection = (account: {
     email: string;
     password?: string;
   }) => {
@@ -76,7 +76,7 @@ export default function LoginPage() {
             </div>
           ) : null}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={_handleSubmit}>
             <div className="mb-3">
               <label className="form-label small fw-semibold">Email</label>
               <input
@@ -123,7 +123,7 @@ export default function LoginPage() {
                   key={account.id ?? account.email}
                   type="button"
                   className="btn btn-sm btn-danger"
-                  onClick={() => handleDemoAccountSelection(account)}
+                  onClick={() => _handleDemoAccountSelection(account)}
                 >
                   {getRoles().find((role) => role.id === account.roleId)
                     ?.name ?? "User"}

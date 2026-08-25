@@ -29,7 +29,7 @@ export function HeaderProfileDropdown() {
     }
   };
 
-  const handleLogout = () => {
+  const _handleLogout = () => {
     confirm({
       title: "Logout",
       message: "Are you sure you want to log out of this account?",
@@ -77,7 +77,7 @@ export function HeaderProfileDropdown() {
         <li>
           <button
             className="dropdown-item text-danger d-flex align-items-center gap-2"
-            onClick={handleLogout}
+            onClick={_handleLogout}
             disabled={isLoggingOut}
           >
             {isLoggingOut ? <Spinner size="sm" /> : <BsBoxArrowRight />}
