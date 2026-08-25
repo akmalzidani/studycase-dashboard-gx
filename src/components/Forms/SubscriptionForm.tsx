@@ -15,7 +15,9 @@ export interface SubscriptionFormValues {
 interface SubscriptionFormProps {
   isSubmitting: boolean;
   item: Subscription | null;
-  onSubmit: (values: SubscriptionFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: SubscriptionFormValues) => Promise<boolean>;
+  };
 }
 
 const EMPTY_VALUES: SubscriptionFormValues = {
@@ -27,7 +29,7 @@ const EMPTY_VALUES: SubscriptionFormValues = {
 export function SubscriptionForm({
   isSubmitting,
   item: subscription,
-  onSubmit,
+  actions,
 }: SubscriptionFormProps) {
   const [values, setValues] = useState<SubscriptionFormValues>(EMPTY_VALUES);
 
@@ -57,7 +59,7 @@ export function SubscriptionForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
     }
   };

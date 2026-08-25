@@ -18,15 +18,17 @@ interface UseTableOptions<T> {
 export interface UseTableReturn<T> {
   data: T[];
   search: string;
-  setSearch: (search: string) => void;
   page: number;
-  setPage: (page: number) => void;
   pageSize: number;
-  setPageSize: (pageSize: number) => void;
   totalPages: number;
   totalItems: number;
   sortConfig: { key: string | null; direction: "asc" | "desc" };
-  handleSort: (key: string) => void;
+  actions: {
+    handleSearch: (search: string) => void;
+    handlePageChange: (page: number) => void;
+    handlePageSizeChange: (pageSize: number) => void;
+    handleSort: (key: string) => void;
+  };
 }
 
 export function useTable<T>({
@@ -88,11 +90,15 @@ export function useTable<T>({
 
   useEffect(() => {
     setPage(1);
-  }, [debouncedSearch, filters, pageSize]);
+  }, [debouncedSearch, pageSize]);
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, totalPages));
   }, [totalPages]);
+
+  const _handlePageChange = (nextPage: number) => {
+    setPage(Math.min(Math.max(nextPage, 1), totalPages));
+  };
 
   const _handleSort = (key: string) => {
     if (!sortableFields.has(key)) return;
@@ -107,14 +113,16 @@ export function useTable<T>({
   return {
     data: paginatedData,
     search,
-    setSearch,
     page,
-    setPage,
     pageSize,
-    setPageSize,
     totalPages,
     totalItems: sortedData.length,
     sortConfig,
-    handleSort: _handleSort,
+    actions: {
+      handleSearch: setSearch,
+      handlePageChange: _handlePageChange,
+      handlePageSizeChange: setPageSize,
+      handleSort: _handleSort,
+    },
   };
 }

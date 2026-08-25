@@ -15,7 +15,9 @@ export interface ChangePasswordFormValues {
 interface ChangePasswordFormProps {
   isSubmitting: boolean;
   item: User | null;
-  onSubmit: (values: ChangePasswordFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: ChangePasswordFormValues) => Promise<boolean>;
+  };
 }
 
 const EMPTY_VALUES: ChangePasswordFormValues = {
@@ -26,7 +28,7 @@ const EMPTY_VALUES: ChangePasswordFormValues = {
 
 export function ChangePasswordForm({
   isSubmitting,
-  onSubmit,
+  actions,
 }: ChangePasswordFormProps) {
   const [values, setValues] = useState(EMPTY_VALUES);
 
@@ -37,7 +39,7 @@ export function ChangePasswordForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideModal(OVERLAY_TARGETS.CHANGE_PASSWORD);
     }
   };

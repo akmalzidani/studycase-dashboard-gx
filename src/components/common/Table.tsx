@@ -18,7 +18,9 @@ export interface TableProps {
   isLoading?: boolean;
   isWrapHeader?: boolean;
   sortConfig?: { key: string | null; direction: "asc" | "desc" };
-  onSort?: (key: string) => void;
+  actions?: {
+    handleSort: (key: string) => void;
+  };
   children?: ReactNode;
 }
 
@@ -45,7 +47,7 @@ export function Table({
   isLoading = false,
   isWrapHeader = false,
   sortConfig,
-  onSort,
+  actions,
   children,
 }: TableProps) {
   return (
@@ -57,7 +59,7 @@ export function Table({
             {ths.map((th, index) => {
               const { className: cellClassName, content } = getCellValue(th);
               const sortKey = isTableCell(th) ? th.sortKey : undefined;
-              const isSortable = Boolean(sortKey && onSort);
+              const isSortable = Boolean(sortKey && actions?.handleSort);
               const isSorted = sortConfig?.key === sortKey;
 
               return (
@@ -70,7 +72,7 @@ export function Table({
                     cursor: isSortable ? "pointer" : undefined,
                     whiteSpace: isWrapHeader ? "normal" : "nowrap",
                   }}
-                  onClick={() => sortKey && onSort?.(sortKey)}
+                  onClick={() => sortKey && actions?.handleSort(sortKey)}
                 >
                   {isSortable ? (
                     <span className="d-inline-flex align-items-center gap-2">

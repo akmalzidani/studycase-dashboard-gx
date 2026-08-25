@@ -1,21 +1,22 @@
 export interface PaginationProps {
   page: number;
   totalPages: number;
-  setPage: (page: number) => void;
   totalItems: number;
   pageSize: number;
-  setPageSize: (size: number) => void;
   pageSizeOptions: number[];
+  actions: {
+    handlePageChange: (page: number) => void;
+    handlePageSizeChange: (size: number) => void;
+  };
 }
 
 export function Pagination({
   page,
   totalPages,
-  setPage,
   totalItems,
   pageSize,
-  setPageSize,
   pageSizeOptions,
+  actions,
 }: PaginationProps) {
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
@@ -44,7 +45,7 @@ export function Pagination({
           <select
             className="form-select form-select-sm w-auto"
             value={pageSize}
-            onChange={(event) => setPageSize(Number(event.target.value))}
+            onChange={(event) => actions.handlePageSizeChange(Number(event.target.value))}
             aria-label="Entries per page"
           >
             {pageSizeOptions.map((option) => (
@@ -59,7 +60,7 @@ export function Pagination({
             <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
               <button
                 className="page-link"
-                onClick={() => setPage(page - 1)}
+                onClick={() => actions.handlePageChange(page - 1)}
                 disabled={page === 1}
               >
                 Previous
@@ -82,7 +83,7 @@ export function Pagination({
                 >
                   <button
                     className="page-link"
-                    onClick={() => setPage(pageNum as number)}
+                    onClick={() => actions.handlePageChange(pageNum as number)}
                   >
                     {pageNum}
                   </button>
@@ -95,7 +96,7 @@ export function Pagination({
             >
               <button
                 className="page-link"
-                onClick={() => setPage(page + 1)}
+                onClick={() => actions.handlePageChange(page + 1)}
                 disabled={page === totalPages || totalPages === 0}
               >
                 Next

@@ -17,16 +17,17 @@ export interface TableFilterField {
 interface TableFilterProps {
   fields: readonly TableFilterField[];
   values: Record<string, string>;
-  onChange: (key: string, value: string) => void;
-  onReset: () => void;
+  actions: {
+    handleChange: (key: string, value: string) => void;
+    handleReset: () => void;
+  };
   ariaLabel?: string;
 }
 
 export function TableFilter({
   fields,
   values,
-  onChange,
-  onReset,
+  actions,
   ariaLabel = "Filter table",
 }: TableFilterProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -81,7 +82,7 @@ export function TableFilter({
                   className="form-select form-select-sm"
                   value={values[field.key] ?? ""}
                   disabled={field.disabled}
-                  onChange={(event) => onChange(field.key, event.target.value)}
+                  onChange={(event) => actions.handleChange(field.key, event.target.value)}
                 >
                   <option value="">All {field.label.toLowerCase()}</option>
                   {field.options.map((option) => (
@@ -99,7 +100,7 @@ export function TableFilter({
             type="button"
             className="btn btn-link btn-sm mt-3 p-0 text-decoration-none"
             disabled={!hasActiveFilters}
-            onClick={onReset}
+            onClick={actions.handleReset}
           >
             <BsXCircle className="me-1" aria-hidden="true" />
             Reset filters

@@ -18,7 +18,7 @@ export interface DataTableProps<T> extends UseDataTableReturn<T> {
   showPagination?: boolean;
   emptyMessage?: ReactNode;
   isLoading?: boolean;
-  actions?: ReactNode;
+  controls?: ReactNode;
 }
 
 export function DataTable<T extends object>({
@@ -27,14 +27,11 @@ export function DataTable<T extends object>({
   rowActions,
   keyExtractor,
   search,
-  setSearch,
   isSearching,
   sortConfig,
-  handleSort,
   page,
-  setPage,
   pageSize,
-  setPageSize,
+  actions,
   totalPages,
   totalItems,
   tableClassName,
@@ -44,7 +41,7 @@ export function DataTable<T extends object>({
   showPagination = true,
   emptyMessage,
   isLoading = false,
-  actions,
+  controls,
 }: DataTableProps<T>) {
   const hasRowActions = Boolean(
     rowActions &&
@@ -72,8 +69,8 @@ export function DataTable<T extends object>({
         <TableControls
           showSearch={showSearch}
           search={search}
-          setSearch={setSearch}
           actions={actions}
+          children={controls}
         />
 
         {isLoading || isSearching ? (
@@ -87,7 +84,7 @@ export function DataTable<T extends object>({
             columns={tableColumns}
             keyExtractor={keyExtractor}
             sortConfig={sortConfig}
-            handleSort={handleSort}
+            actions={actions}
             tableClassName={tableClassName}
             emptyMessage={emptyMessage}
           />
@@ -97,11 +94,10 @@ export function DataTable<T extends object>({
           <Pagination
             page={page}
             totalPages={totalPages}
-            setPage={setPage}
             totalItems={totalItems}
             pageSize={pageSize}
-            setPageSize={setPageSize}
             pageSizeOptions={pageSizeOptions}
+            actions={actions}
           />
         ) : null}
       </div>

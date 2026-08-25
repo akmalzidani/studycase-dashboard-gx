@@ -15,7 +15,9 @@ export interface RoleFormValues {
 interface RoleFormProps {
   isSubmitting: boolean;
   item: Role | null;
-  onSubmit: (values: RoleFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: RoleFormValues) => Promise<boolean>;
+  };
 }
 
 type CatalogPermission = (typeof PERMISSION_CATALOG)[number];
@@ -61,7 +63,7 @@ const setPermissionValue = (
 export function RoleForm({
   isSubmitting,
   item: role,
-  onSubmit,
+  actions,
 }: RoleFormProps) {
   const [values, setValues] = useState<RoleFormValues>({
     name: "",
@@ -87,7 +89,7 @@ export function RoleForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
     }
   };

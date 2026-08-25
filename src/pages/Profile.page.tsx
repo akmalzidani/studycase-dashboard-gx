@@ -145,13 +145,13 @@ export default function ProfilePage() {
       <ProfileForm
         isSubmitting={isSubmitting}
         item={user}
-        onSubmit={_handleSubmit}
+        actions={{ handleSubmit: _handleSubmit }}
       />
 
       <ChangePasswordForm
         isSubmitting={isSubmitting}
         item={user}
-        onSubmit={_handleChangePassword}
+        actions={{ handleSubmit: _handleChangePassword }}
       />
     </>
   );

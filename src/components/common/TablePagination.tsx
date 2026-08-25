@@ -4,8 +4,10 @@ interface TablePaginationProps {
   totalItems: number;
   pageSize: number;
   pageSizeOptions?: number[];
-  onPageChange: (page: number) => void;
-  onPageSizeChange: (pageSize: number) => void;
+  actions: {
+    handlePageChange: (page: number) => void;
+    handlePageSizeChange: (pageSize: number) => void;
+  };
 }
 
 function getPageNumbers(page: number, totalPages: number): (number | "...")[] {
@@ -32,8 +34,7 @@ export function TablePagination({
   totalItems,
   pageSize,
   pageSizeOptions = [5, 10, 25, 50, 100],
-  onPageChange,
-  onPageSizeChange,
+  actions,
 }: TablePaginationProps) {
   const firstItem = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
   const lastItem = Math.min(page * pageSize, totalItems);
@@ -46,7 +47,7 @@ export function TablePagination({
           <select
             className="form-select form-select-sm w-auto"
             value={pageSize}
-            onChange={(event) => onPageSizeChange(Number(event.target.value))}
+            onChange={(event) => actions.handlePageSizeChange(Number(event.target.value))}
             aria-label="Entries per page"
           >
             {pageSizeOptions.map((option) => (
@@ -69,7 +70,7 @@ export function TablePagination({
                 type="button"
                 className="page-link"
                 disabled={page === 1}
-                onClick={() => onPageChange(page - 1)}
+                onClick={() => actions.handlePageChange(page - 1)}
               >
                 Previous
               </button>
@@ -88,7 +89,7 @@ export function TablePagination({
                   <button
                     type="button"
                     className="page-link"
-                    onClick={() => onPageChange(pageNumber)}
+                    onClick={() => actions.handlePageChange(pageNumber)}
                     aria-current={page === pageNumber ? "page" : undefined}
                   >
                     {pageNumber}
@@ -104,7 +105,7 @@ export function TablePagination({
                 type="button"
                 className="page-link"
                 disabled={page === totalPages}
-                onClick={() => onPageChange(page + 1)}
+                onClick={() => actions.handlePageChange(page + 1)}
               >
                 Next
               </button>

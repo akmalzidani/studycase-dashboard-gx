@@ -19,7 +19,9 @@ interface CustomerFormProps {
   isSubmitting: boolean;
   item: Customer | null;
   subscriptions: Subscription[];
-  onSubmit: (values: CustomerFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: CustomerFormValues) => Promise<boolean>;
+  };
 }
 
 const STATUS_OPTIONS: CustomerStatus[] = ["Active", "Blocked"];
@@ -30,7 +32,7 @@ export function CustomerForm({
   isSubmitting,
   item: customer,
   subscriptions,
-  onSubmit,
+  actions,
 }: CustomerFormProps) {
   const [values, setValues] = useState<CustomerFormValues>({
     name: "",
@@ -71,7 +73,7 @@ export function CustomerForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
     }
   };

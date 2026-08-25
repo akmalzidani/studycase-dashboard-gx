@@ -123,7 +123,10 @@ export default function SubscriptionPage() {
         <div className="card-body">
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
             <div className="w-100" style={{ maxWidth: "320px" }}>
-              <TableSearch value={table.search} onChange={table.setSearch} />
+              <TableSearch
+                value={table.search}
+                actions={{ handleChange: table.actions.handleSearch }}
+              />
             </div>
             {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) ? (
               <button
@@ -150,7 +153,7 @@ export default function SubscriptionPage() {
             isWrapHeader
             emptyMessage="There are no subscription packages yet. Add your first package."
             sortConfig={table.sortConfig}
-            onSort={table.handleSort}
+            actions={{ handleSort: table.actions.handleSort }}
           />
 
           {!isLoading ? (
@@ -159,8 +162,10 @@ export default function SubscriptionPage() {
               totalPages={table.totalPages}
               totalItems={table.totalItems}
               pageSize={table.pageSize}
-              onPageChange={table.setPage}
-              onPageSizeChange={table.setPageSize}
+              actions={{
+                handlePageChange: table.actions.handlePageChange,
+                handlePageSizeChange: table.actions.handlePageSizeChange,
+              }}
             />
           ) : null}
         </div>
@@ -169,7 +174,7 @@ export default function SubscriptionPage() {
       <SubscriptionForm
         isSubmitting={isSubmitting}
         item={selectedSubscription}
-        onSubmit={_handleSubmit}
+        actions={{ handleSubmit: _handleSubmit }}
       />
     </>
   );

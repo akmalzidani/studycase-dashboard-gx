@@ -200,7 +200,10 @@ export default function CustomersPage() {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
-                <TableSearch value={table.search} onChange={table.setSearch} />
+                <TableSearch
+                  value={table.search}
+                  actions={{ handleChange: table.actions.handleSearch }}
+                />
               </div>
               <TableFilter
                 fields={[
@@ -220,10 +223,12 @@ export default function CustomersPage() {
                   },
                 ]}
                 values={filters}
-                onChange={(key, value) =>
-                  setFilters((current) => ({ ...current, [key]: value }))
-                }
-                onReset={() => setFilters({ subscription: "", status: "" })}
+                actions={{
+                  handleChange: (key, value) =>
+                    setFilters((current) => ({ ...current, [key]: value })),
+                  handleReset: () =>
+                    setFilters({ subscription: "", status: "" }),
+                }}
               />
             </div>
             {hasPermission(permissions, PERMISSION_KEYS.CUSTOMERS.CREATE) ? (
@@ -256,7 +261,7 @@ export default function CustomersPage() {
             isWrapHeader
             emptyMessage="There are no customers yet. Add your first customer."
             sortConfig={table.sortConfig}
-            onSort={table.handleSort}
+            actions={{ handleSort: table.actions.handleSort }}
           />
 
           {!isLoading ? (
@@ -265,8 +270,10 @@ export default function CustomersPage() {
               totalPages={table.totalPages}
               totalItems={table.totalItems}
               pageSize={table.pageSize}
-              onPageChange={table.setPage}
-              onPageSizeChange={table.setPageSize}
+              actions={{
+                handlePageChange: table.actions.handlePageChange,
+                handlePageSizeChange: table.actions.handlePageSizeChange,
+              }}
             />
           ) : null}
         </div>
@@ -278,7 +285,7 @@ export default function CustomersPage() {
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedCustomer}
         subscriptions={subscriptions}
-        onSubmit={_handleSubmit}
+        actions={{ handleSubmit: _handleSubmit }}
       />
     </>
   );

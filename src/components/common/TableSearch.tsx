@@ -2,13 +2,15 @@ import { BsSearch } from "react-icons/bs";
 
 interface TableSearchProps {
   value: string;
-  onChange: (value: string) => void;
+  actions: {
+    handleChange: (value: string) => void;
+  };
   placeholder?: string;
 }
 
 export function TableSearch({
   value,
-  onChange,
+  actions,
   placeholder = "Search...",
 }: TableSearchProps) {
   return (
@@ -21,7 +23,7 @@ export function TableSearch({
         className="form-control border-start-0"
         placeholder={placeholder}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => actions.handleChange(event.target.value)}
       />
     </div>
   );

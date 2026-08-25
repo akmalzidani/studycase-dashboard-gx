@@ -14,14 +14,16 @@ interface UserFormProps {
   item: ManagedUser | null;
   roles: Role[];
   isSubmitting: boolean;
-  onSubmit: (values: UserFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: UserFormValues) => Promise<boolean>;
+  };
 }
 
 export function UserForm({
   item: user,
   roles,
   isSubmitting,
-  onSubmit,
+  actions,
 }: UserFormProps) {
   const [values, setValues] = useState<UserFormValues>({
     name: "",
@@ -60,7 +62,7 @@ export function UserForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.USER_FORM);
     }
   };

@@ -14,13 +14,15 @@ export interface ProfileFormValues {
 interface ProfileFormProps {
   isSubmitting: boolean;
   item: User | null;
-  onSubmit: (values: ProfileFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: ProfileFormValues) => Promise<boolean>;
+  };
 }
 
 export function ProfileForm({
   isSubmitting,
   item: user,
-  onSubmit,
+  actions,
 }: ProfileFormProps) {
   const [values, setValues] = useState<ProfileFormValues>({
     name: "",
@@ -39,7 +41,7 @@ export function ProfileForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideModal(OVERLAY_TARGETS.PROFILE_FORM);
     }
   };

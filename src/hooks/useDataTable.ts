@@ -12,16 +12,18 @@ export interface UseDataTableOptions<T> {
 export interface UseDataTableReturn<T> {
   data: T[];
   search: string;
-  setSearch: (val: string) => void;
   isSearching: boolean;
   sortConfig: { key: keyof T | null; direction: "asc" | "desc" };
-  handleSort: (key: keyof T) => void;
   page: number;
-  setPage: (page: number) => void;
   pageSize: number;
-  setPageSize: (size: number) => void;
   totalPages: number;
   totalItems: number;
+  actions: {
+    handleSearch: (value: string) => void;
+    handleSort: (key: keyof T) => void;
+    handlePageChange: (page: number) => void;
+    handlePageSizeChange: (size: number) => void;
+  };
 }
 
 export function useDataTable<T extends object>({
@@ -95,15 +97,17 @@ export function useDataTable<T extends object>({
   return {
     data: paginatedData,
     search,
-    setSearch,
     isSearching,
     sortConfig,
-    handleSort: _handleSort,
     page,
-    setPage,
     pageSize,
-    setPageSize,
     totalPages,
     totalItems: sortedData.length,
+    actions: {
+      handleSearch: setSearch,
+      handleSort: _handleSort,
+      handlePageChange: setPage,
+      handlePageSizeChange: setPageSize,
+    },
   };
 }

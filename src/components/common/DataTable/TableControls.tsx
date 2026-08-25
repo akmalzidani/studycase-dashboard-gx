@@ -4,15 +4,17 @@ import { BsSearch } from "react-icons/bs";
 export interface TableControlsProps {
   showSearch?: boolean;
   search: string;
-  setSearch: (search: string) => void;
-  actions?: ReactNode;
+  actions: {
+    handleSearch: (search: string) => void;
+  };
+  children?: ReactNode;
 }
 
 export function TableControls({
   showSearch,
   search,
-  setSearch,
   actions,
+  children,
 }: TableControlsProps) {
   return (
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
@@ -28,14 +30,14 @@ export function TableControls({
               placeholder="Search..."
               value={search}
 
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(event) => actions.handleSearch(event.target.value)}
             />
           </div>
         </div>
       ) : null}
 
-      {actions ? (
-        <div className="d-flex align-items-center gap-2">{actions}</div>
+      {children ? (
+        <div className="d-flex align-items-center gap-2">{children}</div>
       ) : null}
     </div>
   );

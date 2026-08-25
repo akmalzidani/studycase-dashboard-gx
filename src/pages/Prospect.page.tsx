@@ -203,7 +203,10 @@ export default function ProspectPage() {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
-                <TableSearch value={table.search} onChange={table.setSearch} />
+                <TableSearch
+                  value={table.search}
+                  actions={{ handleChange: table.actions.handleSearch }}
+                />
               </div>
               <TableFilter
                 fields={[
@@ -223,10 +226,12 @@ export default function ProspectPage() {
                   },
                 ]}
                 values={filters}
-                onChange={(key, value) =>
-                  setFilters((current) => ({ ...current, [key]: value }))
-                }
-                onReset={() => setFilters({ subscription: "", status: "" })}
+                actions={{
+                  handleChange: (key, value) =>
+                    setFilters((current) => ({ ...current, [key]: value })),
+                  handleReset: () =>
+                    setFilters({ subscription: "", status: "" }),
+                }}
               />
             </div>
             {hasPermission(permissions, PERMISSION_KEYS.PROSPECT.CREATE) ? (
@@ -257,7 +262,7 @@ export default function ProspectPage() {
             tds={tableRows}
             isLoading={isLoading}
             sortConfig={table.sortConfig}
-            onSort={table.handleSort}
+            actions={{ handleSort: table.actions.handleSort }}
             isWrapHeader
             emptyMessage="There are no prospects yet. Add your first prospect."
           ></Table>
@@ -268,8 +273,10 @@ export default function ProspectPage() {
               totalPages={table.totalPages}
               totalItems={table.totalItems}
               pageSize={table.pageSize}
-              onPageChange={table.setPage}
-              onPageSizeChange={table.setPageSize}
+              actions={{
+                handlePageChange: table.actions.handlePageChange,
+                handlePageSizeChange: table.actions.handlePageSizeChange,
+              }}
             />
           ) : null}
         </div>
@@ -281,7 +288,7 @@ export default function ProspectPage() {
         isSubmitting={isSubmitting || isLoadingSubscriptions}
         item={selectedProspect}
         subscriptions={subscriptions}
-        onSubmit={_handleSubmit}
+        actions={{ handleSubmit: _handleSubmit }}
       />
     </>
   );

@@ -110,7 +110,10 @@ export function RoleTab() {
     <>
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
         <div className="w-100" style={{ maxWidth: "320px" }}>
-          <TableSearch value={table.search} onChange={table.setSearch} />
+          <TableSearch
+            value={table.search}
+            actions={{ handleChange: table.actions.handleSearch }}
+          />
         </div>
         {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) ? (
           <button
@@ -137,7 +140,7 @@ export function RoleTab() {
         isWrapHeader
         emptyMessage="No roles yet."
         sortConfig={table.sortConfig}
-        onSort={table.handleSort}
+        actions={{ handleSort: table.actions.handleSort }}
       />
 
       {!isLoading ? (
@@ -146,15 +149,17 @@ export function RoleTab() {
           totalPages={table.totalPages}
           totalItems={table.totalItems}
           pageSize={table.pageSize}
-          onPageChange={table.setPage}
-          onPageSizeChange={table.setPageSize}
+          actions={{
+            handlePageChange: table.actions.handlePageChange,
+            handlePageSizeChange: table.actions.handlePageSizeChange,
+          }}
         />
       ) : null}
 
       <RoleForm
         isSubmitting={isSubmitting}
         item={roleActions.selectedItem}
-        onSubmit={_handleRoleSubmit}
+        actions={{ handleSubmit: _handleRoleSubmit }}
       />
     </>
   );

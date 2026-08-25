@@ -19,7 +19,9 @@ interface ProspectFormProps {
   isSubmitting: boolean;
   item: Prospect | null;
   subscriptions: Subscription[];
-  onSubmit: (values: ProspectFormValues) => Promise<boolean>;
+  actions: {
+    handleSubmit: (values: ProspectFormValues) => Promise<boolean>;
+  };
 }
 
 const STATUS_OPTIONS: ProspectStatus[] = ["Pending", "Completed"];
@@ -30,7 +32,7 @@ export function ProspectForm({
   isSubmitting,
   item: prospect,
   subscriptions,
-  onSubmit,
+  actions,
 }: ProspectFormProps) {
   const [values, setValues] = useState<ProspectFormValues>({
     name: "",
@@ -71,7 +73,7 @@ export function ProspectForm({
 
   const _handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (await onSubmit(values)) {
+    if (await actions.handleSubmit(values)) {
       hideOffcanvas(OVERLAY_TARGETS.PROSPECT_FORM);
     }
   };

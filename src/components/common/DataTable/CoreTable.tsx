@@ -7,7 +7,9 @@ export interface CoreTableProps<T> {
   columns: Column<T>[];
   keyExtractor: (item: T) => string | number;
   sortConfig: { key: keyof T | null; direction: "asc" | "desc" };
-  handleSort: (key: keyof T) => void;
+  actions: {
+    handleSort: (key: keyof T) => void;
+  };
   tableClassName?: string;
   emptyMessage?: ReactNode;
 }
@@ -17,7 +19,7 @@ export function CoreTable<T extends object>({
   columns,
   keyExtractor,
   sortConfig,
-  handleSort,
+  actions,
   tableClassName = "table table-hover table-striped mb-0",
   emptyMessage = "Tidak ada data",
 }: CoreTableProps<T>) {
@@ -36,7 +38,7 @@ export function CoreTable<T extends object>({
                   key={col.key}
                   className={`position-sticky py-3 ${col.headerClassName || ""} border-end ${isSortable ? "user-select-none" : ""}`}
                   onClick={() =>
-                    isSortable && col.sortKey && handleSort(col.sortKey)
+                    isSortable && col.sortKey && actions.handleSort(col.sortKey)
                   }
                   style={{
                     cursor: isSortable ? "pointer" : "default",
