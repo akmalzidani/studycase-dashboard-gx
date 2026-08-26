@@ -10,9 +10,9 @@ export interface TableCell {
 
 export type TableValue = ReactNode | TableCell;
 
-export interface TableProps {
+export interface TableProps<T = TableValue[]> {
   ths: TableValue[];
-  tds: TableValue[][];
+  tds: T[];
   className?: string;
   emptyMessage?: ReactNode;
   isLoading?: boolean;
@@ -39,7 +39,7 @@ function getCellValue(value: TableValue) {
     : { className: undefined, content: value };
 }
 
-export function Table({
+export function Table<T = TableValue[]>({
   ths,
   tds,
   className = "table table-hover table-striped mb-0",
@@ -49,10 +49,10 @@ export function Table({
   sortConfig,
   actions,
   children,
-}: TableProps) {
+}: TableProps<T>) {
+  const tableRows = tds as TableValue[][];
   return (
     <div className="table-responsive-lg border rounded mb-3">
-      {children}
       <table className={className}>
         <thead>
           <tr>
@@ -116,8 +116,15 @@ export function Table({
                 />
               </td>
             </tr>
-          ) : tds.length > 0 ? (
-            tds.map((td, rowIndex) => (
+          ) : tds.length === 0 ? (
+            <tr>
+              <td colSpan={ths.length} className="text-center text-muted py-4">
+                {emptyMessage}
+              </td>
+            </tr>
+          ) : (
+            (children ??
+            tableRows.map((td, rowIndex) => (
               <tr key={rowIndex}>
                 {td.map((cell, cellIndex) => {
                   const { className: cellClassName, content } =
@@ -130,13 +137,7 @@ export function Table({
                   );
                 })}
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={ths.length} className="text-center text-muted py-4">
-                {emptyMessage}
-              </td>
-            </tr>
+            )))
           )}
         </tbody>
       </table>
