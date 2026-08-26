@@ -7,11 +7,10 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useUsers() {
-  const users = useUserStore((state) => state.users);
-
-  const isLoading = useUserStore((state) => state.isLoading);
-  const setUsers = useUserStore((state) => state.setUsers);
-  const setIsLoading = useUserStore((state) => state.setIsLoading);
+  const users = useUserStore((state) => state.__users);
+  const isLoading = useUserStore((state) => state.__isLoading);
+  const setUsers = useUserStore((state) => state.__handleSetUsers);
+  const setIsLoading = useUserStore((state) => state.__handleSetIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -29,11 +28,11 @@ export function useUsers() {
     loadUsers();
   }, [setIsLoading, setUsers]);
 
-  const createUser = async (payload: UserPayload) => {
+  const __handleCreateUser = async (payload: UserPayload) => {
     setIsSubmitting(true);
     try {
       const created = await userService.create(payload);
-      setUsers([...useUserStore.getState().users, created]);
+      setUsers([...useUserStore.getState().__users, created]);
       toast.success("User added successfully.");
       return true;
     } catch (error) {
@@ -44,14 +43,14 @@ export function useUsers() {
     }
   };
 
-  const updateUser = async (id: string, payload: UserPayload) => {
+  const __handleUpdateUser = async (id: string, payload: UserPayload) => {
     setIsSubmitting(true);
     try {
       const updated = await userService.update(id, payload);
       setUsers(
         useUserStore
           .getState()
-          .users.map((user) => (user.id === id ? updated : user)),
+          .__users.map((user) => (user.id === id ? updated : user)),
       );
       toast.success("User updated successfully.");
       return true;
@@ -63,11 +62,13 @@ export function useUsers() {
     }
   };
 
-  const deleteUser = async (id: string) => {
+  const __handleDeleteUser = async (id: string) => {
     setIsSubmitting(true);
     try {
       await userService.remove(id);
-      setUsers(useUserStore.getState().users.filter((user) => user.id !== id));
+      setUsers(
+        useUserStore.getState().__users.filter((user) => user.id !== id),
+      );
       toast.success("User deleted successfully.");
     } catch (error) {
       toast.error(getErrorMessage(error, "Failed to delete user."));
@@ -77,11 +78,11 @@ export function useUsers() {
   };
 
   return {
-    users,
-    isLoading,
-    isSubmitting,
-    createUser,
-    updateUser,
-    deleteUser,
+    __users: users,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateUser,
+    __handleUpdateUser,
+    __handleDeleteUser,
   };
 }

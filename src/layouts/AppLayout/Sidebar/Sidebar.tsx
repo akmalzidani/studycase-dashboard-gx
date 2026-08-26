@@ -3,10 +3,9 @@ import { useThemeStore } from "@/stores/useThemeStore";
 import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNav } from "./SidebarNav";
 
-
 export default function Sidebar() {
-  const isOpen = useSidebarStore((state) => state.isOpen);
-  const theme = useThemeStore((state) => state.theme);
+  const isOpen = useSidebarStore((state) => state.__isOpen);
+  const theme = useThemeStore((state) => state.__theme);
 
   return (
     <aside
@@ -16,7 +15,6 @@ export default function Sidebar() {
     >
       <SidebarLogo isOpen={isOpen} />
       <SidebarNav isOpen={isOpen} />
-
     </aside>
   );
 }

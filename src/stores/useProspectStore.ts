@@ -2,15 +2,15 @@ import { create } from "zustand";
 import type { Prospect } from "@/types";
 
 interface ProspectState {
-  prospects: Prospect[];
-  isLoading: boolean;
-  setProspects: (prospects: Prospect[]) => void;
-  setIsLoading: (isLoading: boolean) => void;
+  __prospects: Prospect[];
+  __isLoading: boolean;
+  __handleSetProspects: (prospects: Prospect[]) => void;
+  __handleSetIsLoading: (isLoading: boolean) => void;
 }
 
 export const useProspectStore = create<ProspectState>((set) => ({
-  prospects: [],
-  isLoading: false,
-  setProspects: (prospects) => set({ prospects }),
-  setIsLoading: (isLoading) => set({ isLoading }),
+  __prospects: [],
+  __isLoading: false,
+  __handleSetProspects: (__prospects) => set({ __prospects }),
+  __handleSetIsLoading: (__isLoading) => set({ __isLoading }),
 }));

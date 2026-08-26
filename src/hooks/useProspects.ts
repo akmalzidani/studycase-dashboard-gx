@@ -10,11 +10,10 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useProspects() {
-  const prospects = useProspectStore((state) => state.prospects);
-
-  const isLoading = useProspectStore((state) => state.isLoading);
-  const setProspects = useProspectStore((state) => state.setProspects);
-  const setIsLoading = useProspectStore((state) => state.setIsLoading);
+  const prospects = useProspectStore((state) => state.__prospects);
+  const isLoading = useProspectStore((state) => state.__isLoading);
+  const setProspects = useProspectStore((state) => state.__handleSetProspects);
+  const setIsLoading = useProspectStore((state) => state.__handleSetIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -32,11 +31,11 @@ export function useProspects() {
     fetchProspects();
   }, [setIsLoading, setProspects]);
 
-  const createProspect = async (payload: ProspectPayload) => {
+  const __handleCreateProspect = async (payload: ProspectPayload) => {
     setIsSubmitting(true);
     try {
       const prospect = await prospectService.create(payload);
-      setProspects([...useProspectStore.getState().prospects, prospect]);
+      setProspects([...useProspectStore.getState().__prospects, prospect]);
       toast.success("Prospect added successfully.");
       return true;
     } catch (error) {
@@ -47,14 +46,17 @@ export function useProspects() {
     }
   };
 
-  const updateProspect = async (id: string, payload: ProspectPayload) => {
+  const __handleUpdateProspect = async (
+    id: string,
+    payload: ProspectPayload,
+  ) => {
     setIsSubmitting(true);
     try {
       const prospect = await prospectService.update(id, payload);
       setProspects(
         useProspectStore
           .getState()
-          .prospects.map((item) => (item.id === id ? prospect : item)),
+          .__prospects.map((item) => (item.id === id ? prospect : item)),
       );
       toast.success("Prospect updated successfully.");
       return true;
@@ -66,12 +68,14 @@ export function useProspects() {
     }
   };
 
-  const deleteProspect = async (id: string) => {
+  const __handleDeleteProspect = async (id: string) => {
     setIsSubmitting(true);
     try {
       await prospectService.remove(id);
       setProspects(
-        useProspectStore.getState().prospects.filter((item) => item.id !== id),
+        useProspectStore
+          .getState()
+          .__prospects.filter((item) => item.id !== id),
       );
       toast.success("Prospect deleted successfully.");
     } catch (error) {
@@ -81,7 +85,7 @@ export function useProspects() {
     }
   };
 
-  const resetProspects = async () => {
+  const __handleResetProspects = async () => {
     setIsSubmitting(true);
     try {
       setProspects(await prospectService.reset());
@@ -94,12 +98,12 @@ export function useProspects() {
   };
 
   return {
-    prospects,
-    isLoading,
-    isSubmitting,
-    createProspect,
-    updateProspect,
-    deleteProspect,
-    resetProspects,
+    __prospects: prospects,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateProspect,
+    __handleUpdateProspect,
+    __handleDeleteProspect,
+    __handleResetProspects,
   };
 }

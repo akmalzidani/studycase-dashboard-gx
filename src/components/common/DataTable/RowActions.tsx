@@ -22,9 +22,10 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
   const actionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const actionButtons = actionsRef.current?.querySelectorAll<HTMLButtonElement>(
-      '[data-bs-toggle="tooltip"]',
-    );
+    const actionButtons =
+      actionsRef.current?.querySelectorAll<HTMLButtonElement>(
+        '[data-bs-toggle="tooltip"]',
+      );
     if (!actionButtons) return;
 
     const tooltips = Array.from(actionButtons, (button) => new Tooltip(button));
@@ -73,7 +74,7 @@ export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
             data-bs-toggle="tooltip"
             data-bs-title={ariaLabel}
             disabled={config.disabled}
-            onClick={() => config.onClick(item)}
+            onClick={() => config.handleClick(item)}
           >
             {icon}
           </button>

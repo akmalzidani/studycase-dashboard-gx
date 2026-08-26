@@ -9,7 +9,7 @@ import { calculateAnalyticsMetrics } from "@/helpers/analytics.helpers";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 function AnalyticsPage() {
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const canReadCustomers = hasPermission(
     permissions,
     PERMISSION_KEYS.CUSTOMERS.READ,
@@ -18,8 +18,10 @@ function AnalyticsPage() {
     permissions,
     PERMISSION_KEYS.PROSPECT.READ,
   );
-  const { customers, isLoading: isLoadingCustomers } = useCustomers();
-  const { prospects, isLoading: isLoadingProspects } = useProspects();
+  const { __customers: customers, __isLoading: isLoadingCustomers } =
+    useCustomers();
+  const { __prospects: prospects, __isLoading: isLoadingProspects } =
+    useProspects();
 
   const metrics = calculateAnalyticsMetrics(customers, prospects);
   const isLoading = isLoadingCustomers || isLoadingProspects;

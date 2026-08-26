@@ -10,19 +10,21 @@ import { authService } from "@/services/auth.service";
 import { BsPersonCircle, BsPerson, BsBoxArrowRight } from "react-icons/bs";
 
 export function HeaderProfileDropdown() {
-  const user = useAuthStore((store) => store.user);
-  const checkSession = useAuthStore((store) => store.checkSession);
+  const user = useAuthStore((store) => store.__user);
+  const _handleCheckSession = useAuthStore(
+    (store) => store.__handleCheckSession,
+  );
   const roleName =
     getRoles().find((role) => role.id === user?.roleId)?.name ?? "User";
 
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const logout = async () => {
+  const _handleLogoutConfirm = async () => {
     setIsLoggingOut(true);
 
     try {
       await authService.logout();
-      checkSession();
+      _handleCheckSession();
       toast.info("Successfully logged out");
     } finally {
       setIsLoggingOut(false);
@@ -36,7 +38,7 @@ export function HeaderProfileDropdown() {
       confirmText: "Log out",
       cancelText: "Cancel",
       variant: "danger",
-      onConfirm: () => logout(),
+      handleConfirm: _handleLogoutConfirm,
     });
   };
 

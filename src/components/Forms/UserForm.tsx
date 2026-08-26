@@ -116,7 +116,9 @@ export function UserForm({
             placeholder="Enter email"
             startAdornment={<BsEnvelope />}
             value={values.email}
-            onChange={(event) => _handleValueChange("email", event.target.value)}
+            onChange={(event) =>
+              _handleValueChange("email", event.target.value)
+            }
             required
             disabled={isSubmitting}
           />

@@ -131,7 +131,9 @@ export function ProspectForm({
             value={values.email}
             required
             disabled={isSubmitting}
-            onChange={(event) => _handleValueChange("email", event.target.value)}
+            onChange={(event) =>
+              _handleValueChange("email", event.target.value)
+            }
           />
         </div>
         <div className="col-6">

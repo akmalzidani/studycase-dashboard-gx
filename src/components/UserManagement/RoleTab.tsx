@@ -27,9 +27,15 @@ function countPermissions(permissions: Permissions): number {
 
 export function RoleTab() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const permissions = useAuthStore((store) => store.permissions);
-  const { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole } =
-    useRoles();
+  const permissions = useAuthStore((store) => store.__permissions);
+  const {
+    __roles: roles,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateRole: _handleCreateRole,
+    __handleUpdateRole: _handleUpdateRole,
+    __handleDeleteRole: _handleDeleteRole,
+  } = useRoles();
   const tableFields = [
     {
       key: "name",
@@ -47,14 +53,33 @@ export function RoleTab() {
       sortable: true,
     },
   ];
-  const table = useTable({ data: roles, fields: tableFields });
+  const {
+    __data: data,
+    __search: search,
+    __sortConfig: sortConfig,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: totalItems,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handleSort: _handleSort,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
+    },
+  } = useTable({ data: roles, fields: tableFields });
   const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
-  const roleActions = useCrudFormActions<Role>({
+  const {
+    __selectedItem: selectedRole,
+    __handleOpenCreateForm: _handleOpenCreateForm,
+    __handleOpenEditForm: _handleOpenEditForm,
+    __handleConfirmDelete: _handleConfirmDelete,
+  } = useCrudFormActions<Role>({
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
       `Are you sure you want to delete the ${role.name} role?`,
-    onOpenForm: _handleFormOpen,
-    onDelete: deleteRole,
+    handleOpenForm: _handleFormOpen,
+    handleDelete: _handleDeleteRole,
   });
 
   const _handleRoleSubmit = async (values: RoleFormValues) => {
@@ -63,9 +88,9 @@ export function RoleTab() {
       description: values.description.trim(),
       permissions: values.permissions,
     };
-    const isSaved = roleActions.selectedItem?.id
-      ? await updateRole(roleActions.selectedItem.id, payload)
-      : await createRole(payload);
+    const isSaved = selectedRole?.id
+      ? await _handleUpdateRole(selectedRole.id, payload)
+      : await _handleCreateRole(payload);
 
     return isSaved;
   };
@@ -81,7 +106,7 @@ export function RoleTab() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = table.data.map((role) => {
+  const tableRows = data.map((role) => {
     const accessCount = countPermissions(role.permissions);
 
     return [
@@ -100,7 +125,7 @@ export function RoleTab() {
                 data-bs-title={`Edit ${role.name}`}
                 data-bs-toggle="tooltip"
                 disabled={isSubmitting}
-                onClick={() => roleActions.openEditForm(role)}
+                onClick={() => _handleOpenEditForm(role)}
               >
                 <BsPencilSquare />
               </button>
@@ -113,7 +138,7 @@ export function RoleTab() {
                 data-bs-title={`Delete ${role.name}`}
                 data-bs-toggle="tooltip"
                 disabled={isSubmitting}
-                onClick={() => roleActions.confirmDelete(role)}
+                onClick={() => _handleConfirmDelete(role)}
               >
                 <BsTrash />
               </button>
@@ -129,8 +154,8 @@ export function RoleTab() {
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
         <div className="w-100" style={{ maxWidth: "320px" }}>
           <TableSearch
-            value={table.search}
-            actions={{ handleChange: table.actions.handleSearch }}
+            value={search}
+            actions={{ handleChange: _handleSearch }}
           />
         </div>
         {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) ? (
@@ -138,7 +163,7 @@ export function RoleTab() {
             className="btn btn-primary"
             type="button"
             disabled={isSubmitting}
-            onClick={roleActions.openCreateForm}
+            onClick={_handleOpenCreateForm}
           >
             <BsPlusLg className="me-2" />
             Add Role
@@ -148,37 +173,37 @@ export function RoleTab() {
 
       <div ref={tableContainerRef}>
         <Table
-        ths={[
-          { content: "Role name", sortKey: "name" },
-          { content: "Description" },
-          { content: "Access count", sortKey: "accessCount" },
-          { className: "text-end", content: "Actions" },
-        ]}
-        tds={tableRows}
-        isLoading={isLoading}
-        isWrapHeader
-        emptyMessage="No roles yet."
-        sortConfig={table.sortConfig}
-        actions={{ handleSort: table.actions.handleSort }}
+          ths={[
+            { content: "Role name", sortKey: "name" },
+            { content: "Description" },
+            { content: "Access count", sortKey: "accessCount" },
+            { className: "text-end", content: "Actions" },
+          ]}
+          tds={tableRows}
+          isLoading={isLoading}
+          isWrapHeader
+          emptyMessage="No roles yet."
+          sortConfig={sortConfig}
+          actions={{ handleSort: _handleSort }}
         />
       </div>
 
       {!isLoading ? (
         <TablePagination
-          page={table.page}
-          totalPages={table.totalPages}
-          totalItems={table.totalItems}
-          pageSize={table.pageSize}
+          page={page}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          pageSize={pageSize}
           actions={{
-            handlePageChange: table.actions.handlePageChange,
-            handlePageSizeChange: table.actions.handlePageSizeChange,
+            handlePageChange: _handlePageChange,
+            handlePageSizeChange: _handlePageSizeChange,
           }}
         />
       ) : null}
 
       <RoleForm
         isSubmitting={isSubmitting}
-        item={roleActions.selectedItem}
+        item={selectedRole}
         actions={{ handleSubmit: _handleRoleSubmit }}
       />
     </>

@@ -22,18 +22,23 @@ export interface DataTableProps<T> extends UseDataTableReturn<T> {
 }
 
 export function DataTable<T extends object>({
-  data,
+  __data: data,
   columns,
   rowActions,
   keyExtractor,
-  search,
-  isSearching,
-  sortConfig,
-  page,
-  pageSize,
-  actions,
-  totalPages,
-  totalItems,
+  __search: search,
+  __isSearching: isSearching,
+  __sortConfig: sortConfig,
+  __page: page,
+  __pageSize: pageSize,
+  __actions: {
+    __handleSearch: _handleSearch,
+    __handleSort: _handleSort,
+    __handlePageChange: _handlePageChange,
+    __handlePageSizeChange: _handlePageSizeChange,
+  },
+  __totalPages: totalPages,
+  __totalItems: totalItems,
   tableClassName,
   containerClassName = "card",
   pageSizeOptions = [5, 10, 25, 50, 100],
@@ -69,7 +74,7 @@ export function DataTable<T extends object>({
         <TableControls
           showSearch={showSearch}
           search={search}
-          actions={actions}
+          actions={{ handleSearch: _handleSearch }}
           children={controls}
         />
 
@@ -84,7 +89,7 @@ export function DataTable<T extends object>({
             columns={tableColumns}
             keyExtractor={keyExtractor}
             sortConfig={sortConfig}
-            actions={actions}
+            actions={{ handleSort: _handleSort }}
             tableClassName={tableClassName}
             emptyMessage={emptyMessage}
           />
@@ -97,7 +102,10 @@ export function DataTable<T extends object>({
             totalItems={totalItems}
             pageSize={pageSize}
             pageSizeOptions={pageSizeOptions}
-            actions={actions}
+            actions={{
+              handlePageChange: _handlePageChange,
+              handlePageSizeChange: _handlePageSizeChange,
+            }}
           />
         ) : null}
       </div>

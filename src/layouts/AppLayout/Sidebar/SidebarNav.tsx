@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/useAuthStore";
 import { SidebarNavItem } from "./SidebarNavItem";
 
 export function SidebarNav({ isOpen }: { isOpen: boolean }) {
-  const { permissions } = useAuthStore();
+  const { __permissions: permissions } = useAuthStore();
 
   const visibleMenuItems = getVisibleMenuItems(menuConfig, permissions);
 

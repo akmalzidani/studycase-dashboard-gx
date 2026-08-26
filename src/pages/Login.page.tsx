@@ -13,8 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const demoAccounts = authService.getDemoAccounts();
-  const login = useAuthStore((store) => store.login);
-  const isAuthenticated = useAuthStore((store) => store.isAuthenticated);
+  const _handleLogin = useAuthStore((store) => store.__handleLogin);
+  const isAuthenticated = useAuthStore((store) => store.__isAuthenticated);
 
   const navigate = useNavigate();
   usePageTitle();
@@ -34,7 +34,7 @@ export default function LoginPage() {
 
     try {
       const session = await authService.login(email, password);
-      login(session);
+      _handleLogin(session);
       toast.success(`Welcome back, ${session.user.name}!`);
       navigate("/", { replace: true });
     } catch (err: any) {

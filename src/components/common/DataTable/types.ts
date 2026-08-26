@@ -7,13 +7,13 @@ export interface RowAction<T> {
   className?: string;
   disabled?: boolean;
   ariaLabel?: (item: T) => string;
-  onClick: (item: T) => void;
+  handleClick: (item: T) => void;
 }
 
 export interface DefaultRowAction<T> {
   disabled?: boolean;
   ariaLabel?: (item: T) => string;
-  onClick: (item: T) => void;
+  handleClick: (item: T) => void;
 }
 
 export interface RowActionsConfig<T> {

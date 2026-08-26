@@ -4,29 +4,29 @@ import { useState } from "react";
 interface UseCrudFormActionsOptions<T extends { id?: string }> {
   deleteTitle: string;
   deleteMessage: (item: T) => string;
-  onOpenForm: () => void;
-  onDelete: (id: string) => Promise<void>;
+  handleOpenForm: () => void;
+  handleDelete: (id: string) => Promise<void>;
 }
 
 export function useCrudFormActions<T extends { id?: string }>({
   deleteTitle,
   deleteMessage,
-  onOpenForm,
-  onDelete,
+  handleOpenForm,
+  handleDelete,
 }: UseCrudFormActionsOptions<T>) {
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
 
-  const openCreateForm = () => {
+  const _handleOpenCreateForm = () => {
     setSelectedItem(null);
-    onOpenForm();
+    handleOpenForm();
   };
 
-  const openEditForm = (item: T) => {
+  const _handleOpenEditForm = (item: T) => {
     setSelectedItem(item);
-    onOpenForm();
+    handleOpenForm();
   };
 
-  const confirmDelete = (item: T) => {
+  const _handleConfirmDelete = (item: T) => {
     if (!item.id) return;
 
     confirm({
@@ -35,14 +35,14 @@ export function useCrudFormActions<T extends { id?: string }>({
       confirmText: "Delete",
       cancelText: "Cancel",
       variant: "danger",
-      onConfirm: () => onDelete(item.id!),
+      handleConfirm: () => handleDelete(item.id!),
     });
   };
 
   return {
-    selectedItem,
-    openCreateForm,
-    openEditForm,
-    confirmDelete,
+    __selectedItem: selectedItem,
+    __handleOpenCreateForm: _handleOpenCreateForm,
+    __handleOpenEditForm: _handleOpenEditForm,
+    __handleConfirmDelete: _handleConfirmDelete,
   };
 }

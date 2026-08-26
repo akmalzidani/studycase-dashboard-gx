@@ -5,8 +5,8 @@ interface CreateCrudRowActionsOptions<T> {
   canEdit?: boolean;
   canDelete?: boolean;
   getLabel: (item: T) => string;
-  onEdit: (item: T) => void;
-  onDelete: (item: T) => void;
+  handleEdit: (item: T) => void;
+  handleDelete: (item: T) => void;
 }
 
 export function createCrudRowActions<T>({
@@ -14,22 +14,22 @@ export function createCrudRowActions<T>({
   canEdit = true,
   canDelete = true,
   getLabel,
-  onEdit,
-  onDelete,
+  handleEdit,
+  handleDelete,
 }: CreateCrudRowActionsOptions<T>): RowActionsConfig<T> {
   return {
     edit: canEdit
       ? {
           disabled,
           ariaLabel: (item) => `Edit ${getLabel(item)}`,
-          onClick: onEdit,
+          handleClick: handleEdit,
         }
       : undefined,
     delete: canDelete
       ? {
           disabled,
           ariaLabel: (item) => `Hapus ${getLabel(item)}`,
-          onClick: onDelete,
+          handleClick: handleDelete,
         }
       : undefined,
   };

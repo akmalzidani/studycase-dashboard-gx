@@ -25,28 +25,29 @@ import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
 
 export default function SubscriptionPage() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const {
-    subscriptions,
-    isLoading,
-    isSubmitting,
-    createSubscription,
-    updateSubscription,
-    deleteSubscription,
+    __subscriptions: subscriptions,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateSubscription: _handleCreateSubscription,
+    __handleUpdateSubscription: _handleUpdateSubscription,
+    __handleDeleteSubscription: _handleDeleteSubscription,
   } = useSubscriptions();
 
-  const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
+  const _handleFormOpen = () =>
+    showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
   const {
-    selectedItem: selectedSubscription,
-    openCreateForm,
-    openEditForm,
-    confirmDelete,
+    __selectedItem: selectedSubscription,
+    __handleOpenCreateForm: _handleOpenCreateForm,
+    __handleOpenEditForm: _handleOpenEditForm,
+    __handleConfirmDelete: _handleConfirmDelete,
   } = useCrudFormActions<Subscription>({
     deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
       `Are you sure you want to delete the ${subscription.packageName} package?`,
-    onOpenForm: _handleFormOpen,
-    onDelete: deleteSubscription,
+    handleOpenForm: _handleFormOpen,
+    handleDelete: _handleDeleteSubscription,
   });
 
   const tableFields = [
@@ -69,7 +70,21 @@ export default function SubscriptionPage() {
       sortable: true,
     },
   ];
-  const table = useTable({ data: subscriptions, fields: tableFields });
+  const {
+    __data: data,
+    __search: search,
+    __sortConfig: sortConfig,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: totalItems,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handleSort: _handleSort,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
+    },
+  } = useTable({ data: subscriptions, fields: tableFields });
 
   const _handleSubmit = (values: SubscriptionFormValues) => {
     const payload = {
@@ -79,8 +94,8 @@ export default function SubscriptionPage() {
     };
 
     return selectedSubscription?.id
-      ? updateSubscription(selectedSubscription.id, payload)
-      : createSubscription(payload);
+      ? _handleUpdateSubscription(selectedSubscription.id, payload)
+      : _handleCreateSubscription(payload);
   };
 
   useEffect(() => {
@@ -94,7 +109,7 @@ export default function SubscriptionPage() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = table.data.map((subscription) => [
+  const tableRows = data.map((subscription) => [
     <span className="fw-semibold">{subscription.packageName}</span>,
     formatSpeed(subscription.speed),
     <span className="font-monospace">
@@ -112,7 +127,7 @@ export default function SubscriptionPage() {
               data-bs-title={`Edit ${subscription.packageName}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => openEditForm(subscription)}
+              onClick={() => _handleOpenEditForm(subscription)}
             >
               <BsPencilSquare />
             </button>
@@ -125,7 +140,7 @@ export default function SubscriptionPage() {
               data-bs-title={`Hapus ${subscription.packageName}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => confirmDelete(subscription)}
+              onClick={() => _handleConfirmDelete(subscription)}
             >
               <BsTrash />
             </button>
@@ -142,8 +157,8 @@ export default function SubscriptionPage() {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
             <div className="w-100" style={{ maxWidth: "320px" }}>
               <TableSearch
-                value={table.search}
-                actions={{ handleChange: table.actions.handleSearch }}
+                value={search}
+                actions={{ handleChange: _handleSearch }}
               />
             </div>
             {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) ? (
@@ -151,7 +166,7 @@ export default function SubscriptionPage() {
                 type="button"
                 className="btn btn-primary"
                 disabled={isSubmitting}
-                onClick={openCreateForm}
+                onClick={_handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add Package
@@ -161,30 +176,30 @@ export default function SubscriptionPage() {
 
           <div ref={tableContainerRef}>
             <Table
-            ths={[
-              { content: "Package", sortKey: "packageName" },
-              { content: "Speed", sortKey: "speed" },
-              { content: "Monthly fee", sortKey: "monthlyFee" },
-              { className: "text-end", content: "Actions" },
-            ]}
-            tds={tableRows}
-            isLoading={isLoading}
-            isWrapHeader
-            emptyMessage="There are no subscription packages yet. Add your first package."
-            sortConfig={table.sortConfig}
-            actions={{ handleSort: table.actions.handleSort }}
+              ths={[
+                { content: "Package", sortKey: "packageName" },
+                { content: "Speed", sortKey: "speed" },
+                { content: "Monthly fee", sortKey: "monthlyFee" },
+                { className: "text-end", content: "Actions" },
+              ]}
+              tds={tableRows}
+              isLoading={isLoading}
+              isWrapHeader
+              emptyMessage="There are no subscription packages yet. Add your first package."
+              sortConfig={sortConfig}
+              actions={{ handleSort: _handleSort }}
             />
           </div>
 
           {!isLoading ? (
             <TablePagination
-              page={table.page}
-              totalPages={table.totalPages}
-              totalItems={table.totalItems}
-              pageSize={table.pageSize}
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
               actions={{
-                handlePageChange: table.actions.handlePageChange,
-                handlePageSizeChange: table.actions.handlePageSizeChange,
+                handlePageChange: _handlePageChange,
+                handlePageSizeChange: _handlePageSizeChange,
               }}
             />
           ) : null}

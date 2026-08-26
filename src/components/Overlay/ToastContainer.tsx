@@ -15,7 +15,7 @@ const ALERT_ICONS: Record<ToastType, IconType> = {
 };
 
 export default function ToastContainer() {
-  const { toasts, remove } = useToastStore();
+  const { __toasts: toasts, __handleRemove: _handleRemove } = useToastStore();
 
   if (toasts.length === 0) return null;
 
@@ -38,7 +38,7 @@ export default function ToastContainer() {
             <button
               type="button"
               className="btn-close"
-              onClick={() => remove(toast.id)}
+              onClick={() => _handleRemove(toast.id)}
               aria-label="Close"
             ></button>
           </div>

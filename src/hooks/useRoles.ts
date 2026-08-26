@@ -7,8 +7,8 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useRoles() {
-  const roles = useRoleStore((state) => state.roles);
-  const setRoles = useRoleStore((state) => state.setRoles);
+  const roles = useRoleStore((state) => state.__roles);
+  const setRoles = useRoleStore((state) => state.__handleSetRoles);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -27,7 +27,7 @@ export function useRoles() {
     loadRoles();
   }, [setRoles]);
 
-  const createRole = async (payload: RolePayload) => {
+  const __handleCreateRole = async (payload: RolePayload) => {
     setIsSubmitting(true);
     try {
       setRoles([...roles, await roleService.create(payload)]);
@@ -41,7 +41,7 @@ export function useRoles() {
     }
   };
 
-  const updateRole = async (id: string, payload: RolePayload) => {
+  const __handleUpdateRole = async (id: string, payload: RolePayload) => {
     setIsSubmitting(true);
     try {
       const updated = await roleService.update(id, payload);
@@ -56,7 +56,7 @@ export function useRoles() {
     }
   };
 
-  const deleteRole = async (id: string) => {
+  const __handleDeleteRole = async (id: string) => {
     setIsSubmitting(true);
     try {
       await roleService.remove(id);
@@ -69,5 +69,12 @@ export function useRoles() {
     }
   };
 
-  return { roles, isLoading, isSubmitting, createRole, updateRole, deleteRole };
+  return {
+    __roles: roles,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateRole,
+    __handleUpdateRole,
+    __handleDeleteRole,
+  };
 }

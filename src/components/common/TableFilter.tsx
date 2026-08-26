@@ -93,7 +93,9 @@ export function TableFilter({
                   className="form-select form-select-sm"
                   value={values[field.key] ?? ""}
                   disabled={field.disabled}
-                  onChange={(event) => actions.handleChange(field.key, event.target.value)}
+                  onChange={(event) =>
+                    actions.handleChange(field.key, event.target.value)
+                  }
                 >
                   <option value="">All {field.label.toLowerCase()}</option>
                   {field.options.map((option) => (

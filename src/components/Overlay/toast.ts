@@ -1,7 +1,8 @@
 import { useToastStore, type ToastType } from "@/stores/useToastStore";
 
 function show(message: string, type: ToastType) {
-  useToastStore.getState().add(message, type);
+  const _handleAdd = useToastStore.getState().__handleAdd;
+  _handleAdd(message, type);
 }
 
 export const toast = {

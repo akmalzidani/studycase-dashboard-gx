@@ -16,18 +16,18 @@ interface UseTableOptions<T> {
 }
 
 export interface UseTableReturn<T> {
-  data: T[];
-  search: string;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  totalItems: number;
-  sortConfig: { key: string | null; direction: "asc" | "desc" };
-  actions: {
-    handleSearch: (search: string) => void;
-    handlePageChange: (page: number) => void;
-    handlePageSizeChange: (pageSize: number) => void;
-    handleSort: (key: string) => void;
+  __data: T[];
+  __search: string;
+  __page: number;
+  __pageSize: number;
+  __totalPages: number;
+  __totalItems: number;
+  __sortConfig: { key: string | null; direction: "asc" | "desc" };
+  __actions: {
+    __handleSearch: (search: string) => void;
+    __handlePageChange: (page: number) => void;
+    __handlePageSizeChange: (pageSize: number) => void;
+    __handleSort: (key: string) => void;
   };
 }
 
@@ -96,6 +96,9 @@ export function useTable<T>({
     setPage((currentPage) => Math.min(currentPage, totalPages));
   }, [totalPages]);
 
+  const _handleSearch = (value: string) => setSearch(value);
+  const _handlePageSizeChange = (size: number) => setPageSize(size);
+
   const _handlePageChange = (nextPage: number) => {
     setPage(Math.min(Math.max(nextPage, 1), totalPages));
   };
@@ -111,18 +114,18 @@ export function useTable<T>({
   };
 
   return {
-    data: paginatedData,
-    search,
-    page,
-    pageSize,
-    totalPages,
-    totalItems: sortedData.length,
-    sortConfig,
-    actions: {
-      handleSearch: setSearch,
-      handlePageChange: _handlePageChange,
-      handlePageSizeChange: setPageSize,
-      handleSort: _handleSort,
+    __data: paginatedData,
+    __search: search,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: sortedData.length,
+    __sortConfig: sortConfig,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
+      __handleSort: _handleSort,
     },
   };
 }

@@ -9,27 +9,27 @@ export interface ToastMessage {
 }
 
 interface ToastState {
-  toasts: ToastMessage[];
-  add: (message: string, type: ToastType) => void;
-  remove: (id: string) => void;
+  __toasts: ToastMessage[];
+  __handleAdd: (message: string, type: ToastType) => void;
+  __handleRemove: (id: string) => void;
 }
 
 export const useToastStore = create<ToastState>((set) => ({
-  toasts: [],
-  add: (message, type) => {
+  __toasts: [],
+  __handleAdd: (message, type) => {
     const id = crypto.randomUUID();
     set((state) => ({
-      toasts: [...state.toasts, { id, message, type }],
+      __toasts: [...state.__toasts, { id, message, type }],
     }));
 
     setTimeout(() => {
       set((state) => ({
-        toasts: state.toasts.filter((toast) => toast.id !== id),
+        __toasts: state.__toasts.filter((toast) => toast.id !== id),
       }));
     }, 3000);
   },
-  remove: (id) =>
+  __handleRemove: (id) =>
     set((state) => ({
-      toasts: state.toasts.filter((toast) => toast.id !== id),
+      __toasts: state.__toasts.filter((toast) => toast.id !== id),
     })),
 }));

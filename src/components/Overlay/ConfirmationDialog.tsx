@@ -6,8 +6,8 @@ import { useConfirmStore, type ConfirmOptions } from "@/stores/useConfirmStore";
 import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function ConfirmationDialog() {
-  const { options, hide } = useConfirmStore();
-  const { isDarkMode } = useThemeStore();
+  const { __options: options, __handleHide: _handleHide } = useConfirmStore();
+  const { __isDarkMode: isDarkMode } = useThemeStore();
   const modalRef = useRef<BootstrapModal | null>(null);
   const [displayedOptions, setDisplayedOptions] =
     useState<ConfirmOptions | null>(null);
@@ -24,7 +24,7 @@ export default function ConfirmationDialog() {
 
     const _handleHidden = () => {
       setDisplayedOptions(null);
-      hide();
+      _handleHide();
     };
 
     modalElement.addEventListener("hidden.bs.modal", _handleHidden);
@@ -34,7 +34,7 @@ export default function ConfirmationDialog() {
       modal.dispose();
       modalRef.current = null;
     };
-  }, [hide]);
+  }, [_handleHide]);
 
   useEffect(() => {
     if (options) {
@@ -63,7 +63,7 @@ export default function ConfirmationDialog() {
 
   const _handleConfirm = () => {
     _handleDismiss();
-    displayedOptions?.onConfirm();
+    displayedOptions?.handleConfirm();
   };
 
   return (

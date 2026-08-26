@@ -19,7 +19,7 @@ export function PageHeader({
   description,
   actions = [],
 }: PageHeaderProps) {
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const visibleActions = actions.filter(
     (action) =>
       !action.permission || hasPermission(permissions, action.permission),

@@ -6,17 +6,17 @@ export interface ConfirmOptions {
   confirmText?: string;
   cancelText?: string;
   variant?: "danger" | "primary" | "warning" | "success";
-  onConfirm: () => void;
+  handleConfirm: () => void;
 }
 
 interface ConfirmState {
-  options: ConfirmOptions | null;
-  show: (options: ConfirmOptions) => void;
-  hide: () => void;
+  __options: ConfirmOptions | null;
+  __handleShow: (options: ConfirmOptions) => void;
+  __handleHide: () => void;
 }
 
 export const useConfirmStore = create<ConfirmState>((set) => ({
-  options: null,
-  show: (options) => set({ options }),
-  hide: () => set({ options: null }),
+  __options: null,
+  __handleShow: (__options) => set({ __options }),
+  __handleHide: () => set({ __options: null }),
 }));

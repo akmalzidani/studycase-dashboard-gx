@@ -8,12 +8,12 @@ import { create } from "zustand";
 import type { AuthSession, Permissions, User } from "@/types";
 
 interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  permissions: Permissions;
-  login: (session: AuthSession) => void;
-  logout: () => void;
-  checkSession: () => void;
+  __user: User | null;
+  __isAuthenticated: boolean;
+  __permissions: Permissions;
+  __handleLogin: (session: AuthSession) => void;
+  __handleLogout: () => void;
+  __handleCheckSession: () => void;
 }
 
 const getPermissions = (user: User | null): Permissions =>
@@ -22,38 +22,41 @@ const getPermissions = (user: User | null): Permissions =>
 const initialSession = authService.getValidSession();
 
 export const useAuthStore = create<AuthState>((set) => ({
-  user: initialSession?.user ?? null,
-  isAuthenticated: Boolean(initialSession),
-  permissions: getPermissions(initialSession?.user ?? null),
-  login: (session) => {
+  __user: initialSession?.user ?? null,
+  __isAuthenticated: Boolean(initialSession),
+  __permissions: getPermissions(initialSession?.user ?? null),
+  __handleLogin: (session) => {
     authService.saveSession(session);
     set({
-      user: session.user,
-      isAuthenticated: true,
-      permissions: getPermissions(session.user),
+      __user: session.user,
+      __isAuthenticated: true,
+      __permissions: getPermissions(session.user),
     });
   },
-  logout: () => {
+  __handleLogout: () => {
     authService.clearSession();
-    set({ user: null, isAuthenticated: false, permissions: {} });
+    set({ __user: null, __isAuthenticated: false, __permissions: {} });
   },
-  checkSession: () => {
+  __handleCheckSession: () => {
     const session = authService.getValidSession();
     set({
-      user: session?.user ?? null,
-      isAuthenticated: Boolean(session),
-      permissions: getPermissions(session?.user ?? null),
+      __user: session?.user ?? null,
+      __isAuthenticated: Boolean(session),
+      __permissions: getPermissions(session?.user ?? null),
     });
   },
 }));
 
 if (typeof window !== "undefined") {
-  const checkSession = () => useAuthStore.getState().checkSession();
+  const _handleCheckSession = () => {
+    const _handleCheckSession = useAuthStore.getState().__handleCheckSession;
+    _handleCheckSession();
+  };
 
   window.addEventListener("storage", (event) => {
     if (event.key === STORAGE_KEYS.AUTH_SESSION) {
-      checkSession();
+      _handleCheckSession();
     }
   });
-  window.addEventListener(AUTH_SESSION_INVALIDATED_EVENT, checkSession);
+  window.addEventListener(AUTH_SESSION_INVALIDATED_EVENT, _handleCheckSession);
 }

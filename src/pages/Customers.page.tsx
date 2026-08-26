@@ -32,19 +32,21 @@ import {
 
 export default function CustomersPage() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const [filters, setFilters] = useState({ subscription: "", status: "" });
   const [selectedDetail, setSelectedDetail] = useState<Customer | null>(null);
   const {
-    customers,
-    isLoading,
-    isSubmitting,
-    createCustomer,
-    updateCustomer,
-    deleteCustomer,
+    __customers: customers,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateCustomer: _handleCreateCustomer,
+    __handleUpdateCustomer: _handleUpdateCustomer,
+    __handleDeleteCustomer: _handleDeleteCustomer,
   } = useCustomers();
-  const { subscriptions, isLoading: isLoadingSubscriptions } =
-    useSubscriptions();
+  const {
+    __subscriptions: subscriptions,
+    __isLoading: isLoadingSubscriptions,
+  } = useSubscriptions();
 
   const tableFields = [
     {
@@ -83,28 +85,42 @@ export default function CustomersPage() {
       ? [{ value: subscription.id, label: subscription.packageName }]
       : [],
   );
-  const table = useTable({
+  const {
+    __data: data,
+    __search: search,
+    __sortConfig: sortConfig,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: totalItems,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handleSort: _handleSort,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
+    },
+  } = useTable({
     data: customers,
     fields: tableFields,
     filters: tableFilters,
   });
 
   const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.CUSTOMER_FORM);
-  const openDetail = (customer: Customer) => {
+  const _handleOpenDetail = (customer: Customer) => {
     setSelectedDetail(customer);
     showOffcanvas(OVERLAY_TARGETS.CUSTOMER_DETAIL);
   };
   const {
-    selectedItem: selectedCustomer,
-    openCreateForm,
-    openEditForm,
-    confirmDelete,
+    __selectedItem: selectedCustomer,
+    __handleOpenCreateForm: _handleOpenCreateForm,
+    __handleOpenEditForm: _handleOpenEditForm,
+    __handleConfirmDelete: _handleConfirmDelete,
   } = useCrudFormActions<Customer>({
     deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
       `Are you sure you want to delete ${customer.name}?`,
-    onOpenForm: _handleFormOpen,
-    onDelete: deleteCustomer,
+    handleOpenForm: _handleFormOpen,
+    handleDelete: _handleDeleteCustomer,
   });
 
   const _handleSubmit = async (values: CustomerFormValues) => {
@@ -122,8 +138,8 @@ export default function CustomersPage() {
     };
 
     return selectedCustomer?.id
-      ? updateCustomer(selectedCustomer.id, payload)
-      : createCustomer(payload);
+      ? _handleUpdateCustomer(selectedCustomer.id, payload)
+      : _handleCreateCustomer(payload);
   };
 
   useEffect(() => {
@@ -137,7 +153,7 @@ export default function CustomersPage() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = table.data.map((customer) => [
+  const tableRows = data.map((customer) => [
     customer.id ?? "-",
     <div className="d-grid gap-1">
       <span className="fw-semibold">{customer.name}</span>
@@ -177,7 +193,7 @@ export default function CustomersPage() {
             aria-label={`View ${customer.name} details`}
             data-bs-title={`View ${customer.name} details`}
             data-bs-toggle="tooltip"
-            onClick={() => openDetail(customer)}
+            onClick={() => _handleOpenDetail(customer)}
           >
             <BsEye />
           </button>
@@ -189,7 +205,7 @@ export default function CustomersPage() {
               data-bs-title={`Edit ${customer.name}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => openEditForm(customer)}
+              onClick={() => _handleOpenEditForm(customer)}
             >
               <BsPencilSquare />
             </button>
@@ -202,7 +218,7 @@ export default function CustomersPage() {
               data-bs-title={`Delete ${customer.name}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => confirmDelete(customer)}
+              onClick={() => _handleConfirmDelete(customer)}
             >
               <BsTrash />
             </button>
@@ -220,8 +236,8 @@ export default function CustomersPage() {
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
                 <TableSearch
-                  value={table.search}
-                  actions={{ handleChange: table.actions.handleSearch }}
+                  value={search}
+                  actions={{ handleChange: _handleSearch }}
                 />
               </div>
               <TableFilter
@@ -259,7 +275,7 @@ export default function CustomersPage() {
                   isLoadingSubscriptions ||
                   subscriptions.length === 0
                 }
-                onClick={openCreateForm}
+                onClick={_handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add Customer
@@ -269,31 +285,31 @@ export default function CustomersPage() {
 
           <div ref={tableContainerRef}>
             <Table
-            ths={[
-              { content: "ID", sortKey: "id" },
-              { content: "User Information", sortKey: "userInformation" },
-              "Subscription",
-              "Status",
-              { className: "text-end", content: "Actions" },
-            ]}
-            tds={tableRows}
-            isLoading={isLoading}
-            isWrapHeader
-            emptyMessage="There are no customers yet. Add your first customer."
-            sortConfig={table.sortConfig}
-            actions={{ handleSort: table.actions.handleSort }}
+              ths={[
+                { content: "ID", sortKey: "id" },
+                { content: "User Information", sortKey: "userInformation" },
+                "Subscription",
+                "Status",
+                { className: "text-end", content: "Actions" },
+              ]}
+              tds={tableRows}
+              isLoading={isLoading}
+              isWrapHeader
+              emptyMessage="There are no customers yet. Add your first customer."
+              sortConfig={sortConfig}
+              actions={{ handleSort: _handleSort }}
             />
           </div>
 
           {!isLoading ? (
             <TablePagination
-              page={table.page}
-              totalPages={table.totalPages}
-              totalItems={table.totalItems}
-              pageSize={table.pageSize}
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
               actions={{
-                handlePageChange: table.actions.handlePageChange,
-                handlePageSizeChange: table.actions.handlePageSizeChange,
+                handlePageChange: _handlePageChange,
+                handlePageSizeChange: _handlePageSizeChange,
               }}
             />
           ) : null}

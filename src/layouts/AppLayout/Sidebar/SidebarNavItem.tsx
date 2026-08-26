@@ -12,7 +12,7 @@ export function SidebarNavItem({
   isOpen: boolean;
 }) {
   const { pathname } = useLocation();
-  const { toggleSidebar } = useSidebarStore();
+  const { __handleToggleSidebar: _handleToggleSidebar } = useSidebarStore();
   const hasChildren: boolean = (item.children?.length ?? 0) > 0;
 
   const isChildActive: boolean = hasChildren
@@ -68,7 +68,7 @@ export function SidebarNavItem({
           if (isOpen) {
             setIsExpanded(!isExpanded);
           } else {
-            toggleSidebar();
+            _handleToggleSidebar();
             setIsExpanded(true);
           }
         }}

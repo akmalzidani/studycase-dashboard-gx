@@ -35,7 +35,7 @@ const tabs: UserManagementTab[] = [
 ];
 
 export default function UsersPage() {
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const visibleTabs = tabs.filter((tab) =>
     hasPermission(permissions, tab.permission),
   );

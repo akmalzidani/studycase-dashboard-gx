@@ -45,7 +45,9 @@ export function Pagination({
           <select
             className="form-select form-select-sm w-auto"
             value={pageSize}
-            onChange={(event) => actions.handlePageSizeChange(Number(event.target.value))}
+            onChange={(event) =>
+              actions.handlePageSizeChange(Number(event.target.value))
+            }
             aria-label="Entries per page"
           >
             {pageSizeOptions.map((option) => (

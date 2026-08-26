@@ -107,7 +107,7 @@ export function CustomerForm({
       }
     >
       <form id={FORM_IDS.CUSTOMER} onSubmit={_handleSubmit} className="row">
-        <div className="col-12">
+        <div className="col-12 col-md-6">
           <FormTextInput
             id="customer-name"
             label="Name"
@@ -131,7 +131,9 @@ export function CustomerForm({
             value={values.email}
             required
             disabled={isSubmitting}
-            onChange={(event) => _handleValueChange("email", event.target.value)}
+            onChange={(event) =>
+              _handleValueChange("email", event.target.value)
+            }
           />
         </div>
         <div className="col-12 col-md-6">

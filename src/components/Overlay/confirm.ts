@@ -1,7 +1,8 @@
 import { useConfirmStore, type ConfirmOptions } from "@/stores/useConfirmStore";
 
 export function confirm(options: ConfirmOptions) {
-  useConfirmStore.getState().show(options);
+  const _handleShow = useConfirmStore.getState().__handleShow;
+  _handleShow(options);
 }
 
 export type { ConfirmOptions };

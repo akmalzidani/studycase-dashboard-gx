@@ -22,9 +22,11 @@ import { useState } from "react";
 import { BsKey, BsPencilSquare, BsPersonCircle } from "react-icons/bs";
 
 export default function ProfilePage() {
-  const user = useAuthStore((store) => store.user);
-  const checkSession = useAuthStore((store) => store.checkSession);
-  const permissions = useAuthStore((store) => store.permissions);
+  const user = useAuthStore((store) => store.__user);
+  const _handleCheckSession = useAuthStore(
+    (store) => store.__handleCheckSession,
+  );
+  const permissions = useAuthStore((store) => store.__permissions);
   const canUpdateProfile = hasPermission(
     permissions,
     PERMISSION_KEYS.PROFILE.UPDATE,
@@ -49,7 +51,7 @@ export default function ProfilePage() {
         email: values.email,
       });
       authService.updateSessionUser(updatedUser);
-      checkSession();
+      _handleCheckSession();
       toast.success("Profile updated successfully.");
       return true;
     } catch (error) {
@@ -77,7 +79,7 @@ export default function ProfilePage() {
         newPassword: values.newPassword,
       });
       authService.updateSessionUser(updatedUser);
-      checkSession();
+      _handleCheckSession();
       toast.success("Password changed successfully.");
       return true;
     } catch (error) {

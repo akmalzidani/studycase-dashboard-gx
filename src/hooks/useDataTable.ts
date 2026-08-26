@@ -10,19 +10,19 @@ export interface UseDataTableOptions<T> {
 }
 
 export interface UseDataTableReturn<T> {
-  data: T[];
-  search: string;
-  isSearching: boolean;
-  sortConfig: { key: keyof T | null; direction: "asc" | "desc" };
-  page: number;
-  pageSize: number;
-  totalPages: number;
-  totalItems: number;
-  actions: {
-    handleSearch: (value: string) => void;
-    handleSort: (key: keyof T) => void;
-    handlePageChange: (page: number) => void;
-    handlePageSizeChange: (size: number) => void;
+  __data: T[];
+  __search: string;
+  __isSearching: boolean;
+  __sortConfig: { key: keyof T | null; direction: "asc" | "desc" };
+  __page: number;
+  __pageSize: number;
+  __totalPages: number;
+  __totalItems: number;
+  __actions: {
+    __handleSearch: (value: string) => void;
+    __handleSort: (key: keyof T) => void;
+    __handlePageChange: (page: number) => void;
+    __handlePageSizeChange: (size: number) => void;
   };
 }
 
@@ -80,6 +80,10 @@ export function useDataTable<T extends object>({
   const startIndex = (page - 1) * pageSize;
   const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
 
+  const _handleSearch = (value: string) => setSearch(value);
+  const _handlePageChange = (nextPage: number) => setPage(nextPage);
+  const _handlePageSizeChange = (size: number) => setPageSize(size);
+
   const _handleSort = (key: keyof T) => {
     let direction: "asc" | "desc" = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -95,19 +99,19 @@ export function useDataTable<T extends object>({
   }, [totalPages]);
 
   return {
-    data: paginatedData,
-    search,
-    isSearching,
-    sortConfig,
-    page,
-    pageSize,
-    totalPages,
-    totalItems: sortedData.length,
-    actions: {
-      handleSearch: setSearch,
-      handleSort: _handleSort,
-      handlePageChange: setPage,
-      handlePageSizeChange: setPageSize,
+    __data: paginatedData,
+    __search: search,
+    __isSearching: isSearching,
+    __sortConfig: sortConfig,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: sortedData.length,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handleSort: _handleSort,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
     },
   };
 }

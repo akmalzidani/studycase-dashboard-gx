@@ -6,7 +6,8 @@ import { useAuthStore } from "./stores/useAuthStore";
 
 function App() {
   useEffect(() => {
-    useAuthStore.getState().checkSession();
+    const _handleCheckSession = useAuthStore.getState().__handleCheckSession;
+    _handleCheckSession();
   }, []);
 
   return (

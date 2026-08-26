@@ -8,7 +8,11 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ requiredPermission }: ProtectedRouteProps) {
-  const { isAuthenticated, user, permissions } = useAuthStore();
+  const {
+    __isAuthenticated: isAuthenticated,
+    __user: user,
+    __permissions: permissions,
+  } = useAuthStore();
 
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;

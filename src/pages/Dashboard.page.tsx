@@ -9,7 +9,7 @@ import { calculateDashboardMetrics } from "@/helpers/dashboard.helpers";
 import { useAuthStore } from "@/stores/useAuthStore";
 
 function DashboardPage() {
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const canReadCustomers = hasPermission(
     permissions,
     PERMISSION_KEYS.CUSTOMERS.READ,
@@ -18,8 +18,10 @@ function DashboardPage() {
     permissions,
     PERMISSION_KEYS.PROSPECT.READ,
   );
-  const { customers, isLoading: isLoadingCustomers } = useCustomers();
-  const { prospects, isLoading: isLoadingProspects } = useProspects();
+  const { __customers: customers, __isLoading: isLoadingCustomers } =
+    useCustomers();
+  const { __prospects: prospects, __isLoading: isLoadingProspects } =
+    useProspects();
 
   const metrics = calculateDashboardMetrics(customers, prospects);
   const isLoading = isLoadingCustomers || isLoadingProspects;

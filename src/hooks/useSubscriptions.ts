@@ -10,13 +10,14 @@ const getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useSubscriptions() {
-  const subscriptions = useSubscriptionStore((state) => state.subscriptions);
-
-  const isLoading = useSubscriptionStore((state) => state.isLoading);
+  const subscriptions = useSubscriptionStore((state) => state.__subscriptions);
+  const isLoading = useSubscriptionStore((state) => state.__isLoading);
   const setSubscriptions = useSubscriptionStore(
-    (state) => state.setSubscriptions,
+    (state) => state.__handleSetSubscriptions,
   );
-  const setIsLoading = useSubscriptionStore((state) => state.setIsLoading);
+  const setIsLoading = useSubscriptionStore(
+    (state) => state.__handleSetIsLoading,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -34,12 +35,12 @@ export function useSubscriptions() {
     fetchSubscriptions();
   }, [setIsLoading, setSubscriptions]);
 
-  const createSubscription = async (payload: SubscriptionPayload) => {
+  const __handleCreateSubscription = async (payload: SubscriptionPayload) => {
     setIsSubmitting(true);
     try {
       const subscription = await subscriptionService.create(payload);
       setSubscriptions([
-        ...useSubscriptionStore.getState().subscriptions,
+        ...useSubscriptionStore.getState().__subscriptions,
         subscription,
       ]);
       toast.success("Subscription package added successfully.");
@@ -54,7 +55,7 @@ export function useSubscriptions() {
     }
   };
 
-  const updateSubscription = async (
+  const __handleUpdateSubscription = async (
     id: string,
     payload: SubscriptionPayload,
   ) => {
@@ -64,7 +65,9 @@ export function useSubscriptions() {
       setSubscriptions(
         useSubscriptionStore
           .getState()
-          .subscriptions.map((item) => (item.id === id ? subscription : item)),
+          .__subscriptions.map((item) =>
+            item.id === id ? subscription : item,
+          ),
       );
       toast.success("Subscription package updated successfully.");
       return true;
@@ -78,14 +81,14 @@ export function useSubscriptions() {
     }
   };
 
-  const deleteSubscription = async (id: string) => {
+  const __handleDeleteSubscription = async (id: string) => {
     setIsSubmitting(true);
     try {
       await subscriptionService.remove(id);
       setSubscriptions(
         useSubscriptionStore
           .getState()
-          .subscriptions.filter((item) => item.id !== id),
+          .__subscriptions.filter((item) => item.id !== id),
       );
       toast.success("Subscription package deleted successfully.");
     } catch (error) {
@@ -97,25 +100,25 @@ export function useSubscriptions() {
     }
   };
 
-  const resetSubscriptions = async () => {
+  const __handleResetSubscriptions = async () => {
     setIsSubmitting(true);
     try {
       setSubscriptions(await subscriptionService.reset());
-      toast.success("Subscription data reset successfully.");
+      toast.info("Subscription data has been restored to its initial state.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to reset subscriptions."));
+      toast.error(getErrorMessage(error, "Failed to reset subscription data."));
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return {
-    subscriptions,
-    isLoading,
-    isSubmitting,
-    createSubscription,
-    updateSubscription,
-    deleteSubscription,
-    resetSubscriptions,
+    __subscriptions: subscriptions,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateSubscription,
+    __handleUpdateSubscription,
+    __handleDeleteSubscription,
+    __handleResetSubscriptions,
   };
 }

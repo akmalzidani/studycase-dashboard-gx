@@ -21,22 +21,28 @@ import type { ManagedUser, UserFormValues } from "./types";
 
 export function UserTab() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const permissions = useAuthStore((store) => store.permissions);
+  const permissions = useAuthStore((store) => store.__permissions);
   const [filters, setFilters] = useState({ role: "", status: "" });
-  const { roles, isLoading: isLoadingRoles } = useRoles();
-  const { users, isLoading, isSubmitting, createUser, updateUser, deleteUser } =
-    useUsers();
+  const { __roles: roles, __isLoading: isLoadingRoles } = useRoles();
+  const {
+    __users: users,
+    __isLoading: isLoading,
+    __isSubmitting: isSubmitting,
+    __handleCreateUser: _handleCreateUser,
+    __handleUpdateUser: _handleUpdateUser,
+    __handleDeleteUser: _handleDeleteUser,
+  } = useUsers();
   const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.USER_FORM);
   const {
-    selectedItem: selectedUser,
-    openCreateForm,
-    openEditForm,
-    confirmDelete,
+    __selectedItem: selectedUser,
+    __handleOpenCreateForm: _handleOpenCreateForm,
+    __handleOpenEditForm: _handleOpenEditForm,
+    __handleConfirmDelete: _handleConfirmDelete,
   } = useCrudFormActions<ManagedUser>({
     deleteTitle: "Delete user",
     deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
-    onOpenForm: _handleFormOpen,
-    onDelete: deleteUser,
+    handleOpenForm: _handleFormOpen,
+    handleDelete: _handleDeleteUser,
   });
 
   const usersWithRoleNames = users.map((user) => ({
@@ -68,7 +74,21 @@ export function UserTab() {
   const roleOptions = roles.flatMap((role) =>
     role.id ? [{ value: role.id, label: role.name }] : [],
   );
-  const table = useTable({
+  const {
+    __data: data,
+    __search: search,
+    __sortConfig: sortConfig,
+    __page: page,
+    __pageSize: pageSize,
+    __totalPages: totalPages,
+    __totalItems: totalItems,
+    __actions: {
+      __handleSearch: _handleSearch,
+      __handleSort: _handleSort,
+      __handlePageChange: _handlePageChange,
+      __handlePageSizeChange: _handlePageSizeChange,
+    },
+  } = useTable({
     data: usersWithRoleNames,
     fields: tableFields,
     filters: tableFilters,
@@ -82,8 +102,8 @@ export function UserTab() {
     };
 
     return selectedUser?.id
-      ? updateUser(selectedUser.id, payload)
-      : createUser(payload);
+      ? _handleUpdateUser(selectedUser.id, payload)
+      : _handleCreateUser(payload);
   };
 
   useEffect(() => {
@@ -97,7 +117,7 @@ export function UserTab() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = table.data.map((user) => [
+  const tableRows = data.map((user) => [
     <div className="d-grid gap-1">
       <span className="fw-semibold">{user.name}</span>
       <span className="d-flex align-items-center gap-2 small text-decoration-none">
@@ -121,7 +141,7 @@ export function UserTab() {
               data-bs-title={`Edit ${user.name}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => openEditForm(user)}
+              onClick={() => _handleOpenEditForm(user)}
             >
               <BsPencilSquare />
             </button>
@@ -134,7 +154,7 @@ export function UserTab() {
               data-bs-title={`Delete ${user.name}`}
               data-bs-toggle="tooltip"
               disabled={isSubmitting}
-              onClick={() => confirmDelete(user)}
+              onClick={() => _handleConfirmDelete(user)}
             >
               <BsTrash />
             </button>
@@ -152,8 +172,8 @@ export function UserTab() {
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
                 <TableSearch
-                  value={table.search}
-                  actions={{ handleChange: table.actions.handleSearch }}
+                  value={search}
+                  actions={{ handleChange: _handleSearch }}
                 />
               </div>
               <TableFilter
@@ -186,7 +206,7 @@ export function UserTab() {
                 className="btn btn-primary"
                 type="button"
                 disabled={isSubmitting || isLoading || isLoadingRoles}
-                onClick={openCreateForm}
+                onClick={_handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add User
@@ -196,30 +216,30 @@ export function UserTab() {
 
           <div ref={tableContainerRef}>
             <Table
-            ths={[
-              { content: "User Information", sortKey: "userInformation" },
-              "Role",
-              "Status",
-              { className: "text-end", content: "Actions" },
-            ]}
-            tds={tableRows}
-            isLoading={isLoading}
-            isWrapHeader
-            emptyMessage="No users yet. Add a user to start managing access."
-            sortConfig={table.sortConfig}
-            actions={{ handleSort: table.actions.handleSort }}
+              ths={[
+                { content: "User Information", sortKey: "userInformation" },
+                "Role",
+                "Status",
+                { className: "text-end", content: "Actions" },
+              ]}
+              tds={tableRows}
+              isLoading={isLoading}
+              isWrapHeader
+              emptyMessage="No users yet. Add a user to start managing access."
+              sortConfig={sortConfig}
+              actions={{ handleSort: _handleSort }}
             />
           </div>
 
           {!isLoading ? (
             <TablePagination
-              page={table.page}
-              totalPages={table.totalPages}
-              totalItems={table.totalItems}
-              pageSize={table.pageSize}
+              page={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={pageSize}
               actions={{
-                handlePageChange: table.actions.handlePageChange,
-                handlePageSizeChange: table.actions.handlePageSizeChange,
+                handlePageChange: _handlePageChange,
+                handlePageSizeChange: _handlePageSizeChange,
               }}
             />
           ) : null}

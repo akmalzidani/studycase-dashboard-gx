@@ -60,11 +60,7 @@ const setPermissionValue = (
   return next;
 };
 
-export function RoleForm({
-  isSubmitting,
-  item: role,
-  actions,
-}: RoleFormProps) {
+export function RoleForm({ isSubmitting, item: role, actions }: RoleFormProps) {
   const [values, setValues] = useState<RoleFormValues>({
     name: "",
     description: "",

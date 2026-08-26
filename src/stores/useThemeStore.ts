@@ -3,10 +3,10 @@ import { create } from "zustand";
 type Theme = "light" | "dark";
 
 interface ThemeState {
-  theme: Theme;
-  isDarkMode: boolean;
-  toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
+  __theme: Theme;
+  __isDarkMode: boolean;
+  __handleToggleTheme: () => void;
+  __handleSetTheme: (theme: Theme) => void;
 }
 
 // Helper function to apply the attribute to the document element
@@ -29,17 +29,17 @@ export const useThemeStore = create<ThemeState>((set) => {
   const theme = getInitialTheme();
 
   return {
-    theme,
-    isDarkMode: theme === "dark",
-    toggleTheme: () =>
+    __theme: theme,
+    __isDarkMode: theme === "dark",
+    __handleToggleTheme: () =>
       set((state) => {
-        const nextTheme = state.theme === "light" ? "dark" : "light";
+        const nextTheme = state.__theme === "light" ? "dark" : "light";
         applyThemeToDocument(nextTheme);
-        return { theme: nextTheme, isDarkMode: nextTheme === "dark" };
+        return { __theme: nextTheme, __isDarkMode: nextTheme === "dark" };
       }),
-    setTheme: (theme) => {
-      applyThemeToDocument(theme);
-      set({ theme, isDarkMode: theme === "dark" });
+    __handleSetTheme: (__theme) => {
+      applyThemeToDocument(__theme);
+      set({ __theme, __isDarkMode: __theme === "dark" });
     },
   };
 });
@@ -51,8 +51,8 @@ if (typeof window !== "undefined") {
       if (newTheme === "light" || newTheme === "dark") {
         document.documentElement.dataset.bsTheme = newTheme;
         useThemeStore.setState({
-          theme: newTheme,
-          isDarkMode: newTheme === "dark",
+          __theme: newTheme,
+          __isDarkMode: newTheme === "dark",
         });
       }
     }

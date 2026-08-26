@@ -7,8 +7,9 @@ import { BsList, BsMoonStarsFill, BsSunFill } from "react-icons/bs";
 import { HeaderProfileDropdown } from "./HeaderProfileDropdown";
 
 function Header() {
-  const { toggleSidebar } = useSidebarStore();
-  const { isDarkMode, toggleTheme } = useThemeStore();
+  const { __handleToggleSidebar: _handleToggleSidebar } = useSidebarStore();
+  const { __isDarkMode: isDarkMode, __handleToggleTheme: _handleToggleTheme } =
+    useThemeStore();
   const pageTitle = usePageTitle();
   const nextTheme = isDarkMode ? "light" : "dark";
   const sidebarToggleRef = useRef<HTMLButtonElement>(null);
@@ -41,7 +42,7 @@ function Header() {
           type="button"
           className={`btn hover-bg-light border-0 p-1 px-2 ${isDarkMode ? "text-white" : "text-dark"}`}
           ref={sidebarToggleRef}
-          onClick={toggleSidebar}
+          onClick={_handleToggleSidebar}
           aria-label="Toggle sidebar"
           data-bs-toggle="tooltip"
           data-bs-placement="bottom"
@@ -56,7 +57,7 @@ function Header() {
           type="button"
           className="btn hover-bg-light border-0 p-1 px-2"
           ref={themeToggleRef}
-          onClick={toggleTheme}
+          onClick={_handleToggleTheme}
           aria-label={`Switch to ${nextTheme} mode`}
           aria-pressed={isDarkMode}
           data-bs-toggle="tooltip"
