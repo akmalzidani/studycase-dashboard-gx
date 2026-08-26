@@ -5,6 +5,7 @@ import {
 import { TablePagination } from "@/components/common/TablePagination";
 import { TableSearch } from "@/components/common/TableSearch";
 import { Table } from "@/components/common/Table";
+import { TableRowSubscription } from "@/components/TableRows/TableRowSubscription";
 import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
@@ -17,11 +18,10 @@ import { useTable } from "@/hooks/useTable";
 import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
-import { formatCurrency, formatSpeed } from "@/helpers/formatters.helpers";
 
 import { Tooltip } from "bootstrap";
 import { useEffect, useRef } from "react";
-import { BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
 
 export default function SubscriptionPage() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -109,47 +109,6 @@ export default function SubscriptionPage() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = data.map((subscription) => [
-    <span className="fw-semibold">{subscription.packageName}</span>,
-    formatSpeed(subscription.speed),
-    <span className="font-monospace">
-      {formatCurrency(subscription.monthlyFee)}
-    </span>,
-    {
-      className: "text-end",
-      content: (
-        <div className="d-flex justify-content-end gap-2">
-          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.UPDATE) ? (
-            <button
-              type="button"
-              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-              aria-label={`Edit ${subscription.packageName}`}
-              data-bs-title={`Edit ${subscription.packageName}`}
-              data-bs-toggle="tooltip"
-              disabled={isSubmitting}
-              onClick={() => _handleOpenEditForm(subscription)}
-            >
-              <BsPencilSquare />
-            </button>
-          ) : null}
-          {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.DELETE) ? (
-            <button
-              type="button"
-              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-              aria-label={`Hapus ${subscription.packageName}`}
-              data-bs-title={`Hapus ${subscription.packageName}`}
-              data-bs-toggle="tooltip"
-              disabled={isSubmitting}
-              onClick={() => _handleConfirmDelete(subscription)}
-            >
-              <BsTrash />
-            </button>
-          ) : null}
-        </div>
-      ),
-    },
-  ]);
-
   return (
     <>
       <div className="card">
@@ -182,13 +141,26 @@ export default function SubscriptionPage() {
                 { content: "Monthly fee", sortKey: "monthlyFee" },
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={tableRows}
+              tds={data}
               isLoading={isLoading}
               isWrapHeader
               emptyMessage="There are no subscription packages yet. Add your first package."
               sortConfig={sortConfig}
               actions={{ handleSort: _handleSort }}
-            />
+            >
+              {data.map((subscription) => (
+                <TableRowSubscription
+                  key={subscription.id}
+                  subscription={subscription}
+                  permissions={permissions}
+                  isSubmitting={isSubmitting}
+                  actions={{
+                    handleEdit: _handleOpenEditForm,
+                    handleDelete: _handleConfirmDelete,
+                  }}
+                />
+              ))}
+            </Table>
           </div>
 
           {!isLoading ? (

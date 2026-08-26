@@ -1,4 +1,3 @@
-import { Badge } from "@/components/common/Badge";
 import { TableFilter } from "@/components/common/TableFilter";
 import { TablePagination } from "@/components/common/TablePagination";
 import { TableSearch } from "@/components/common/TableSearch";
@@ -15,7 +14,8 @@ import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Tooltip } from "bootstrap";
 import { useEffect, useRef, useState } from "react";
-import { BsEnvelope, BsPencilSquare, BsPlusLg, BsTrash } from "react-icons/bs";
+import { BsPlusLg } from "react-icons/bs";
+import { TableRowUser } from "../TableRows/TableRowUser";
 import { UserForm } from "../Forms/UserForm";
 import type { ManagedUser, UserFormValues } from "./types";
 
@@ -117,53 +117,6 @@ export function UserTab() {
     return () => tooltips.forEach((tooltip) => tooltip.dispose());
   });
 
-  const tableRows = data.map((user) => [
-    <div className="d-grid gap-1">
-      <span className="fw-semibold">{user.name}</span>
-      <span className="d-flex align-items-center gap-2 small text-decoration-none">
-        <BsEnvelope aria-hidden="true" />
-        {user.email}
-      </span>
-    </div>,
-    user.roleName,
-    <Badge variant={user.status === "Active" ? "success" : "danger"}>
-      {user.status}
-    </Badge>,
-    {
-      className: "text-end",
-      content: (
-        <div className="d-flex justify-content-end gap-2">
-          {hasPermission(permissions, PERMISSION_KEYS.USERS.UPDATE) ? (
-            <button
-              type="button"
-              className="btn btn-sm border-0 bg-transparent p-0 text-primary"
-              aria-label={`Edit ${user.name}`}
-              data-bs-title={`Edit ${user.name}`}
-              data-bs-toggle="tooltip"
-              disabled={isSubmitting}
-              onClick={() => _handleOpenEditForm(user)}
-            >
-              <BsPencilSquare />
-            </button>
-          ) : null}
-          {hasPermission(permissions, PERMISSION_KEYS.USERS.DELETE) ? (
-            <button
-              type="button"
-              className="btn btn-sm border-0 bg-transparent p-0 text-danger"
-              aria-label={`Delete ${user.name}`}
-              data-bs-title={`Delete ${user.name}`}
-              data-bs-toggle="tooltip"
-              disabled={isSubmitting}
-              onClick={() => _handleConfirmDelete(user)}
-            >
-              <BsTrash />
-            </button>
-          ) : null}
-        </div>
-      ),
-    },
-  ]);
-
   return (
     <>
       <div className="card">
@@ -222,13 +175,26 @@ export function UserTab() {
                 "Status",
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={tableRows}
+              tds={data}
               isLoading={isLoading}
               isWrapHeader
               emptyMessage="No users yet. Add a user to start managing access."
               sortConfig={sortConfig}
               actions={{ handleSort: _handleSort }}
-            />
+            >
+              {data.map((user) => (
+                <TableRowUser
+                  key={user.id}
+                  item={user}
+                  permissions={permissions}
+                  isSubmitting={isSubmitting}
+                  actions={{
+                    handleEdit: _handleOpenEditForm,
+                    handleDelete: _handleConfirmDelete,
+                  }}
+                />
+              ))}
+            </Table>
           </div>
 
           {!isLoading ? (
