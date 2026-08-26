@@ -30,9 +30,19 @@ function Header() {
 
     if (!themeToggle) return;
 
-    const tooltip = new Tooltip(themeToggle);
+    const tooltip = Tooltip.getOrCreateInstance(themeToggle);
 
     return () => tooltip.dispose();
+  }, []);
+
+  useEffect(() => {
+    const themeToggle = themeToggleRef.current;
+
+    if (!themeToggle) return;
+
+    Tooltip.getOrCreateInstance(themeToggle).setContent({
+      ".tooltip-inner": `Switch to ${nextTheme} mode`,
+    });
   }, [nextTheme]);
 
   return (
