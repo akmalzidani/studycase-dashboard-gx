@@ -1,4 +1,4 @@
-import { Tooltip } from "bootstrap";
+import { initializeTooltips } from "@/helpers/tooltip.helpers";
 import { useEffect, useRef, type ReactNode } from "react";
 import { BsEye, BsPencilSquare, BsTrash } from "react-icons/bs";
 import type { DefaultRowAction, RowActionsConfig } from "./types";
@@ -21,16 +21,7 @@ const ACTION_BUTTON_CLASS_NAME = "btn btn-sm border-0 bg-transparent p-0";
 export function RowActions<T>({ item, actions }: RowActionsProps<T>) {
   const actionsRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const actionButtons =
-      actionsRef.current?.querySelectorAll<HTMLButtonElement>(
-        '[data-bs-toggle="tooltip"]',
-      );
-    if (!actionButtons) return;
-
-    const tooltips = Array.from(actionButtons, (button) => new Tooltip(button));
-    return () => tooltips.forEach((tooltip) => tooltip.dispose());
-  });
+  useEffect(() => initializeTooltips(actionsRef.current));
 
   const defaultActions: DefaultActionDefinition<T>[] = [
     {

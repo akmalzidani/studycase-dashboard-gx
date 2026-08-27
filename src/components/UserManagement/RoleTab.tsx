@@ -10,7 +10,7 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Role } from "@/types";
-import { Tooltip } from "bootstrap";
+import { initializeTooltips } from "@/helpers/tooltip.helpers";
 import { useEffect, useRef } from "react";
 
 import { BsPlusLg } from "react-icons/bs";
@@ -79,16 +79,7 @@ export function RoleTab() {
     return isSaved;
   };
 
-  useEffect(() => {
-    const tooltips = Array.from(
-      tableContainerRef.current?.querySelectorAll<HTMLElement>(
-        '[data-bs-toggle="tooltip"]',
-      ) ?? [],
-      (element) => Tooltip.getOrCreateInstance(element),
-    );
-
-    return () => tooltips.forEach((tooltip) => tooltip.dispose());
-  });
+  useEffect(() => initializeTooltips(tableContainerRef.current));
 
   return (
     <>

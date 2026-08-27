@@ -25,7 +25,7 @@ import type { Prospect } from "@/types";
 
 import { Badge } from "@/components/common/Badge";
 import { formatSpeed, getWhatsAppUrl } from "@/helpers/formatters.helpers";
-import { Tooltip } from "bootstrap";
+import { initializeTooltips } from "@/helpers/tooltip.helpers";
 import { useEffect, useRef, useState } from "react";
 import {
   BsEnvelope,
@@ -143,16 +143,7 @@ export default function ProspectPage() {
       : __handleCreateProspect(payload);
   };
 
-  useEffect(() => {
-    const tooltips = Array.from(
-      tableContainerRef.current?.querySelectorAll<HTMLElement>(
-        '[data-bs-toggle="tooltip"]',
-      ) ?? [],
-      (element) => Tooltip.getOrCreateInstance(element),
-    );
-
-    return () => tooltips.forEach((tooltip) => tooltip.dispose());
-  });
+  useEffect(() => initializeTooltips(tableContainerRef.current));
 
   return (
     <>

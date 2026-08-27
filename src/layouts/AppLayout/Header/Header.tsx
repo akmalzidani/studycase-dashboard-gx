@@ -1,5 +1,8 @@
 import { useEffect, useRef } from "react";
-import { Tooltip } from "bootstrap";
+import {
+  initializeTooltip,
+  setTooltipContent,
+} from "@/helpers/tooltip.helpers";
 import { useSidebarStore } from "@/stores/useSidebarStore";
 import { useThemeStore } from "@/stores/useThemeStore";
 import { usePageTitle } from "@/hooks/usePageTitle";
@@ -15,34 +18,12 @@ function Header() {
   const sidebarToggleRef = useRef<HTMLButtonElement>(null);
   const themeToggleRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const sidebarToggle = sidebarToggleRef.current;
+  useEffect(() => initializeTooltip(sidebarToggleRef.current), []);
 
-    if (!sidebarToggle) return;
-
-    const tooltip = new Tooltip(sidebarToggle);
-
-    return () => tooltip.dispose();
-  }, []);
+  useEffect(() => initializeTooltip(themeToggleRef.current), []);
 
   useEffect(() => {
-    const themeToggle = themeToggleRef.current;
-
-    if (!themeToggle) return;
-
-    const tooltip = Tooltip.getOrCreateInstance(themeToggle);
-
-    return () => tooltip.dispose();
-  }, []);
-
-  useEffect(() => {
-    const themeToggle = themeToggleRef.current;
-
-    if (!themeToggle) return;
-
-    Tooltip.getOrCreateInstance(themeToggle).setContent({
-      ".tooltip-inner": `Switch to ${nextTheme} mode`,
-    });
+    setTooltipContent(themeToggleRef.current, `Switch to ${nextTheme} mode`);
   }, [nextTheme]);
 
   return (

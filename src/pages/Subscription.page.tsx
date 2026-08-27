@@ -19,7 +19,7 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Subscription } from "@/types";
 
-import { Tooltip } from "bootstrap";
+import { initializeTooltips } from "@/helpers/tooltip.helpers";
 import { useEffect, useRef } from "react";
 import { BsPlusLg } from "react-icons/bs";
 
@@ -89,16 +89,7 @@ export default function SubscriptionPage() {
       : __handleCreateSubscription(payload);
   };
 
-  useEffect(() => {
-    const tooltips = Array.from(
-      tableContainerRef.current?.querySelectorAll<HTMLElement>(
-        '[data-bs-toggle="tooltip"]',
-      ) ?? [],
-      (element) => Tooltip.getOrCreateInstance(element),
-    );
-
-    return () => tooltips.forEach((tooltip) => tooltip.dispose());
-  });
+  useEffect(() => initializeTooltips(tableContainerRef.current));
 
   return (
     <>

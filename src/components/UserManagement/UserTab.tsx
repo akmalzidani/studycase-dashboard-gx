@@ -12,7 +12,7 @@ import { useRoles } from "@/hooks/useRoles";
 import { useTable } from "@/hooks/useTable";
 import { useUsers } from "@/hooks/useUsers";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { Tooltip } from "bootstrap";
+import { initializeTooltips } from "@/helpers/tooltip.helpers";
 import { useEffect, useRef, useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { TableRowUser } from "../TableRows/TableRowUser";
@@ -99,16 +99,7 @@ export function UserTab() {
       : __handleCreateUser(payload);
   };
 
-  useEffect(() => {
-    const tooltips = Array.from(
-      tableContainerRef.current?.querySelectorAll<HTMLElement>(
-        '[data-bs-toggle="tooltip"]',
-      ) ?? [],
-      (element) => Tooltip.getOrCreateInstance(element),
-    );
-
-    return () => tooltips.forEach((tooltip) => tooltip.dispose());
-  });
+  useEffect(() => initializeTooltips(tableContainerRef.current));
 
   return (
     <>
