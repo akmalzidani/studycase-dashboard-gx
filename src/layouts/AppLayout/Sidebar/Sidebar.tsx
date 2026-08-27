@@ -9,7 +9,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`p-3 d-flex flex-column sidebar sidebar--${theme} ${
+      className={`p-3 d-flex flex-column flex-shrink-0 sidebar sidebar--${theme} ${
         !isOpen ? "collapsed" : ""
       }`}
     >
