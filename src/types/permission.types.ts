@@ -1,13 +1,14 @@
-import { MENU_SCHEMA } from "@/config/menu.config";
-
 export interface Permissions {
   [key: string]: boolean | Permissions;
 }
 
-export type AppPermission = PermissionKey<typeof MENU_SCHEMA>;
+export type PermissionKey =
+  | "dashboard"
+  | "prospect"
+  | "customers"
+  | "analytics"
+  | "settings.users"
+  | "settings.profile"
+  | "settings.subscription";
 
-export type PermissionKey<T> = {
-  [K in keyof T & string]: T[K] extends { children: infer Children }
-    ? `${K}.${PermissionKey<Children>}`
-    : K;
-}[keyof T & string];
+export type AppPermission = PermissionKey;
