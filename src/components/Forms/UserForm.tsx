@@ -75,20 +75,20 @@ export function UserForm({
       actions={
         <>
           <button
-            type="button"
-            className="btn btn-light"
-            disabled={isSubmitting}
-            data-bs-dismiss="offcanvas"
-          >
-            Cancel
-          </button>
-          <button
             type="submit"
             form={FORM_IDS.USER}
             className="btn btn-primary"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Saving..." : isEditing ? "Save Changes" : "Submit"}
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            disabled={isSubmitting}
+            data-bs-dismiss="offcanvas"
+          >
+            Cancel
           </button>
         </>
       }

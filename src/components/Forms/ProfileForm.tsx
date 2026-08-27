@@ -62,7 +62,7 @@ export function ProfileForm({
           </button>
           <button
             type="button"
-            className="btn btn-light"
+            className="btn btn-outline-secondary"
             disabled={isSubmitting}
             data-bs-dismiss="modal"
           >

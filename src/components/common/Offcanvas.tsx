@@ -46,7 +46,7 @@ export function Offcanvas({
       </div>
       <div className="offcanvas-body pt-2">{children}</div>
       {actions ? (
-        <div className="offcanvas-footer border-top p-3 d-flex flex-wrap justify-content-end gap-2">
+        <div className="offcanvas-footer border-top p-3 d-flex flex-wrap justify-content-start gap-2">
           {actions}
         </div>
       ) : null}
