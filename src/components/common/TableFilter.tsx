@@ -31,34 +31,54 @@ export function TableFilter({
   ariaLabel = "Filter table",
 }: TableFilterProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownToggleRef = useRef<HTMLButtonElement>(null);
 
   const idPrefix = useId();
-  const hasActiveFilters = Object.values(values).some(Boolean);
+  const activeFilterCount = fields.filter((field) => values[field.key]).length;
+  const hasActiveFilters = activeFilterCount > 0;
 
   useEffect(() => {
     const dropdownElement = dropdownRef.current;
-    if (!dropdownElement) return;
+    const dropdownToggle = dropdownToggleRef.current;
+    if (!dropdownElement || !dropdownToggle) return;
 
-    const dropdown = BootstrapDropdown.getOrCreateInstance(dropdownElement);
-    return () => dropdown.dispose();
+    const dropdown = BootstrapDropdown.getOrCreateInstance(dropdownToggle, {
+      autoClose: false,
+    });
+    const handleDocumentPointerDown = (event: PointerEvent) => {
+      if (!dropdownElement.contains(event.target as Node)) {
+        dropdown.hide();
+      }
+    };
+
+    document.addEventListener("pointerdown", handleDocumentPointerDown, true);
+
+    return () => {
+      document.removeEventListener(
+        "pointerdown",
+        handleDocumentPointerDown,
+        true,
+      );
+      dropdown.dispose();
+    };
   }, []);
 
   return (
     <div ref={dropdownRef} className="dropdown">
       <button
+        ref={dropdownToggleRef}
         type="button"
         className={`btn btn-sm btn-outline-primary position-relative ${
           hasActiveFilters ? "active" : ""
         }`}
         aria-label={ariaLabel}
         data-bs-toggle="dropdown"
-
-        data-bs-auto-close="outside"
       >
         <BsFunnel aria-hidden="true" />
         {hasActiveFilters ? (
-          <span className="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle">
-            <span className="visually-hidden">Active filters</span>
+          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary border border-light">
+            {activeFilterCount}
+            <span className="visually-hidden"> active filters</span>
           </span>
         ) : null}
       </button>
