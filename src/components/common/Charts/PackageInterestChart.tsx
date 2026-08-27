@@ -1,8 +1,8 @@
+import { ChartCanvas } from "./ChartCanvas";
 import { getBarChartOptions, getBarChartScales } from "./chart.config";
 import { useThemeStore } from "@/stores/useThemeStore";
 import type { PackageSummary } from "@/helpers/analytics.helpers";
 import type { ChartData, ChartOptions } from "chart.js";
-import { Bar } from "react-chartjs-2";
 
 interface PackageInterestChartProps {
   packageSummaries: PackageSummary[];
@@ -43,5 +43,5 @@ export function PackageInterestChart({
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return <ChartCanvas type="bar" data={data} options={options} />;
 }

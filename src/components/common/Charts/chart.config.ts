@@ -1,8 +1,10 @@
 import {
   ArcElement,
+  BarController,
   BarElement,
   CategoryScale,
   Chart as ChartJS,
+  DoughnutController,
   Colors,
   Legend,
   LinearScale,
@@ -12,8 +14,10 @@ import type { ChartOptions } from "chart.js";
 
 ChartJS.register(
   ArcElement,
+  BarController,
   BarElement,
   CategoryScale,
+  DoughnutController,
   Colors,
   Legend,
   LinearScale,

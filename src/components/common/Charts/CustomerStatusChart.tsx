@@ -1,7 +1,7 @@
+import { ChartCanvas } from "./ChartCanvas";
 import { getDoughnutChartOptions } from "./chart.config";
 import { useThemeStore } from "@/stores/useThemeStore";
 import type { ChartData } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
 
 interface CustomerStatusChartProps {
   activeCustomerCount: number;
@@ -25,5 +25,11 @@ export function CustomerStatusChart({
     ],
   };
 
-  return <Doughnut data={data} options={getDoughnutChartOptions(isDark)} />;
+  return (
+    <ChartCanvas
+      type="doughnut"
+      data={data}
+      options={getDoughnutChartOptions(isDark)}
+    />
+  );
 }
