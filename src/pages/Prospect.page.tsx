@@ -57,13 +57,11 @@ export default function ProspectPage() {
       key: "id",
       getValue: (prospect: Prospect) => prospect.id,
       searchable: true,
-      sortable: true,
     },
     {
       key: "userInformation",
       getValue: (prospect: Prospect) => prospect.name,
       searchable: true,
-      sortable: true,
     },
     {
       key: "subscription",
@@ -214,8 +212,8 @@ export default function ProspectPage() {
           <div ref={tableContainerRef}>
             <Table
               ths={[
-                { content: "ID", sortKey: "id" },
-                { content: "User Information", sortKey: "userInformation" },
+                "ID",
+                "User Information",
                 "Subscription",
                 "Status",
                 { className: "text-end", content: "Actions" },
