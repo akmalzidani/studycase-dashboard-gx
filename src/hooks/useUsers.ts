@@ -13,22 +13,7 @@ export function useUsers() {
   const setIsLoading = useUserStore((state) => state.__handleSetIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function loadUsers() {
-      setIsLoading(true);
-      try {
-        setUsers(await userService.getAll());
-      } catch (error) {
-        toast.error(getErrorMessage(error, "Failed to load user data."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadUsers();
-  }, [setIsLoading, setUsers]);
-
-  const __handleCreateUser = async (payload: UserPayload) => {
+  const _handleCreateUser = async (payload: UserPayload) => {
     setIsSubmitting(true);
     try {
       const created = await userService.create(payload);
@@ -43,7 +28,7 @@ export function useUsers() {
     }
   };
 
-  const __handleUpdateUser = async (id: string, payload: UserPayload) => {
+  const _handleUpdateUser = async (id: string, payload: UserPayload) => {
     setIsSubmitting(true);
     try {
       const updated = await userService.update(id, payload);
@@ -62,7 +47,7 @@ export function useUsers() {
     }
   };
 
-  const __handleDeleteUser = async (id: string) => {
+  const _handleDeleteUser = async (id: string) => {
     setIsSubmitting(true);
     try {
       await userService.remove(id);
@@ -77,12 +62,27 @@ export function useUsers() {
     }
   };
 
+  useEffect(() => {
+    async function _loadUsers() {
+      setIsLoading(true);
+      try {
+        setUsers(await userService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load user data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    _loadUsers();
+  }, [setUsers, setIsLoading]);
+
   return {
     __users: users,
     __isLoading: isLoading,
     __isSubmitting: isSubmitting,
-    __handleCreateUser,
-    __handleUpdateUser,
-    __handleDeleteUser,
+    __handleCreateUser: _handleCreateUser,
+    __handleUpdateUser: _handleUpdateUser,
+    __handleDeleteUser: _handleDeleteUser,
   };
 }

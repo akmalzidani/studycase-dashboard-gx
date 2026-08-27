@@ -88,14 +88,6 @@ export function useTable<T>({
   const startIndex = (page - 1) * pageSize;
   const paginatedData = sortedData.slice(startIndex, startIndex + pageSize);
 
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, pageSize]);
-
-  useEffect(() => {
-    setPage((currentPage) => Math.min(currentPage, totalPages));
-  }, [totalPages]);
-
   const _handleSearch = (value: string) => setSearch(value);
   const _handlePageSizeChange = (size: number) => setPageSize(size);
 
@@ -112,6 +104,14 @@ export function useTable<T>({
         current.key === key && current.direction === "asc" ? "desc" : "asc",
     }));
   };
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, pageSize]);
+
+  useEffect(() => {
+    setPage((currentPage) => Math.min(currentPage, totalPages));
+  }, [totalPages]);
 
   return {
     __data: paginatedData,

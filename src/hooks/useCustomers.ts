@@ -16,22 +16,7 @@ export function useCustomers() {
   const setIsLoading = useCustomerStore((state) => state.__handleSetIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function fetchCustomers() {
-      setIsLoading(true);
-      try {
-        setCustomers(await customerService.getAll());
-      } catch (error) {
-        toast.error(getErrorMessage(error, "Failed to load customer data."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchCustomers();
-  }, [setCustomers, setIsLoading]);
-
-  const __handleCreateCustomer = async (payload: CustomerPayload) => {
+  const _handleCreateCustomer = async (payload: CustomerPayload) => {
     setIsSubmitting(true);
     try {
       const customer = await customerService.create(payload);
@@ -46,7 +31,7 @@ export function useCustomers() {
     }
   };
 
-  const __handleUpdateCustomer = async (
+  const _handleUpdateCustomer = async (
     id: string,
     payload: CustomerPayload,
   ) => {
@@ -68,7 +53,7 @@ export function useCustomers() {
     }
   };
 
-  const __handleDeleteCustomer = async (id: string) => {
+  const _handleDeleteCustomer = async (id: string) => {
     setIsSubmitting(true);
     try {
       await customerService.remove(id);
@@ -85,7 +70,7 @@ export function useCustomers() {
     }
   };
 
-  const __handleResetCustomers = async () => {
+  const _handleResetCustomers = async () => {
     setIsSubmitting(true);
     try {
       setCustomers(await customerService.reset());
@@ -97,13 +82,28 @@ export function useCustomers() {
     }
   };
 
+  useEffect(() => {
+    async function _fetchCustomers() {
+      setIsLoading(true);
+      try {
+        setCustomers(await customerService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load customer data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    _fetchCustomers();
+  }, [setCustomers, setIsLoading]);
+
   return {
     __customers: customers,
     __isLoading: isLoading,
     __isSubmitting: isSubmitting,
-    __handleCreateCustomer,
-    __handleUpdateCustomer,
-    __handleDeleteCustomer,
-    __handleResetCustomers,
+    __handleCreateCustomer: _handleCreateCustomer,
+    __handleUpdateCustomer: _handleUpdateCustomer,
+    __handleDeleteCustomer: _handleDeleteCustomer,
+    __handleResetCustomers: _handleResetCustomers,
   };
 }

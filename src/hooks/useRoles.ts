@@ -12,22 +12,7 @@ export function useRoles() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function loadRoles() {
-      setIsLoading(true);
-      try {
-        setRoles(await roleService.getAll());
-      } catch (error) {
-        toast.error(getErrorMessage(error, "Failed to load roles."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadRoles();
-  }, [setRoles]);
-
-  const __handleCreateRole = async (payload: RolePayload) => {
+  const _handleCreateRole = async (payload: RolePayload) => {
     setIsSubmitting(true);
     try {
       setRoles([...roles, await roleService.create(payload)]);
@@ -41,7 +26,7 @@ export function useRoles() {
     }
   };
 
-  const __handleUpdateRole = async (id: string, payload: RolePayload) => {
+  const _handleUpdateRole = async (id: string, payload: RolePayload) => {
     setIsSubmitting(true);
     try {
       const updated = await roleService.update(id, payload);
@@ -56,7 +41,7 @@ export function useRoles() {
     }
   };
 
-  const __handleDeleteRole = async (id: string) => {
+  const _handleDeleteRole = async (id: string) => {
     setIsSubmitting(true);
     try {
       await roleService.remove(id);
@@ -69,12 +54,27 @@ export function useRoles() {
     }
   };
 
+  useEffect(() => {
+    async function _loadRoles() {
+      setIsLoading(true);
+      try {
+        setRoles(await roleService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load roles."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    _loadRoles();
+  }, [setRoles, setIsLoading]);
+
   return {
     __roles: roles,
     __isLoading: isLoading,
     __isSubmitting: isSubmitting,
-    __handleCreateRole,
-    __handleUpdateRole,
-    __handleDeleteRole,
+    __handleCreateRole: _handleCreateRole,
+    __handleUpdateRole: _handleUpdateRole,
+    __handleDeleteRole: _handleDeleteRole,
   };
 }

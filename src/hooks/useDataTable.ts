@@ -46,10 +46,6 @@ export function useDataTable<T extends object>({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(initialPageSize);
 
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedSearch, pageSize]);
-
   const keyword = debouncedSearch.toLowerCase();
   const filteredData = !debouncedSearch
     ? data
@@ -93,6 +89,10 @@ export function useDataTable<T extends object>({
   };
 
   const totalPages = Math.max(1, Math.ceil(sortedData.length / pageSize));
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, pageSize]);
 
   useEffect(() => {
     setPage((currentPage) => Math.min(currentPage, totalPages));

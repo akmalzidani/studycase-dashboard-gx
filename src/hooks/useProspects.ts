@@ -83,7 +83,7 @@ export function useProspects() {
   };
 
   useEffect(() => {
-    async function fetchProspects() {
+    async function _fetchProspects() {
       setIsLoading(true);
       try {
         setProspects(await prospectService.getAll());
@@ -94,8 +94,8 @@ export function useProspects() {
       }
     }
 
-    fetchProspects();
-  }, [setIsLoading, setProspects]);
+    _fetchProspects();
+  }, [setProspects, setIsLoading]);
 
   return {
     __prospects: prospects,

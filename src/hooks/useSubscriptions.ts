@@ -6,7 +6,7 @@ import {
 import { useSubscriptionStore } from "@/stores/useSubscriptionStore";
 import { toast } from "@/components/Overlay";
 
-const getErrorMessage = (error: unknown, fallback: string) =>
+const _getErrorMessage = (error: unknown, fallback: string) =>
   error instanceof Error ? error.message : fallback;
 
 export function useSubscriptions() {
@@ -20,22 +20,7 @@ export function useSubscriptions() {
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function fetchSubscriptions() {
-      setIsLoading(true);
-      try {
-        setSubscriptions(await subscriptionService.getAll());
-      } catch (error) {
-        toast.error(getErrorMessage(error, "Failed to load subscriptions."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchSubscriptions();
-  }, [setIsLoading, setSubscriptions]);
-
-  const __handleCreateSubscription = async (payload: SubscriptionPayload) => {
+  const _handleCreateSubscription = async (payload: SubscriptionPayload) => {
     setIsSubmitting(true);
     try {
       const subscription = await subscriptionService.create(payload);
@@ -47,7 +32,7 @@ export function useSubscriptions() {
       return true;
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to add subscription package."),
+        _getErrorMessage(error, "Failed to add subscription package."),
       );
       return false;
     } finally {
@@ -55,7 +40,7 @@ export function useSubscriptions() {
     }
   };
 
-  const __handleUpdateSubscription = async (
+  const _handleUpdateSubscription = async (
     id: string,
     payload: SubscriptionPayload,
   ) => {
@@ -73,7 +58,7 @@ export function useSubscriptions() {
       return true;
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to update subscription package."),
+        _getErrorMessage(error, "Failed to update subscription package."),
       );
       return false;
     } finally {
@@ -81,7 +66,7 @@ export function useSubscriptions() {
     }
   };
 
-  const __handleDeleteSubscription = async (id: string) => {
+  const _handleDeleteSubscription = async (id: string) => {
     setIsSubmitting(true);
     try {
       await subscriptionService.remove(id);
@@ -93,32 +78,49 @@ export function useSubscriptions() {
       toast.success("Subscription package deleted successfully.");
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to delete subscription package."),
+        _getErrorMessage(error, "Failed to delete subscription package."),
       );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const __handleResetSubscriptions = async () => {
+  const _handleResetSubscriptions = async () => {
     setIsSubmitting(true);
     try {
       setSubscriptions(await subscriptionService.reset());
       toast.info("Subscription data has been restored to its initial state.");
     } catch (error) {
-      toast.error(getErrorMessage(error, "Failed to reset subscription data."));
+      toast.error(
+        _getErrorMessage(error, "Failed to reset subscription data."),
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  useEffect(() => {
+    async function _fetchSubscriptions() {
+      setIsLoading(true);
+      try {
+        setSubscriptions(await subscriptionService.getAll());
+      } catch (error) {
+        toast.error(_getErrorMessage(error, "Failed to load subscriptions."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    _fetchSubscriptions();
+  }, [setIsLoading, setSubscriptions]);
+
   return {
     __subscriptions: subscriptions,
     __isLoading: isLoading,
     __isSubmitting: isSubmitting,
-    __handleCreateSubscription,
-    __handleUpdateSubscription,
-    __handleDeleteSubscription,
-    __handleResetSubscriptions,
+    __handleCreateSubscription: _handleCreateSubscription,
+    __handleUpdateSubscription: _handleUpdateSubscription,
+    __handleDeleteSubscription: _handleDeleteSubscription,
+    __handleResetSubscriptions: _handleResetSubscriptions,
   };
 }
