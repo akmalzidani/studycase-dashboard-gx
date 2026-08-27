@@ -30,31 +30,27 @@ export default function CustomersPage() {
   const [filters, setFilters] = useState({ subscription: "", status: "" });
   const [selectedDetail, setSelectedDetail] = useState<Customer | null>(null);
   const {
-    __customers: customers,
-    __isLoading: isLoading,
-    __isSubmitting: isSubmitting,
-    __handleCreateCustomer: _handleCreateCustomer,
-    __handleUpdateCustomer: _handleUpdateCustomer,
-    __handleDeleteCustomer: _handleDeleteCustomer,
+    __customers,
+    __isLoading: isLoadingCustomers,
+    __isSubmitting,
+    __handleCreateCustomer,
+    __handleUpdateCustomer,
+    __handleDeleteCustomer,
   } = useCustomers();
-  const {
-    __subscriptions: subscriptions,
-    __isLoading: isLoadingSubscriptions,
-  } = useSubscriptions();
+  const { __subscriptions, __isLoading: isLoadingSubscriptions } =
+    useSubscriptions();
 
   const tableFields = [
     {
       key: "id",
       getValue: (customer: Customer) => customer.id,
       searchable: true,
-      sortable: true,
     },
     {
       key: "userInformation",
       getValue: (customer: Customer) =>
         `${customer.name} ${customer.email} ${customer.phoneNumber}`,
       searchable: true,
-      sortable: true,
     },
     {
       key: "subscription",
@@ -74,27 +70,27 @@ export default function CustomersPage() {
     (customer: Customer) =>
       !filters.status || customer.status === filters.status,
   ];
-  const subscriptionOptions = subscriptions.flatMap((subscription) =>
+  const subscriptionOptions = __subscriptions.flatMap((subscription) =>
     subscription.id
       ? [{ value: subscription.id, label: subscription.packageName }]
       : [],
   );
   const {
-    __data: data,
-    __search: search,
-    __sortConfig: sortConfig,
-    __page: page,
-    __pageSize: pageSize,
-    __totalPages: totalPages,
-    __totalItems: totalItems,
+    __data,
+    __search,
+    __sortConfig,
+    __page,
+    __pageSize,
+    __totalPages,
+    __totalItems,
     __actions: {
-      __handleSearch: _handleSearch,
-      __handleSort: _handleSort,
-      __handlePageChange: _handlePageChange,
-      __handlePageSizeChange: _handlePageSizeChange,
+      __handleSearch,
+      __handleSort,
+      __handlePageChange,
+      __handlePageSizeChange,
     },
   } = useTable({
-    data: customers,
+    data: __customers,
     fields: tableFields,
     filters: tableFilters,
   });
@@ -105,20 +101,20 @@ export default function CustomersPage() {
     showOffcanvas(OVERLAY_TARGETS.CUSTOMER_DETAIL);
   };
   const {
-    __selectedItem: selectedCustomer,
-    __handleOpenCreateForm: _handleOpenCreateForm,
-    __handleOpenEditForm: _handleOpenEditForm,
-    __handleConfirmDelete: _handleConfirmDelete,
+    __selectedItem,
+    __handleOpenCreateForm,
+    __handleOpenEditForm,
+    __handleConfirmDelete,
   } = useCrudFormActions<Customer>({
     deleteTitle: "Delete customer",
     deleteMessage: (customer) =>
       `Are you sure you want to delete ${customer.name}?`,
     handleOpenForm: _handleFormOpen,
-    handleDelete: _handleDeleteCustomer,
+    handleDelete: __handleDeleteCustomer,
   });
 
   const _handleSubmit = async (values: CustomerFormValues) => {
-    const subscription = subscriptions.find(
+    const subscription = __subscriptions.find(
       (item) => item.id === values.subscriptionId,
     );
     if (!subscription) return false;
@@ -131,9 +127,9 @@ export default function CustomersPage() {
       status: values.status,
     };
 
-    return selectedCustomer?.id
-      ? _handleUpdateCustomer(selectedCustomer.id, payload)
-      : _handleCreateCustomer(payload);
+    return __selectedItem?.id
+      ? __handleUpdateCustomer(__selectedItem.id, payload)
+      : __handleCreateCustomer(payload);
   };
 
   useEffect(() => {
@@ -155,8 +151,8 @@ export default function CustomersPage() {
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
                 <TableSearch
-                  value={search}
-                  actions={{ handleChange: _handleSearch }}
+                  value={__search}
+                  actions={{ handleChange: __handleSearch }}
                 />
               </div>
               <TableFilter
@@ -190,11 +186,11 @@ export default function CustomersPage() {
                 type="button"
                 className="btn btn-primary"
                 disabled={
-                  isSubmitting ||
+                  __isSubmitting ||
                   isLoadingSubscriptions ||
-                  subscriptions.length === 0
+                  __subscriptions.length === 0
                 }
-                onClick={_handleOpenCreateForm}
+                onClick={__handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add Customer
@@ -205,44 +201,44 @@ export default function CustomersPage() {
           <div ref={tableContainerRef}>
             <Table
               ths={[
-                { content: "ID", sortKey: "id" },
-                { content: "User Information", sortKey: "userInformation" },
+                "ID",
+                "User Information",
                 "Subscription",
                 "Status",
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={data}
-              isLoading={isLoading}
+              tds={__data}
+              isLoading={isLoadingCustomers}
               isWrapHeader
               emptyMessage="There are no customers yet. Add your first customer."
-              sortConfig={sortConfig}
-              actions={{ handleSort: _handleSort }}
+              sortConfig={__sortConfig}
+              actions={{ handleSort: __handleSort }}
             >
-              {data.map((customer) => (
+              {__data.map((customer) => (
                 <TableRowCustomer
                   key={customer.id}
                   customer={customer}
                   permissions={permissions}
-                  isSubmitting={isSubmitting}
+                  isSubmitting={__isSubmitting}
                   actions={{
                     handleView: _handleOpenDetail,
-                    handleEdit: _handleOpenEditForm,
-                    handleDelete: _handleConfirmDelete,
+                    handleEdit: __handleOpenEditForm,
+                    handleDelete: __handleConfirmDelete,
                   }}
                 />
               ))}
             </Table>
           </div>
 
-          {!isLoading ? (
+          {!isLoadingCustomers ? (
             <TablePagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
+              page={__page}
+              totalPages={__totalPages}
+              totalItems={__totalItems}
+              pageSize={__pageSize}
               actions={{
-                handlePageChange: _handlePageChange,
-                handlePageSizeChange: _handlePageSizeChange,
+                handlePageChange: __handlePageChange,
+                handlePageSizeChange: __handlePageSizeChange,
               }}
             />
           ) : null}
@@ -252,9 +248,9 @@ export default function CustomersPage() {
       <ClientDetail item={selectedDetail} type="customer" />
 
       <CustomerForm
-        isSubmitting={isSubmitting || isLoadingSubscriptions}
-        item={selectedCustomer}
-        subscriptions={subscriptions}
+        isSubmitting={__isSubmitting || isLoadingSubscriptions}
+        item={__selectedItem}
+        subscriptions={__subscriptions}
         actions={{ handleSubmit: _handleSubmit }}
       />
     </>

@@ -27,27 +27,27 @@ export default function SubscriptionPage() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.__permissions);
   const {
-    __subscriptions: subscriptions,
-    __isLoading: isLoading,
-    __isSubmitting: isSubmitting,
-    __handleCreateSubscription: _handleCreateSubscription,
-    __handleUpdateSubscription: _handleUpdateSubscription,
-    __handleDeleteSubscription: _handleDeleteSubscription,
+    __subscriptions,
+    __isLoading,
+    __isSubmitting,
+    __handleCreateSubscription,
+    __handleUpdateSubscription,
+    __handleDeleteSubscription,
   } = useSubscriptions();
 
   const _handleFormOpen = () =>
     showOffcanvas(OVERLAY_TARGETS.SUBSCRIPTION_FORM);
   const {
-    __selectedItem: selectedSubscription,
-    __handleOpenCreateForm: _handleOpenCreateForm,
-    __handleOpenEditForm: _handleOpenEditForm,
-    __handleConfirmDelete: _handleConfirmDelete,
+    __selectedItem,
+    __handleOpenCreateForm,
+    __handleOpenEditForm,
+    __handleConfirmDelete,
   } = useCrudFormActions<Subscription>({
     deleteTitle: "Delete subscription package",
     deleteMessage: (subscription) =>
       `Are you sure you want to delete the ${subscription.packageName} package?`,
     handleOpenForm: _handleFormOpen,
-    handleDelete: _handleDeleteSubscription,
+    handleDelete: __handleDeleteSubscription,
   });
 
   const tableFields = [
@@ -55,36 +55,27 @@ export default function SubscriptionPage() {
       key: "packageName",
       getValue: (subscription: Subscription) => subscription.packageName,
       searchable: true,
-      sortable: true,
     },
     {
       key: "speed",
       getValue: (subscription: Subscription) => subscription.speed,
       searchable: true,
-      sortable: true,
     },
     {
       key: "monthlyFee",
       getValue: (subscription: Subscription) => subscription.monthlyFee,
       searchable: true,
-      sortable: true,
     },
   ];
   const {
-    __data: data,
-    __search: search,
-    __sortConfig: sortConfig,
-    __page: page,
-    __pageSize: pageSize,
-    __totalPages: totalPages,
-    __totalItems: totalItems,
-    __actions: {
-      __handleSearch: _handleSearch,
-      __handleSort: _handleSort,
-      __handlePageChange: _handlePageChange,
-      __handlePageSizeChange: _handlePageSizeChange,
-    },
-  } = useTable({ data: subscriptions, fields: tableFields });
+    __data,
+    __search,
+    __page,
+    __pageSize,
+    __totalPages,
+    __totalItems,
+    __actions: { __handleSearch, __handlePageChange, __handlePageSizeChange },
+  } = useTable({ data: __subscriptions, fields: tableFields });
 
   const _handleSubmit = (values: SubscriptionFormValues) => {
     const payload = {
@@ -93,9 +84,9 @@ export default function SubscriptionPage() {
       monthlyFee: values.monthlyFee,
     };
 
-    return selectedSubscription?.id
-      ? _handleUpdateSubscription(selectedSubscription.id, payload)
-      : _handleCreateSubscription(payload);
+    return __selectedItem?.id
+      ? __handleUpdateSubscription(__selectedItem.id, payload)
+      : __handleCreateSubscription(payload);
   };
 
   useEffect(() => {
@@ -116,16 +107,16 @@ export default function SubscriptionPage() {
           <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
             <div className="w-100" style={{ maxWidth: "320px" }}>
               <TableSearch
-                value={search}
-                actions={{ handleChange: _handleSearch }}
+                value={__search}
+                actions={{ handleChange: __handleSearch }}
               />
             </div>
             {hasPermission(permissions, PERMISSION_KEYS.SUBSCRIPTION.CREATE) ? (
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={isSubmitting}
-                onClick={_handleOpenCreateForm}
+                disabled={__isSubmitting}
+                onClick={__handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add Package
@@ -136,42 +127,40 @@ export default function SubscriptionPage() {
           <div ref={tableContainerRef}>
             <Table
               ths={[
-                { content: "Package", sortKey: "packageName" },
-                { content: "Speed", sortKey: "speed" },
-                { content: "Monthly fee", sortKey: "monthlyFee" },
+                { content: "Package" },
+                { content: "Speed" },
+                { content: "Monthly fee" },
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={data}
-              isLoading={isLoading}
+              tds={__data}
+              isLoading={__isLoading}
               isWrapHeader
               emptyMessage="There are no subscription packages yet. Add your first package."
-              sortConfig={sortConfig}
-              actions={{ handleSort: _handleSort }}
             >
-              {data.map((subscription) => (
+              {__data.map((subscription) => (
                 <TableRowSubscription
                   key={subscription.id}
                   subscription={subscription}
                   permissions={permissions}
-                  isSubmitting={isSubmitting}
+                  isSubmitting={__isSubmitting}
                   actions={{
-                    handleEdit: _handleOpenEditForm,
-                    handleDelete: _handleConfirmDelete,
+                    handleEdit: __handleOpenEditForm,
+                    handleDelete: __handleConfirmDelete,
                   }}
                 />
               ))}
             </Table>
           </div>
 
-          {!isLoading ? (
+          {!__isLoading ? (
             <TablePagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
+              page={__page}
+              totalPages={__totalPages}
+              totalItems={__totalItems}
+              pageSize={__pageSize}
               actions={{
-                handlePageChange: _handlePageChange,
-                handlePageSizeChange: _handlePageSizeChange,
+                handlePageChange: __handlePageChange,
+                handlePageSizeChange: __handlePageSizeChange,
               }}
             />
           ) : null}
@@ -179,8 +168,8 @@ export default function SubscriptionPage() {
       </div>
 
       <SubscriptionForm
-        isSubmitting={isSubmitting}
-        item={selectedSubscription}
+        isSubmitting={__isSubmitting}
+        item={__selectedItem}
         actions={{ handleSubmit: _handleSubmit }}
       />
     </>

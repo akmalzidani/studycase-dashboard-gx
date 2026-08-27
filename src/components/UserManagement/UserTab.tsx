@@ -23,38 +23,37 @@ export function UserTab() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.__permissions);
   const [filters, setFilters] = useState({ role: "", status: "" });
-  const { __roles: roles, __isLoading: isLoadingRoles } = useRoles();
+  const { __roles, __isLoading: isLoadingRoles } = useRoles();
   const {
-    __users: users,
-    __isLoading: isLoading,
-    __isSubmitting: isSubmitting,
-    __handleCreateUser: _handleCreateUser,
-    __handleUpdateUser: _handleUpdateUser,
-    __handleDeleteUser: _handleDeleteUser,
+    __users,
+    __isLoading: isLoadingUsers,
+    __isSubmitting,
+    __handleCreateUser,
+    __handleUpdateUser,
+    __handleDeleteUser,
   } = useUsers();
   const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.USER_FORM);
   const {
-    __selectedItem: selectedUser,
-    __handleOpenCreateForm: _handleOpenCreateForm,
-    __handleOpenEditForm: _handleOpenEditForm,
-    __handleConfirmDelete: _handleConfirmDelete,
+    __selectedItem,
+    __handleOpenCreateForm,
+    __handleOpenEditForm,
+    __handleConfirmDelete,
   } = useCrudFormActions<ManagedUser>({
     deleteTitle: "Delete user",
     deleteMessage: (user) => `Are you sure you want to delete ${user.name}?`,
     handleOpenForm: _handleFormOpen,
-    handleDelete: _handleDeleteUser,
+    handleDelete: __handleDeleteUser,
   });
 
-  const usersWithRoleNames = users.map((user) => ({
+  const usersWithRoleNames = __users.map((user) => ({
     ...user,
-    roleName: roles.find((role) => role.id === user.roleId)?.name ?? "-",
+    roleName: __roles.find((role) => role.id === user.roleId)?.name ?? "-",
   }));
   const tableFields = [
     {
       key: "userInformation",
       getValue: (user: ManagedUser) => `${user.name} ${user.email}`,
       searchable: true,
-      sortable: true,
     },
     {
       key: "role",
@@ -71,23 +70,17 @@ export function UserTab() {
     (user: ManagedUser) => !filters.role || user.roleId === filters.role,
     (user: ManagedUser) => !filters.status || user.status === filters.status,
   ];
-  const roleOptions = roles.flatMap((role) =>
+  const roleOptions = __roles.flatMap((role) =>
     role.id ? [{ value: role.id, label: role.name }] : [],
   );
   const {
-    __data: data,
-    __search: search,
-    __sortConfig: sortConfig,
-    __page: page,
-    __pageSize: pageSize,
-    __totalPages: totalPages,
-    __totalItems: totalItems,
-    __actions: {
-      __handleSearch: _handleSearch,
-      __handleSort: _handleSort,
-      __handlePageChange: _handlePageChange,
-      __handlePageSizeChange: _handlePageSizeChange,
-    },
+    __data,
+    __search,
+    __page,
+    __pageSize,
+    __totalPages,
+    __totalItems,
+    __actions: { __handleSearch, __handlePageChange, __handlePageSizeChange },
   } = useTable({
     data: usersWithRoleNames,
     fields: tableFields,
@@ -101,9 +94,9 @@ export function UserTab() {
       email: values.email.trim(),
     };
 
-    return selectedUser?.id
-      ? _handleUpdateUser(selectedUser.id, payload)
-      : _handleCreateUser(payload);
+    return __selectedItem?.id
+      ? __handleUpdateUser(__selectedItem.id, payload)
+      : __handleCreateUser(payload);
   };
 
   useEffect(() => {
@@ -125,8 +118,8 @@ export function UserTab() {
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
                 <TableSearch
-                  value={search}
-                  actions={{ handleChange: _handleSearch }}
+                  value={__search}
+                  actions={{ handleChange: __handleSearch }}
                 />
               </div>
               <TableFilter
@@ -158,8 +151,8 @@ export function UserTab() {
               <button
                 className="btn btn-primary"
                 type="button"
-                disabled={isSubmitting || isLoading || isLoadingRoles}
-                onClick={_handleOpenCreateForm}
+                disabled={__isSubmitting || isLoadingUsers || isLoadingRoles}
+                onClick={__handleOpenCreateForm}
               >
                 <BsPlusLg className="me-2" />
                 Add User
@@ -170,51 +163,49 @@ export function UserTab() {
           <div ref={tableContainerRef}>
             <Table
               ths={[
-                { content: "User Information", sortKey: "userInformation" },
+                "User Information",
                 "Role",
                 "Status",
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={data}
-              isLoading={isLoading}
+              tds={__data}
+              isLoading={isLoadingUsers}
               isWrapHeader
               emptyMessage="No users yet. Add a user to start managing access."
-              sortConfig={sortConfig}
-              actions={{ handleSort: _handleSort }}
             >
-              {data.map((user) => (
+              {__data.map((user) => (
                 <TableRowUser
                   key={user.id}
                   item={user}
                   permissions={permissions}
-                  isSubmitting={isSubmitting}
+                  isSubmitting={__isSubmitting}
                   actions={{
-                    handleEdit: _handleOpenEditForm,
-                    handleDelete: _handleConfirmDelete,
+                    handleEdit: __handleOpenEditForm,
+                    handleDelete: __handleConfirmDelete,
                   }}
                 />
               ))}
             </Table>
           </div>
 
-          {!isLoading ? (
+          {!isLoadingUsers ? (
             <TablePagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
+              page={__page}
+              totalPages={__totalPages}
+              totalItems={__totalItems}
+              pageSize={__pageSize}
               actions={{
-                handlePageChange: _handlePageChange,
-                handlePageSizeChange: _handlePageSizeChange,
+                handlePageChange: __handlePageChange,
+                handlePageSizeChange: __handlePageSizeChange,
               }}
             />
           ) : null}
         </div>
       </div>
       <UserForm
-        item={selectedUser}
-        roles={roles}
-        isSubmitting={isSubmitting}
+        item={__selectedItem}
+        roles={__roles}
+        isSubmitting={__isSubmitting}
         actions={{ handleSubmit: _handleUserSubmit }}
       />
     </>

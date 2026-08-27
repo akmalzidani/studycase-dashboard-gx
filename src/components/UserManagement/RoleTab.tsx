@@ -21,19 +21,18 @@ export function RoleTab() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const permissions = useAuthStore((store) => store.__permissions);
   const {
-    __roles: roles,
-    __isLoading: isLoading,
-    __isSubmitting: isSubmitting,
-    __handleCreateRole: _handleCreateRole,
-    __handleUpdateRole: _handleUpdateRole,
-    __handleDeleteRole: _handleDeleteRole,
+    __roles,
+    __isLoading,
+    __isSubmitting,
+    __handleCreateRole,
+    __handleUpdateRole,
+    __handleDeleteRole,
   } = useRoles();
   const tableFields = [
     {
       key: "name",
       getValue: (role: Role) => role.name,
       searchable: true,
-      sortable: true,
     },
     {
       key: "description",
@@ -42,36 +41,29 @@ export function RoleTab() {
     {
       key: "accessCount",
       getValue: (role: Role) => countPermissions(role.permissions),
-      sortable: true,
     },
   ];
   const {
-    __data: data,
-    __search: search,
-    __sortConfig: sortConfig,
-    __page: page,
-    __pageSize: pageSize,
-    __totalPages: totalPages,
-    __totalItems: totalItems,
-    __actions: {
-      __handleSearch: _handleSearch,
-      __handleSort: _handleSort,
-      __handlePageChange: _handlePageChange,
-      __handlePageSizeChange: _handlePageSizeChange,
-    },
-  } = useTable({ data: roles, fields: tableFields });
+    __data,
+    __search,
+    __page,
+    __pageSize,
+    __totalPages,
+    __totalItems,
+    __actions: { __handleSearch, __handlePageChange, __handlePageSizeChange },
+  } = useTable({ data: __roles, fields: tableFields });
   const _handleFormOpen = () => showOffcanvas(OVERLAY_TARGETS.ROLE_FORM);
   const {
-    __selectedItem: selectedRole,
-    __handleOpenCreateForm: _handleOpenCreateForm,
-    __handleOpenEditForm: _handleOpenEditForm,
-    __handleConfirmDelete: _handleConfirmDelete,
+    __selectedItem,
+    __handleOpenCreateForm,
+    __handleOpenEditForm,
+    __handleConfirmDelete,
   } = useCrudFormActions<Role>({
     deleteTitle: "Delete role",
     deleteMessage: (role) =>
       `Are you sure you want to delete the ${role.name} role?`,
     handleOpenForm: _handleFormOpen,
-    handleDelete: _handleDeleteRole,
+    handleDelete: __handleDeleteRole,
   });
 
   const _handleRoleSubmit = async (values: RoleFormValues) => {
@@ -80,9 +72,9 @@ export function RoleTab() {
       description: values.description.trim(),
       permissions: values.permissions,
     };
-    const isSaved = selectedRole?.id
-      ? await _handleUpdateRole(selectedRole.id, payload)
-      : await _handleCreateRole(payload);
+    const isSaved = __selectedItem?.id
+      ? await __handleUpdateRole(__selectedItem.id, payload)
+      : await __handleCreateRole(payload);
 
     return isSaved;
   };
@@ -103,16 +95,16 @@ export function RoleTab() {
       <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
         <div className="w-100" style={{ maxWidth: "320px" }}>
           <TableSearch
-            value={search}
-            actions={{ handleChange: _handleSearch }}
+            value={__search}
+            actions={{ handleChange: __handleSearch }}
           />
         </div>
         {hasPermission(permissions, PERMISSION_KEYS.ROLES.CREATE) ? (
           <button
             className="btn btn-primary"
             type="button"
-            disabled={isSubmitting}
-            onClick={_handleOpenCreateForm}
+            disabled={__isSubmitting}
+            onClick={__handleOpenCreateForm}
           >
             <BsPlusLg className="me-2" />
             Add Role
@@ -123,49 +115,47 @@ export function RoleTab() {
       <div ref={tableContainerRef}>
         <Table
           ths={[
-            { content: "Role name", sortKey: "name" },
+            { content: "Role name" },
             { content: "Description" },
-            { content: "Access count", sortKey: "accessCount" },
+            { content: "Access count" },
             { className: "text-end", content: "Actions" },
           ]}
-          tds={data}
-          isLoading={isLoading}
+          tds={__data}
+          isLoading={__isLoading}
           isWrapHeader
           emptyMessage="No roles yet."
-          sortConfig={sortConfig}
-          actions={{ handleSort: _handleSort }}
         >
-          {data.map((role) => (
+          {__data.map((role) => (
             <TableRowRole
               key={role.id}
               item={role}
               permissions={permissions}
-              isSubmitting={isSubmitting}
+              isSubmitting={__isSubmitting}
               actions={{
-                handleEdit: _handleOpenEditForm,
-                handleDelete: _handleConfirmDelete,
+                handleEdit: __handleOpenEditForm,
+                handleDelete: __handleConfirmDelete,
               }}
             />
           ))}
         </Table>
       </div>
 
-      {!isLoading ? (
+      {!__isLoading ? (
         <TablePagination
-          page={page}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          pageSize={pageSize}
+          page={__page}
+          totalPages={__totalPages}
+          totalItems={__totalItems}
+          pageSize={__pageSize}
           actions={{
-            handlePageChange: _handlePageChange,
-            handlePageSizeChange: _handlePageSizeChange,
+            handlePageChange: __handlePageChange,
+            handlePageSizeChange: __handlePageSizeChange,
           }}
         />
       ) : null}
 
       <RoleForm
-        isSubmitting={isSubmitting}
-        item={selectedRole}
+        isSubmitting={__isSubmitting}
+        item={__selectedItem}
         actions={{ handleSubmit: _handleRoleSubmit }}
       />
     </>
