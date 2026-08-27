@@ -1,10 +1,9 @@
 import { ClientDetail } from "@/components/Details/ClientDetail";
 
+import { Table } from "@/components/common/Table";
 import { TableFilter } from "@/components/common/TableFilter";
 import { TablePagination } from "@/components/common/TablePagination";
 import { TableSearch } from "@/components/common/TableSearch";
-import { Table } from "@/components/common/Table";
-import { TableRowProspect } from "@/components/TableRows/TableRowProspect";
 import { OVERLAY_TARGETS } from "@/config/overlay.config";
 import { showOffcanvas } from "@/helpers/offcanvas.helpers";
 
@@ -24,9 +23,18 @@ import { useSubscriptions } from "@/hooks/useSubscriptions";
 import { useAuthStore } from "@/stores/useAuthStore";
 import type { Prospect } from "@/types";
 
+import { Badge } from "@/components/common/Badge";
+import { formatSpeed, getWhatsAppUrl } from "@/helpers/formatters.helpers";
 import { Tooltip } from "bootstrap";
 import { useEffect, useRef, useState } from "react";
-import { BsPlusLg } from "react-icons/bs";
+import {
+  BsEnvelope,
+  BsEye,
+  BsPencilSquare,
+  BsPlusLg,
+  BsTrash,
+  BsWhatsapp,
+} from "react-icons/bs";
 
 export default function ProspectPage() {
   const tableContainerRef = useRef<HTMLDivElement>(null);
@@ -34,17 +42,15 @@ export default function ProspectPage() {
   const [filters, setFilters] = useState({ subscription: "", status: "" });
   const [selectedDetail, setSelectedDetail] = useState<Prospect | null>(null);
   const {
-    __prospects: prospects,
-    __isLoading: isLoading,
-    __isSubmitting: isSubmitting,
-    __handleCreateProspect: _handleCreateProspect,
-    __handleUpdateProspect: _handleUpdateProspect,
-    __handleDeleteProspect: _handleDeleteProspect,
+    __prospects,
+    __isLoading: isLoadingProspects,
+    __isSubmitting,
+    __handleCreateProspect,
+    __handleUpdateProspect,
+    __handleDeleteProspect,
   } = useProspects();
-  const {
-    __subscriptions: subscriptions,
-    __isLoading: isLoadingSubscriptions,
-  } = useSubscriptions();
+  const { __subscriptions, __isLoading: isLoadingSubscriptions } =
+    useSubscriptions();
 
   const tableFields = [
     {
@@ -77,27 +83,27 @@ export default function ProspectPage() {
     (prospect: Prospect) =>
       !filters.status || prospect.status === filters.status,
   ];
-  const subscriptionOptions = subscriptions.flatMap((subscription) =>
+  const subscriptionOptions = __subscriptions.flatMap((subscription) =>
     subscription.id
       ? [{ value: subscription.id, label: subscription.packageName }]
       : [],
   );
   const {
-    __data: data,
-    __search: search,
-    __sortConfig: sortConfig,
-    __page: page,
-    __pageSize: pageSize,
-    __totalPages: totalPages,
-    __totalItems: totalItems,
+    __data,
+    __search,
+    __sortConfig,
+    __page,
+    __pageSize,
+    __totalPages,
+    __totalItems,
     __actions: {
-      __handleSearch: _handleSearch,
-      __handleSort: _handleSort,
-      __handlePageChange: _handlePageChange,
-      __handlePageSizeChange: _handlePageSizeChange,
+      __handleSearch,
+      __handleSort,
+      __handlePageChange,
+      __handlePageSizeChange,
     },
   } = useTable({
-    data: prospects,
+    data: __prospects,
     fields: tableFields,
     filters: tableFilters,
   });
@@ -117,11 +123,11 @@ export default function ProspectPage() {
     deleteMessage: (prospect) =>
       `Are you sure you want to delete ${prospect.name}?`,
     handleOpenForm: _handleFormOpen,
-    handleDelete: _handleDeleteProspect,
+    handleDelete: __handleDeleteProspect,
   });
 
   const _handleSubmit = async (values: ProspectFormValues) => {
-    const subscription = subscriptions.find(
+    const subscription = __subscriptions.find(
       (item) => item.id === values.subscriptionId,
     );
     if (!subscription) return false;
@@ -135,8 +141,8 @@ export default function ProspectPage() {
     };
 
     return selectedProspect?.id
-      ? _handleUpdateProspect(selectedProspect.id, payload)
-      : _handleCreateProspect(payload);
+      ? __handleUpdateProspect(selectedProspect.id, payload)
+      : __handleCreateProspect(payload);
   };
 
   useEffect(() => {
@@ -158,8 +164,8 @@ export default function ProspectPage() {
             <div className="d-flex flex-column flex-md-row gap-2">
               <div style={{ maxWidth: "320px" }}>
                 <TableSearch
-                  value={search}
-                  actions={{ handleChange: _handleSearch }}
+                  value={__search}
+                  actions={{ handleChange: __handleSearch }}
                 />
               </div>
               <TableFilter
@@ -193,9 +199,9 @@ export default function ProspectPage() {
                 type="button"
                 className="btn btn-primary"
                 disabled={
-                  isSubmitting ||
+                  __isSubmitting ||
                   isLoadingSubscriptions ||
-                  subscriptions.length === 0
+                  __subscriptions.length === 0
                 }
                 onClick={_handleOpenCreateForm}
               >
@@ -214,38 +220,109 @@ export default function ProspectPage() {
                 "Status",
                 { className: "text-end", content: "Actions" },
               ]}
-              tds={data}
-              isLoading={isLoading}
-              sortConfig={sortConfig}
-              actions={{ handleSort: _handleSort }}
+              tds={__data.map((prospect) => [
+                prospect.id ?? "-",
+                <div className="d-flex flex-column gap-1">
+                  <span className="fw-semibold">{prospect.name}</span>
+                  <a
+                    className="d-inline-flex align-self-start align-items-center gap-2 small text-decoration-none"
+                    href={`mailto:${prospect.email}`}
+                  >
+                    <BsEnvelope aria-hidden="true" />
+                    {prospect.email}
+                  </a>
+                  <a
+                    className="d-inline-flex align-self-start align-items-center gap-2 small text-decoration-none"
+                    href={getWhatsAppUrl(prospect.phoneNumber)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <BsWhatsapp aria-hidden="true" />
+                    {prospect.phoneNumber}
+                  </a>
+                </div>,
+                <div>
+                  <div className="fw-medium">
+                    {prospect.subscription.packageName}
+                  </div>
+                  <small className="text-muted">
+                    {formatSpeed(prospect.subscription.speed)}
+                  </small>
+                </div>,
+                <Badge
+                  variant={
+                    prospect.status === "Completed" ? "success" : "warning"
+                  }
+                >
+                  {prospect.status}
+                </Badge>,
+                {
+                  className: "text-end",
+                  content: (
+                    <div className="d-flex justify-content-end gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-sm border-0 bg-transparent p-0 text-body-secondary"
+                        aria-label={`View ${prospect.name} details`}
+                        data-bs-title={`View ${prospect.name} details`}
+                        data-bs-toggle="tooltip"
+                        onClick={() => _handleOpenDetail(prospect)}
+                      >
+                        <BsEye />
+                      </button>
+                      {hasPermission(
+                        permissions,
+                        PERMISSION_KEYS.PROSPECT.UPDATE,
+                      ) ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm border-0 bg-transparent p-0 text-primary"
+                          aria-label={`Edit ${prospect.name}`}
+                          data-bs-title={`Edit ${prospect.name}`}
+                          data-bs-toggle="tooltip"
+                          disabled={__isSubmitting}
+                          onClick={() => _handleOpenEditForm(prospect)}
+                        >
+                          <BsPencilSquare />
+                        </button>
+                      ) : null}
+                      {hasPermission(
+                        permissions,
+                        PERMISSION_KEYS.PROSPECT.DELETE,
+                      ) ? (
+                        <button
+                          type="button"
+                          className="btn btn-sm border-0 bg-transparent p-0 text-danger"
+                          aria-label={`Hapus ${prospect.name}`}
+                          data-bs-title={`Hapus ${prospect.name}`}
+                          data-bs-toggle="tooltip"
+                          disabled={__isSubmitting}
+                          onClick={() => _handleConfirmDelete(prospect)}
+                        >
+                          <BsTrash />
+                        </button>
+                      ) : null}
+                    </div>
+                  ),
+                },
+              ])}
+              isLoading={isLoadingProspects}
+              sortConfig={__sortConfig}
+              actions={{ handleSort: __handleSort }}
               isWrapHeader
               emptyMessage="There are no prospects yet. Add your first prospect."
-            >
-              {data.map((prospect) => (
-                <TableRowProspect
-                  key={prospect.id}
-                  prospect={prospect}
-                  permissions={permissions}
-                  isSubmitting={isSubmitting}
-                  actions={{
-                    handleView: _handleOpenDetail,
-                    handleEdit: _handleOpenEditForm,
-                    handleDelete: _handleConfirmDelete,
-                  }}
-                />
-              ))}
-            </Table>
+            />
           </div>
 
-          {!isLoading ? (
+          {!isLoadingProspects ? (
             <TablePagination
-              page={page}
-              totalPages={totalPages}
-              totalItems={totalItems}
-              pageSize={pageSize}
+              page={__page}
+              totalPages={__totalPages}
+              totalItems={__totalItems}
+              pageSize={__pageSize}
               actions={{
-                handlePageChange: _handlePageChange,
-                handlePageSizeChange: _handlePageSizeChange,
+                handlePageChange: __handlePageChange,
+                handlePageSizeChange: __handlePageSizeChange,
               }}
             />
           ) : null}
@@ -255,9 +332,9 @@ export default function ProspectPage() {
       <ClientDetail item={selectedDetail} type="prospect" />
 
       <ProspectForm
-        isSubmitting={isSubmitting || isLoadingSubscriptions}
+        isSubmitting={__isSubmitting || isLoadingSubscriptions}
         item={selectedProspect}
-        subscriptions={subscriptions}
+        subscriptions={__subscriptions}
         actions={{ handleSubmit: _handleSubmit }}
       />
     </>

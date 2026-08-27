@@ -16,22 +16,7 @@ export function useProspects() {
   const setIsLoading = useProspectStore((state) => state.__handleSetIsLoading);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function fetchProspects() {
-      setIsLoading(true);
-      try {
-        setProspects(await prospectService.getAll());
-      } catch (error) {
-        toast.error(getErrorMessage(error, "Failed to load prospect data."));
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchProspects();
-  }, [setIsLoading, setProspects]);
-
-  const __handleCreateProspect = async (payload: ProspectPayload) => {
+  const _handleCreateProspect = async (payload: ProspectPayload) => {
     setIsSubmitting(true);
     try {
       const prospect = await prospectService.create(payload);
@@ -46,7 +31,7 @@ export function useProspects() {
     }
   };
 
-  const __handleUpdateProspect = async (
+  const _handleUpdateProspect = async (
     id: string,
     payload: ProspectPayload,
   ) => {
@@ -68,7 +53,7 @@ export function useProspects() {
     }
   };
 
-  const __handleDeleteProspect = async (id: string) => {
+  const _handleDeleteProspect = async (id: string) => {
     setIsSubmitting(true);
     try {
       await prospectService.remove(id);
@@ -85,7 +70,7 @@ export function useProspects() {
     }
   };
 
-  const __handleResetProspects = async () => {
+  const _handleResetProspects = async () => {
     setIsSubmitting(true);
     try {
       setProspects(await prospectService.reset());
@@ -97,13 +82,28 @@ export function useProspects() {
     }
   };
 
+  useEffect(() => {
+    async function fetchProspects() {
+      setIsLoading(true);
+      try {
+        setProspects(await prospectService.getAll());
+      } catch (error) {
+        toast.error(getErrorMessage(error, "Failed to load prospect data."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProspects();
+  }, [setIsLoading, setProspects]);
+
   return {
     __prospects: prospects,
     __isLoading: isLoading,
     __isSubmitting: isSubmitting,
-    __handleCreateProspect,
-    __handleUpdateProspect,
-    __handleDeleteProspect,
-    __handleResetProspects,
+    __handleCreateProspect: _handleCreateProspect,
+    __handleUpdateProspect: _handleUpdateProspect,
+    __handleDeleteProspect: _handleDeleteProspect,
+    __handleResetProspects: _handleResetProspects,
   };
 }
