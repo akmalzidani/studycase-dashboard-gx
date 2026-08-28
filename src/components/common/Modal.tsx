@@ -23,6 +23,8 @@ export function Modal({ target, title, children, footer, size }: ModalProps) {
       id={target}
       className="modal fade"
       tabIndex={-1}
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
       aria-labelledby={titleId}
       aria-hidden="true"
     >
