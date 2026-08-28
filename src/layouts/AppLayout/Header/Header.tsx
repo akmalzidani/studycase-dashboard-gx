@@ -27,7 +27,7 @@ function Header() {
   }, [nextTheme]);
 
   return (
-    <header className="sticky-top z-1 px-4 py-3 bg-body border-bottom d-flex align-items-center justify-content-between">
+    <header className="sticky-top z-3 px-4 py-3 bg-body border-bottom d-flex align-items-center justify-content-between">
       <div className="d-flex align-items-center gap-2">
         <button
           type="button"
