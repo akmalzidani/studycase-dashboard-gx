@@ -1,11 +1,12 @@
 import { formatMenuLabel } from "@/config/menu.helpers";
 import type { IconType } from "react-icons";
 import {
-  BsBarChart,
-  BsBuilding,
-  BsGear,
-  BsGrid,
-  BsPeople,
+    BsBarChart,
+    BsBuilding,
+    BsGear,
+    BsGrid,
+    BsPeople,
+    BsTags,
 } from "react-icons/bs";
 import { APP_PATHS } from "./paths.config";
 
@@ -39,6 +40,11 @@ export const MENU_SCHEMA = {
   prospect: { path: APP_PATHS.PROSPECT.INDEX, icon: BsPeople },
   customers: { path: APP_PATHS.CUSTOMERS.INDEX, icon: BsBuilding },
   analytics: { path: APP_PATHS.ANALYTICS.INDEX, icon: BsBarChart },
+  productMarketing: {
+    path: APP_PATHS.PRODUCT_MARKETING.INDEX,
+    icon: BsTags,
+    requiresPermission: false,
+  },
   settings: {
     icon: BsGear,
     children: {

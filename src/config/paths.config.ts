@@ -1,7 +1,7 @@
 import {
-  createBasePaths,
-  createCRUDPaths,
-  createUpdatePaths,
+    createBasePaths,
+    createCRUDPaths,
+    createUpdatePaths,
 } from "@/config/path.helpers";
 
 const SETTINGS_BASE = "settings";
@@ -11,6 +11,7 @@ export const APP_PATHS = {
   PROSPECT: createCRUDPaths("prospect"),
   CUSTOMERS: createCRUDPaths("customers"),
   ANALYTICS: createBasePaths("analytics"),
+  PRODUCT_MARKETING: createBasePaths("product-marketing"),
   SETTINGS: {
     ROOT: SETTINGS_BASE,
     USERS: createCRUDPaths(`${SETTINGS_BASE}/users`, "userId"),

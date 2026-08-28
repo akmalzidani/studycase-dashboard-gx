@@ -7,6 +7,7 @@ export type PermissionKey =
   | "prospect"
   | "customers"
   | "analytics"
+  | "productMarketing"
   | "settings.users"
   | "settings.profile"
   | "settings.subscription";

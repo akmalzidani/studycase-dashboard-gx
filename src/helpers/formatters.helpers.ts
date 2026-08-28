@@ -20,3 +20,23 @@ export const formatCurrency = (amount: number) =>
 
 export const formatCurrencyInput = (amount: number) =>
   new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(amount);
+
+export const formatApiDateTime = (value: string) => {
+  const [date, time] = value.split(" ");
+  const [day, month, year] = date.split("/").map(Number);
+  const parsedDate = new Date(year, month - 1, day);
+
+  return `${new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(parsedDate)}, ${time}`;
+};
+
+export const getNameInitials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join("");

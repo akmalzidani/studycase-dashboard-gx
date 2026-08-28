@@ -9,6 +9,7 @@ export const OVERLAY_TARGETS = {
   CHANGE_PASSWORD: "change-password-overlay",
   USER_FORM: "user-form-overlay",
   ROLE_FORM: "role-form-overlay",
+  PRODUCT_MARKETING_FILTER: "product-marketing-filter-overlay",
 } as const;
 
 export const FORM_IDS = {

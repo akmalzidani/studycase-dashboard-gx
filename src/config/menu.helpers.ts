@@ -1,2 +1,4 @@
 export const formatMenuLabel = (key: string): string =>
-  key.charAt(0).toUpperCase() + key.slice(1);
+  key
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^./, (char) => char.toUpperCase());

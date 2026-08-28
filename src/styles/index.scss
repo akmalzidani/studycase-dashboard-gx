@@ -33,6 +33,22 @@ $theme-colors: map-merge($theme-colors, $custom-theme-colors);
 [data-bs-theme="dark"] {
   --bs-primary: #{$yellow-600};
   --bs-primary-rgb: #{to-rgb($yellow-600)};
+
+  .multi-select-trigger {
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border-color: var(--bs-border-color);
+  }
+
+  .multi-select-chip,
+  .multi-select-option-selected {
+    color: var(--bs-black);
+    background-color: $yellow-400 !important;
+  }
+
+  .multi-select-chip .btn-close {
+    filter: none;
+  }
 }
 
 // Custom CSS

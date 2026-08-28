@@ -2,6 +2,7 @@ import AppLayout from "@/layouts/AppLayout";
 import { analyticsRoutes } from "@/paths/analytics.routes";
 import { customersRoutes } from "@/paths/customers.routes";
 import { dashboardRoutes } from "@/paths/dashboard.routes";
+import { productMarketingRoutes } from "@/paths/product-marketing.routes";
 import { profileRoutes } from "@/paths/profile.routes";
 import { prospectRoutes } from "@/paths/prospect.routes";
 import { subscriptionRoutes } from "@/paths/subscription.routes";
@@ -25,6 +26,7 @@ const protectedRouteConfigs: {
   { permission: "prospect", routes: prospectRoutes },
   { permission: "customers", routes: customersRoutes },
   { permission: "analytics", routes: analyticsRoutes },
+  { routes: productMarketingRoutes },
   { permission: "settings.users", routes: usersRoutes },
   { permission: "settings.profile", routes: profileRoutes },
   { permission: "settings.subscription", routes: subscriptionRoutes },
