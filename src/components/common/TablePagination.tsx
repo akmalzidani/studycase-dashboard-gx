@@ -38,6 +38,8 @@ export function TablePagination({
 }: TablePaginationProps) {
   const firstItem = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
   const lastItem = Math.min(page * pageSize, totalItems);
+  const hasPreviousPage = page > 1;
+  const hasNextPage = page < totalPages;
 
   return (
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
@@ -67,16 +69,29 @@ export function TablePagination({
         </span>
         <nav aria-label="Page navigation">
           <ul className="pagination pagination-sm mb-0">
-            <li className={`page-item ${page === 1 ? "disabled" : ""}`}>
-              <button
-                type="button"
-                className="page-link"
-                disabled={page === 1}
-                onClick={() => actions.handlePageChange(page - 1)}
-              >
-                Previous
-              </button>
-            </li>
+            {hasPreviousPage ? (
+              <>
+                <li className="page-item">
+                  <button
+                    type="button"
+                    className="page-link"
+                    onClick={() => actions.handlePageChange(1)}
+                    aria-label="Go to first page"
+                  >
+                    First
+                  </button>
+                </li>
+                <li className="page-item">
+                  <button
+                    type="button"
+                    className="page-link"
+                    onClick={() => actions.handlePageChange(page - 1)}
+                  >
+                    Prev
+                  </button>
+                </li>
+              </>
+            ) : null}
 
             {getPageNumbers(page, totalPages).map((pageNumber, index) =>
               pageNumber === "..." ? (
@@ -100,18 +115,29 @@ export function TablePagination({
               ),
             )}
 
-            <li
-              className={`page-item ${page === totalPages ? "disabled" : ""}`}
-            >
-              <button
-                type="button"
-                className="page-link"
-                disabled={page === totalPages}
-                onClick={() => actions.handlePageChange(page + 1)}
-              >
-                Next
-              </button>
-            </li>
+            {hasNextPage ? (
+              <>
+                <li className="page-item">
+                  <button
+                    type="button"
+                    className="page-link"
+                    onClick={() => actions.handlePageChange(page + 1)}
+                  >
+                    Next
+                  </button>
+                </li>
+                <li className="page-item">
+                  <button
+                    type="button"
+                    className="page-link"
+                    onClick={() => actions.handlePageChange(totalPages)}
+                    aria-label="Go to last page"
+                  >
+                    Last
+                  </button>
+                </li>
+              </>
+            ) : null}
           </ul>
         </nav>
       </div>
