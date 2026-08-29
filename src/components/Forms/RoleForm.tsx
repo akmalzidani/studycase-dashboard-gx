@@ -157,7 +157,7 @@ export function RoleForm({ isSubmitting, item: role, actions }: RoleFormProps) {
           <label className="fs-6 fw-semibold mb-3">Permissions</label>
           <div className="table-responsive border rounded">
             <table className="table table-sm align-middle mb-0">
-              <thead className="table-light">
+              <thead>
                 <tr>
                   <th>Feature</th>
                   <th>Access rights</th>

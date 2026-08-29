@@ -41,6 +41,11 @@ export const PERMISSION_CONFIG = {
     "delete",
   ]),
   ANALYTICS: definePermissionGroup("Analytics", "analytics", ["read"]),
+  PRODUCT_MARKETING: definePermissionGroup(
+    "Product Marketing",
+    "productMarketing",
+    ["read"],
+  ),
   USERS: definePermissionGroup("User", "settings.users", [
     "create",
     "read",
@@ -92,6 +97,7 @@ export const PERMISSION_KEYS = {
   PROSPECT: createPermissionKeys(PERMISSION_CONFIG.PROSPECT),
   CUSTOMERS: createPermissionKeys(PERMISSION_CONFIG.CUSTOMERS),
   ANALYTICS: createPermissionKeys(PERMISSION_CONFIG.ANALYTICS),
+  PRODUCT_MARKETING: createPermissionKeys(PERMISSION_CONFIG.PRODUCT_MARKETING),
   USERS: createPermissionKeys(PERMISSION_CONFIG.USERS),
   ROLES: createPermissionKeys(PERMISSION_CONFIG.ROLES),
   PERMISSIONS: createPermissionKeys(PERMISSION_CONFIG.PERMISSIONS),
