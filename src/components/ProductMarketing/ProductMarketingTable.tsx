@@ -89,7 +89,8 @@ export function ProductMarketingTable({
 
         <Table
           ths={[
-            "Product Information",
+            "Base Product",
+            "Product Variant",
             "Billing & Network",
             "Pricing",
             "Branches",

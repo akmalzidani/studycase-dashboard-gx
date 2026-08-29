@@ -52,7 +52,7 @@ export function Table<T = TableValue[]>({
 }: TableProps<T>) {
   const tableRows = tds as TableValue[][];
   return (
-    <div className="table-responsive-lg border rounded mb-3">
+    <div className="table-responsive border rounded mb-3">
       <table className={className}>
         <thead>
           <tr>

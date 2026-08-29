@@ -14,12 +14,7 @@ interface TableRowProductMarketingProps {
 export function TableRowProductMarketing({
   product,
 }: TableRowProductMarketingProps) {
-  const baseAttachment = product.product.attachments?.find(
-    (attachment) => attachment.type.name === "Base",
-  );
-  const assignedBranches = (product.branches ?? []).filter(
-    (branch) => branch.assigned,
-  );
+  const branches = (product.branches ?? []).filter((branch) => branch.assigned);
   const visibleInformations = (product.informations ?? []).slice(0, 2);
   const remainingInformations =
     (product.informations?.length ?? 0) - visibleInformations.length;
@@ -36,7 +31,16 @@ export function TableRowProductMarketing({
     billingMonths > 1 && finalPrice > 0 ? finalPrice / billingMonths : null;
 
   const tds: TableValue[] = [
-    <div className="d-flex gap-3" style={{ minWidth: "300px" }}>
+    <div style={{ width: "180px" }}>
+      <div className="fw-semibold text-break">{product.product.name}</div>
+      <div className="small text-muted text-break">
+        {product.product.group.name} · {product.product.category.name}
+      </div>
+      <div className="small text-muted font-monospace text-break">
+        {product.product.number}
+      </div>
+    </div>,
+    <div style={{ width: "240px" }}>
       {/*{baseAttachment ? (
         <img
           src={baseAttachment.file}
@@ -67,10 +71,6 @@ export function TableRowProductMarketing({
           ) : null}
         </div>
         <div className="small text-muted text-break">
-          {product.product.group.name} · {product.product.category.name}
-        </div>
-        <div className="small text-muted text-break">
-          {product.product.name} ·{" "}
           <span className="font-monospace">{product.number}</span>
         </div>
         <div className="d-flex flex-wrap gap-1 mt-1">
@@ -129,7 +129,7 @@ export function TableRowProductMarketing({
         ) : null}
       </div>
     </div>,
-    <div style={{ minWidth: "155px" }}>
+    <div style={{ width: "145px" }}>
       <div className="fw-semibold">{product.networkSetting?.name ?? "-"}</div>
       <div className="small text-muted">
         {product.billingCycle?.name ?? "No billing cycle"}
@@ -139,7 +139,7 @@ export function TableRowProductMarketing({
       </div>
       <div className="small text-muted">Bills on the {product.billNDate}th</div>
     </div>,
-    <div style={{ minWidth: "185px" }}>
+    <div style={{ width: "175px" }}>
       <div className="fw-semibold">{formatCurrency(finalPrice)}</div>
       <div className="small text-muted">
         per {product.billingCycle?.name.toLowerCase() ?? "billing cycle"}
@@ -174,29 +174,31 @@ export function TableRowProductMarketing({
         )}
       </div>
     </div>,
-    <div
-      style={{ minWidth: "140px" }}
-      title={assignedBranches.map((branch) => branch.name).join(", ")}
-    >
-      <div className="fw-semibold">
-        {assignedBranches.length} branch
-        {assignedBranches.length !== 1 ? "es" : ""}
+    <div style={{ width: "190px" }}>
+      <div className="fw-semibold mb-1">
+        {branches.length} branch{branches.length !== 1 ? "es" : ""}
       </div>
-      <div className="small text-muted text-break">
-        {assignedBranches.length
-          ? assignedBranches
-              .slice(0, 2)
-              .map((branch) => branch.code || branch.name)
-              .join(", ")
-          : "No assigned branch"}
-        {assignedBranches.length > 2 ? ` +${assignedBranches.length - 2}` : ""}
-      </div>
+      {branches.length ? (
+        <ul
+          className="list-unstyled mb-0 overflow-y-auto pe-1"
+          style={{ maxHeight: "96px", fontSize: "12px" }}
+        >
+          {branches.map((branch) => (
+            <li key={branch.id} className="text-break py-1">
+              <span className="font-monospace text-muted">{branch.code}</span>
+              {" · "}
+              <span>{branch.name}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="text-muted" style={{ fontSize: "12px" }}>
+          No assigned branches
+        </div>
+      )}
     </div>,
 
-    <div
-      className="d-flex align-items-center gap-2"
-      style={{ minWidth: "185px" }}
-    >
+    <div className="d-flex align-items-center gap-2" style={{ width: "165px" }}>
       <div
         className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-semibold flex-shrink-0"
         style={{ width: 32, height: 32 }}
