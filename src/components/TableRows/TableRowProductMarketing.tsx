@@ -140,53 +140,35 @@ export function TableRowProductMarketing({
       <div className="small text-muted">Bills on the {product.billNDate}th</div>
     </div>,
     <div style={{ minWidth: "185px" }}>
-      <div
-        className="fw-semibold"
-        style={{ fontVariantNumeric: "tabular-nums" }}
-      >
-        {formatCurrency(finalPrice)}
-      </div>
+      <div className="fw-semibold">{formatCurrency(finalPrice)}</div>
       <div className="small text-muted">
         per {product.billingCycle?.name.toLowerCase() ?? "billing cycle"}
       </div>
       {hasDiscount ? (
         <div className="small">
-          <span
-            className="text-muted text-decoration-line-through"
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
+          <span className="text-muted text-decoration-line-through">
             {formatCurrency(product.finalBaseFee)}
           </span>{" "}
-          <span
-            className="text-success fw-semibold"
-            style={{ fontVariantNumeric: "tabular-nums" }}
-          >
+          <span className="text-success fw-semibold">
             Save {formatCurrency(discountAmount)} ({discountPercentage}%)
           </span>
         </div>
       ) : null}
       {monthlyEquivalent ? (
-        <div
-          className="small text-muted"
-          style={{ fontVariantNumeric: "tabular-nums" }}
-        >
+        <div className="small text-muted">
           ≈ {formatCurrency(monthlyEquivalent)}/month
         </div>
       ) : null}
       <div className="small text-muted">
         {product.includeTax ? "Tax included" : "Tax excluded"}
         {product.taxFee > 0 ? (
-          <span style={{ fontVariantNumeric: "tabular-nums" }}>
-            {` · ${formatCurrency(product.taxFee)} tax`}
-          </span>
+          <span>{` · ${formatCurrency(product.taxFee)} tax`}</span>
         ) : null}
       </div>
       <div className="small text-muted">
         Setup:{" "}
         {product.setupFee > 0 ? (
-          <span style={{ fontVariantNumeric: "tabular-nums" }}>
-            {formatCurrency(product.setupFee)}
-          </span>
+          <span>{formatCurrency(product.setupFee)}</span>
         ) : (
           "Free"
         )}
