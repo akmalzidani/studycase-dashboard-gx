@@ -32,28 +32,38 @@ export function useProductMarketing(
   const { getAll } = productMarketingService;
 
   useEffect(() => {
-    const controller = new AbortController();
+    let activeController: AbortController | null = null;
 
     const fetchProducts = async () => {
+      activeController?.abort();
+
+      const controller = new AbortController();
+      activeController = controller;
       setIsLoading(true);
       setError(null);
 
       try {
         const result = await getAll(filters, page, limit, controller.signal);
+
+        if (activeController !== controller) return;
+
         setProducts(result.result ?? []);
         setPagination(result.pagination);
       } catch (error) {
-        if (!axios.isCancel(error)) {
+        if (!axios.isCancel(error) && activeController === controller) {
           setError("Product marketing data could not be loaded.");
         }
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!controller.signal.aborted && activeController === controller) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchProducts();
+    // fetchProducts();
 
-    return () => controller.abort();
+    return () => activeController?.abort();
   }, [
     search,
     productIdsKey,

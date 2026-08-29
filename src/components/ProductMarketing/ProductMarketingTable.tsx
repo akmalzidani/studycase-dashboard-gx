@@ -7,17 +7,18 @@ import { showModal } from "@/helpers/modal.helpers";
 import type { ApiPagination } from "@/types/common.types";
 import type { ProductMarketing } from "@/types/product-marketing.types";
 import type { SyntheticEvent } from "react";
-import { useState } from "react";
 import { BsFunnel } from "react-icons/bs";
 
 interface ProductMarketingTableProps {
   products: ProductMarketing[];
   isLoading: boolean;
   search: string;
+  searchInput: string;
   pagination: ApiPagination | null;
   activeFilterCount: number;
   actions: {
     handleSearch: (search: string) => void;
+    handleSearchInputChange: (search: string) => void;
     handlePageChange: (page: number) => void;
     handlePageSizeChange: (pageSize: number) => void;
     handleResetAll: () => void;
@@ -28,12 +29,11 @@ export function ProductMarketingTable({
   products,
   isLoading,
   search,
+  searchInput,
   pagination,
   activeFilterCount,
   actions,
 }: ProductMarketingTableProps) {
-  const [searchInput, setSearchInput] = useState(search);
-
   const _handleSearch = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     actions.handleSearch(searchInput.trim());
@@ -48,7 +48,7 @@ export function ProductMarketingTable({
               <TableSearch
                 value={searchInput}
                 placeholder="Search products..."
-                actions={{ handleChange: setSearchInput }}
+                actions={{ handleChange: actions.handleSearchInputChange }}
               />
             </div>
             <button type="submit" className="btn btn-sm btn-primary">
@@ -79,11 +79,10 @@ export function ProductMarketingTable({
               className="btn btn-sm btn-link"
               disabled={!search && activeFilterCount === 0}
               onClick={() => {
-                setSearchInput("");
                 actions.handleResetAll();
               }}
             >
-              Reset all
+              Clear all
             </button>
           </div>
         </div>

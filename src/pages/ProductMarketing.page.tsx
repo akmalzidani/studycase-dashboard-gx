@@ -1,8 +1,17 @@
 import { ProductMarketingFilterModal } from "@/components/ProductMarketing/ProductMarketingFilterModal";
 import { ProductMarketingTable } from "@/components/ProductMarketing/ProductMarketingTable";
+import { toast } from "@/components/Overlay/toast";
+import {
+  getStoredJson,
+  removeStoredValue,
+  setStoredJson,
+} from "@/helpers/storage.helpers";
 import { useProductMarketing } from "@/hooks/useProductMarketing";
 import type { ProductMarketingFilters } from "@/types/product-marketing.types";
 import { useState } from "react";
+
+const DEFAULT_PAGE_SIZE = 10;
+const SAVED_SEARCH_STORAGE_KEY = "product-marketing-saved-search";
 
 const INITIAL_FILTERS: ProductMarketingFilters = {
   search: "",
@@ -11,10 +20,37 @@ const INITIAL_FILTERS: ProductMarketingFilters = {
   publish: undefined,
 };
 
+interface SavedProductMarketingSearch {
+  filters: ProductMarketingFilters;
+  limit: number;
+}
+
+function getSavedSearch(): SavedProductMarketingSearch | null {
+  const savedSearch = getStoredJson<SavedProductMarketingSearch>(
+    SAVED_SEARCH_STORAGE_KEY,
+  );
+
+  if (
+    typeof savedSearch?.filters?.search !== "string" ||
+    !Array.isArray(savedSearch.filters.productIds) ||
+    !Array.isArray(savedSearch.filters.billingCycleIds) ||
+    !Number.isInteger(savedSearch.limit) ||
+    savedSearch.limit <= 0
+  ) {
+    return null;
+  }
+
+  return savedSearch;
+}
+
 function ProductMarketingPage() {
-  const [filters, setFilters] = useState(INITIAL_FILTERS);
+  const [savedSearch] = useState(getSavedSearch);
+  const [filters, setFilters] = useState<ProductMarketingFilters>(
+    savedSearch?.filters ?? INITIAL_FILTERS,
+  );
+  const [searchInput, setSearchInput] = useState(filters.search);
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(savedSearch?.limit ?? DEFAULT_PAGE_SIZE);
   const { __products, __pagination, __isLoading, __error, __handleRetry } =
     useProductMarketing(filters, page, limit);
   const activeFilterCount =
@@ -22,24 +58,38 @@ function ProductMarketingPage() {
     Number(filters.billingCycleIds.length > 0) +
     Number(filters.publish !== undefined);
 
-  const _handleSearch = (search: string) => {
+  const _handleApply = (
+    nextFilters: ProductMarketingFilters,
+    nextLimit = limit,
+  ) => {
     setPage(1);
-    setFilters({ ...filters, search });
+    setFilters(nextFilters);
+    setSearchInput(nextFilters.search);
+    setLimit(nextLimit);
+  };
+  const _handleSearch = (search: string) => {
+    _handleApply({ ...filters, search });
   };
   const _handlePageSizeChange = (nextLimit: number) => {
-    setPage(1);
-    setLimit(nextLimit);
+    _handleApply(filters, nextLimit);
   };
   const _handleResetAll = () => {
     setPage(1);
     setFilters(INITIAL_FILTERS);
+    setSearchInput("");
+    setLimit(DEFAULT_PAGE_SIZE);
+    removeStoredValue(SAVED_SEARCH_STORAGE_KEY);
   };
-
-  const _handleApply = (
-    nextFilters: Omit<ProductMarketingFilters, "search">,
+  const _handleSaveSearch = (
+    nextFilters: ProductMarketingFilters,
+    nextLimit: number,
   ) => {
-    setPage(1);
-    setFilters((current) => ({ ...current, ...nextFilters }));
+    setStoredJson(SAVED_SEARCH_STORAGE_KEY, {
+      filters: nextFilters,
+      limit: nextLimit,
+    });
+    _handleApply(nextFilters, nextLimit);
+    toast.success("Search filters saved.");
   };
 
   return (
@@ -60,10 +110,12 @@ function ProductMarketingPage() {
         products={__products}
         isLoading={__isLoading}
         search={filters.search}
+        searchInput={searchInput}
         pagination={__pagination}
         activeFilterCount={activeFilterCount}
         actions={{
           handleSearch: _handleSearch,
+          handleSearchInputChange: setSearchInput,
           handlePageChange: setPage,
           handlePageSizeChange: _handlePageSizeChange,
           handleResetAll: _handleResetAll,
@@ -71,8 +123,13 @@ function ProductMarketingPage() {
       />
       <ProductMarketingFilterModal
         filters={filters}
+        searchInput={searchInput}
+        pageSize={limit}
         actions={{
           handleApply: _handleApply,
+          handleSearchInputChange: setSearchInput,
+          handleResetAll: _handleResetAll,
+          handleSaveSearch: _handleSaveSearch,
         }}
       />
     </>

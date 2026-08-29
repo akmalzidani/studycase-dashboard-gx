@@ -22,9 +22,7 @@ export const productMarketingService = {
             search: filters.search,
             productIds: filters.productIds.join(","),
             billingCycleIds: filters.billingCycleIds.join(","),
-            ...(filters.publish === undefined
-              ? {}
-              : { publish: filters.publish }),
+            publish: filters.publish ?? "",
             all: true,
             page,
             limit,

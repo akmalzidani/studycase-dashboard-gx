@@ -37,7 +37,7 @@ export function TableRowProductMarketing({
 
   const tds: TableValue[] = [
     <div className="d-flex gap-3" style={{ minWidth: "300px" }}>
-      {baseAttachment ? (
+      {/*{baseAttachment ? (
         <img
           src={baseAttachment.file}
           alt=""
@@ -52,7 +52,7 @@ export function TableRowProductMarketing({
         >
           {(product.alias || product.product.name).charAt(0).toUpperCase()}
         </div>
-      )}
+      )}*/}
       <div className="mw-100">
         <div className="d-flex align-items-center gap-2">
           <span className="fw-semibold text-break">
