@@ -34,7 +34,7 @@ export function ProductMarketingTable({
 }: ProductMarketingTableProps) {
   const [searchInput, setSearchInput] = useState(search);
 
-  const handleSearch = (event: SyntheticEvent<HTMLFormElement>) => {
+  const _handleSearch = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     actions.handleSearch(searchInput.trim());
   };
@@ -43,7 +43,7 @@ export function ProductMarketingTable({
     <div className="card">
       <div className="card-body">
         <div className="d-flex flex-column flex-md-row justify-content-start align-items-md-center mb-3 gap-3">
-          <form className="d-flex gap-2" onSubmit={handleSearch}>
+          <form className="d-flex gap-2" onSubmit={_handleSearch}>
             <div style={{ maxWidth: "320px" }}>
               <TableSearch
                 value={searchInput}
@@ -94,7 +94,6 @@ export function ProductMarketingTable({
             "Billing & Network",
             "Pricing",
             "Branches",
-            "Status",
             "Created by",
           ]}
           tds={products}

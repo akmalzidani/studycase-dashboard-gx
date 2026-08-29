@@ -26,7 +26,7 @@ export function TableRowProductMarketing({
   const validAddOns = (product.addOns ?? []).filter((addOn) => addOn.valid);
   const creatorName = product.product.createdBy || "-";
   const billingMonths = product.billingCycle?.billEveryNMonth ?? 1;
-  const finalPrice = product.finalDiscountedFee || product.finalBaseFee;
+  const finalPrice = product.finalDiscountedFee ?? product.finalBaseFee;
   const hasDiscount = finalPrice > 0 && product.finalBaseFee > finalPrice;
   const discountAmount = Math.max(product.finalBaseFee - finalPrice, 0);
   const discountPercentage = hasDiscount
@@ -72,6 +72,18 @@ export function TableRowProductMarketing({
         <div className="small text-muted text-break">
           {product.product.name} ·{" "}
           <span className="font-monospace">{product.number}</span>
+        </div>
+        <div className="d-flex flex-wrap gap-1 mt-1">
+          <span
+            className={`badge text-bg-${product.active ? "success" : "danger"}`}
+          >
+            {product.active ? "Active" : "Inactive"}
+          </span>
+          <span
+            className={`badge text-bg-${product.publish ? "primary" : "secondary"}`}
+          >
+            {product.publish ? "Published" : "Unpublished"}
+          </span>
         </div>
         {visibleInformations.length ? (
           <div className="d-flex flex-wrap gap-1 mt-2">
@@ -128,32 +140,56 @@ export function TableRowProductMarketing({
       <div className="small text-muted">Bills on the {product.billNDate}th</div>
     </div>,
     <div style={{ minWidth: "185px" }}>
-      <div className="fw-semibold">{formatCurrency(finalPrice)}</div>
+      <div
+        className="fw-semibold"
+        style={{ fontVariantNumeric: "tabular-nums" }}
+      >
+        {formatCurrency(finalPrice)}
+      </div>
       <div className="small text-muted">
         per {product.billingCycle?.name.toLowerCase() ?? "billing cycle"}
       </div>
       {hasDiscount ? (
         <div className="small">
-          <span className="text-muted text-decoration-line-through">
+          <span
+            className="text-muted text-decoration-line-through"
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
             {formatCurrency(product.finalBaseFee)}
           </span>{" "}
-          <span className="text-success fw-semibold">
+          <span
+            className="text-success fw-semibold"
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
             Save {formatCurrency(discountAmount)} ({discountPercentage}%)
           </span>
         </div>
       ) : null}
       {monthlyEquivalent ? (
-        <div className="small text-muted">
+        <div
+          className="small text-muted"
+          style={{ fontVariantNumeric: "tabular-nums" }}
+        >
           ≈ {formatCurrency(monthlyEquivalent)}/month
         </div>
       ) : null}
       <div className="small text-muted">
         {product.includeTax ? "Tax included" : "Tax excluded"}
-        {product.taxFee > 0 ? ` · ${formatCurrency(product.taxFee)} tax` : ""}
+        {product.taxFee > 0 ? (
+          <span style={{ fontVariantNumeric: "tabular-nums" }}>
+            {` · ${formatCurrency(product.taxFee)} tax`}
+          </span>
+        ) : null}
       </div>
       <div className="small text-muted">
         Setup:{" "}
-        {product.setupFee > 0 ? formatCurrency(product.setupFee) : "Free"}
+        {product.setupFee > 0 ? (
+          <span style={{ fontVariantNumeric: "tabular-nums" }}>
+            {formatCurrency(product.setupFee)}
+          </span>
+        ) : (
+          "Free"
+        )}
       </div>
     </div>,
     <div
@@ -174,24 +210,7 @@ export function TableRowProductMarketing({
         {assignedBranches.length > 2 ? ` +${assignedBranches.length - 2}` : ""}
       </div>
     </div>,
-    <div
-      className="d-flex flex-column align-items-start gap-1"
-      style={{ minWidth: "100px" }}
-    >
-      <span
-        className={`badge text-bg-${product.active ? "success" : "danger"}`}
-      >
-        {product.active ? "Active" : "Inactive"}
-      </span>
-      <span
-        className={`badge text-bg-${product.publish ? "primary" : "secondary"}`}
-      >
-        {product.publish ? "Published" : "Unpublished"}
-      </span>
-      {product.popular ? (
-        <span className="badge text-bg-warning">Popular</span>
-      ) : null}
-    </div>,
+
     <div
       className="d-flex align-items-center gap-2"
       style={{ minWidth: "185px" }}

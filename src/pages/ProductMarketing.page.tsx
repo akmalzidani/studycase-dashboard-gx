@@ -22,6 +22,26 @@ function ProductMarketingPage() {
     Number(filters.billingCycleIds.length > 0) +
     Number(filters.publish !== undefined);
 
+  const _handleSearch = (search: string) => {
+    setPage(1);
+    setFilters({ ...filters, search });
+  };
+  const _handlePageSizeChange = (nextLimit: number) => {
+    setPage(1);
+    setLimit(nextLimit);
+  };
+  const _handleResetAll = () => {
+    setPage(1);
+    setFilters(INITIAL_FILTERS);
+  };
+
+  const _handleApply = (
+    nextFilters: Omit<ProductMarketingFilters, "search">,
+  ) => {
+    setPage(1);
+    setFilters((current) => ({ ...current, ...nextFilters }));
+  };
+
   return (
     <>
       {__error ? (
@@ -43,28 +63,16 @@ function ProductMarketingPage() {
         pagination={__pagination}
         activeFilterCount={activeFilterCount}
         actions={{
-          handleSearch: (search) => {
-            setPage(1);
-            setFilters((current) => ({ ...current, search }));
-          },
+          handleSearch: _handleSearch,
           handlePageChange: setPage,
-          handlePageSizeChange: (nextLimit) => {
-            setPage(1);
-            setLimit(nextLimit);
-          },
-          handleResetAll: () => {
-            setPage(1);
-            setFilters(INITIAL_FILTERS);
-          },
+          handlePageSizeChange: _handlePageSizeChange,
+          handleResetAll: _handleResetAll,
         }}
       />
       <ProductMarketingFilterModal
         filters={filters}
         actions={{
-          handleApply: (nextFilters) => {
-            setPage(1);
-            setFilters((current) => ({ ...current, ...nextFilters }));
-          },
+          handleApply: _handleApply,
         }}
       />
     </>

@@ -1,7 +1,7 @@
 import { api } from "@/services/api.service";
 import type {
-    ProductMarketingApiResponse,
-    ProductMarketingFilters
+  ProductMarketingApiResponse,
+  ProductMarketingFilters,
 } from "@/types/product-marketing.types";
 import axios from "axios";
 
@@ -12,6 +12,7 @@ export const productMarketingService = {
     filters: ProductMarketingFilters,
     page: number,
     limit: number,
+    signal?: AbortSignal,
   ): Promise<ProductMarketingApiResponse> {
     try {
       const { data } = await api.get<ProductMarketingApiResponse>(
@@ -24,44 +25,21 @@ export const productMarketingService = {
             ...(filters.publish === undefined
               ? {}
               : { publish: filters.publish }),
+            all: true,
             page,
             limit,
-            all: true,
           },
+          signal,
         },
       );
 
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const responseData = error.response?.data as
-          { status?: { message?: string } } | undefined;
-
-        if (
-          error.response?.status === 404 &&
-          responseData?.status?.message?.includes("not found")
-        ) {
-          return {
-            status: {
-              code: 404,
-              message: "Not found",
-              internalMsg: "",
-              attributes: null,
-            },
-            result: [],
-            pagination: {
-              count: 0,
-              currentPage: page,
-              links: { next: 0, previous: 0 },
-              perPage: limit,
-              total: 0,
-              totalPage: 1,
-            },
-          };
-        }
+        throw error;
       }
 
-      throw error;
+      throw new Error("An unexpected error occurred while loading products.");
     }
   },
 };

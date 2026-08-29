@@ -1,8 +1,9 @@
+import axios from "axios";
 import { productMarketingService } from "@/services/product-marketing.service";
 import type { ApiPagination } from "@/types/common.types";
 import type {
-    ProductMarketing,
-    ProductMarketingFilters,
+  ProductMarketing,
+  ProductMarketingFilters,
 } from "@/types/product-marketing.types";
 import { useEffect, useState } from "react";
 
@@ -28,37 +29,31 @@ export function useProductMarketing(
   const productIdsKey = productIds.join(",");
   const billingCycleIdsKey = billingCycleIds.join(",");
 
+  const { getAll } = productMarketingService;
+
   useEffect(() => {
-    let isCurrentRequest = true;
+    const controller = new AbortController();
 
     const fetchProducts = async () => {
       setIsLoading(true);
       setError(null);
 
       try {
-        const result = await productMarketingService.getAll(
-          filters,
-          page,
-          limit,
-        );
-        if (isCurrentRequest) {
-          setProducts(result.result);
-          setPagination(result.pagination);
-        }
-      } catch {
-        if (isCurrentRequest) {
+        const result = await getAll(filters, page, limit, controller.signal);
+        setProducts(result.result ?? []);
+        setPagination(result.pagination);
+      } catch (error) {
+        if (!axios.isCancel(error)) {
           setError("Product marketing data could not be loaded.");
         }
       } finally {
-        if (isCurrentRequest) setIsLoading(false);
+        if (!controller.signal.aborted) setIsLoading(false);
       }
     };
 
-    void fetchProducts();
+    fetchProducts();
 
-    return () => {
-      isCurrentRequest = false;
-    };
+    return () => controller.abort();
   }, [
     search,
     productIdsKey,
