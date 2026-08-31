@@ -26,7 +26,6 @@ export function Modal({ target, title, children, footer, size }: ModalProps) {
       data-bs-backdrop="static"
       data-bs-keyboard="false"
       aria-labelledby={titleId}
-      aria-hidden="true"
     >
       <div
         className={`modal-dialog modal-dialog-centered${size ? ` modal-${size}` : ""}`}
