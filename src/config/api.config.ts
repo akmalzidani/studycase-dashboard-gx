@@ -1,3 +1,5 @@
+import type { HttpClientConfig } from "@/types/http.types";
+
 const DEFAULT_API_BASE_URL =
   "https://dev.api.globalxtreme-gateway.net/api/public/v2";
 
@@ -7,4 +9,4 @@ export const API_CONFIG = {
   headers: {
     Accept: "application/json",
   },
-} as const;
+} as const satisfies HttpClientConfig;
