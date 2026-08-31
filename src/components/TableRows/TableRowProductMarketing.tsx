@@ -31,7 +31,8 @@ export function TableRowProductMarketing({
     billingMonths > 1 && finalPrice > 0 ? finalPrice / billingMonths : null;
 
   const tds: TableValue[] = [
-    <div style={{ width: "180px" }}>
+    // ---- START BASE PRODUCT ----
+    <div style={{ minWidth: "180px" }}>
       <div className="fw-semibold text-break">{product.product.name}</div>
       <div className="small text-muted text-break">
         {product.product.group.name} · {product.product.category.name}
@@ -40,7 +41,10 @@ export function TableRowProductMarketing({
         {product.product.number}
       </div>
     </div>,
-    <div style={{ width: "240px" }}>
+    // ---- END BASE PRODUCT ----
+
+    // ---- START PRODUCT VARIANT ----
+    <div style={{ minWidth: "160px", maxWidth: "210px" }}>
       {/*{baseAttachment ? (
         <img
           src={baseAttachment.file}
@@ -129,7 +133,10 @@ export function TableRowProductMarketing({
         ) : null}
       </div>
     </div>,
-    <div style={{ width: "145px" }}>
+    // ---- END PRODUCT VARIANT ----
+
+    // ---- START BILLING & NETWORK ----
+    <div style={{ minWidth: "100px" }}>
       <div className="fw-semibold">{product.networkSetting?.name ?? "-"}</div>
       <div className="small text-muted">
         {product.billingCycle?.name ?? "No billing cycle"}
@@ -137,35 +144,44 @@ export function TableRowProductMarketing({
           ? ` · ${billingMonths} month${billingMonths > 1 ? "s" : ""}`
           : ""}
       </div>
-      <div className="small text-muted">Bills on the {product.billNDate}th</div>
+      <div className="small text-muted">Billing Date: {product.billNDate}</div>
     </div>,
-    <div style={{ width: "175px" }}>
-      <div className="fw-semibold">{formatCurrency(finalPrice)}</div>
-      <div className="small text-muted">
-        per {product.billingCycle?.name.toLowerCase() ?? "billing cycle"}
+    // ---- END BILLING & NETWORK ----
+
+    // ---- START PRICING ----
+    <div style={{ maxWidth: "190px" }}>
+      <div className="fw-semibold">
+        {formatCurrency(finalPrice)}
+        <span
+          className="small fw-normal text-muted ms-1"
+          style={{ fontSize: "12px" }}
+        >
+          /{product.billingCycle?.name.toLowerCase() ?? "billing cycle"}
+        </span>
       </div>
       {hasDiscount ? (
-        <div className="small">
+        <div style={{ fontSize: "12px" }}>
           <span className="text-muted text-decoration-line-through">
             {formatCurrency(product.finalBaseFee)}
           </span>{" "}
+          <br />
           <span className="text-success fw-semibold">
             Save {formatCurrency(discountAmount)} ({discountPercentage}%)
           </span>
         </div>
       ) : null}
       {monthlyEquivalent ? (
-        <div className="small text-muted">
+        <div className="text-muted" style={{ fontSize: "12px" }}>
           ≈ {formatCurrency(monthlyEquivalent)}/month
         </div>
       ) : null}
-      <div className="small text-muted">
+      <div className="text-muted" style={{ fontSize: "12px" }}>
         {product.includeTax ? "Tax included" : "Tax excluded"}
         {product.taxFee > 0 ? (
           <span>{` · ${formatCurrency(product.taxFee)} tax`}</span>
         ) : null}
       </div>
-      <div className="small text-muted">
+      <div className="text-muted" style={{ fontSize: "12px" }}>
         Setup:{" "}
         {product.setupFee > 0 ? (
           <span>{formatCurrency(product.setupFee)}</span>
@@ -174,17 +190,20 @@ export function TableRowProductMarketing({
         )}
       </div>
     </div>,
-    <div style={{ width: "190px" }}>
+    // ---- END PRICING ----
+
+    // ---- START BRANCHES ----
+    <div style={{ minWidth: "190px" }}>
       <div className="fw-semibold mb-1">
         {branches.length} branch{branches.length !== 1 ? "es" : ""}
       </div>
       {branches.length ? (
         <ul
-          className="list-unstyled mb-0 overflow-y-auto pe-1"
+          className="branch-list list-unstyled mb-0 overflow-y-auto pe-1"
           style={{ maxHeight: "96px", fontSize: "12px" }}
         >
           {branches.map((branch) => (
-            <li key={branch.id} className="text-break py-1">
+            <li key={branch.id} className="text-break">
               <span className="font-monospace text-muted">{branch.code}</span>
               {" · "}
               <span>{branch.name}</span>
@@ -197,8 +216,13 @@ export function TableRowProductMarketing({
         </div>
       )}
     </div>,
+    // ---- END BRANCHES ----
 
-    <div className="d-flex align-items-center gap-2" style={{ width: "165px" }}>
+    // ---- START CREATOR ----
+    <div
+      className="d-flex align-items-center gap-2"
+      style={{ minWidth: "165px" }}
+    >
       <div
         className="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center fw-semibold flex-shrink-0"
         style={{ width: 32, height: 32 }}
@@ -206,12 +230,15 @@ export function TableRowProductMarketing({
         {getNameInitials(creatorName)}
       </div>
       <div>
-        <div className="small fw-semibold text-break">{creatorName}</div>
-        <div className="small text-muted">
+        <div className="fw-semibold text-break" style={{ fontSize: "12px" }}>
+          {creatorName}
+        </div>
+        <div className="text-muted" style={{ fontSize: "10px" }}>
           {formatApiDateTime(product.product.createdAt)}
         </div>
       </div>
     </div>,
+    // ---- END CREATOR ----
   ];
 
   return (

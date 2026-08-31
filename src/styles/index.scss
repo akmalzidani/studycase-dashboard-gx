@@ -52,6 +52,28 @@ $theme-colors: map-merge($theme-colors, $custom-theme-colors);
 }
 
 // Custom CSS
+
+.branch-list {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+  }
+
+  &:hover {
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+      width: 0.375rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--bs-secondary-color);
+      border-radius: 999px;
+    }
+  }
+}
+
 .pagination {
   --bs-pagination-color: var(--bs-primary);
   --bs-pagination-hover-color: var(--bs-primary);
